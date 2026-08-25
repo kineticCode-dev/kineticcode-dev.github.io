@@ -1,0 +1,83 @@
+{
+  "nav": {
+    "home": "Start",
+    "articles": "Artikel",
+    "about": "Über mich",
+    "dashboard": "Dashboard"
+  },
+  "meta": {
+    "siteTitle": "Kinetic Code — Digitales Ingenieurshandwerk",
+    "siteDescription": "Das technische Tagebuch eines Mechatronik-Ingenieurs: Embedded-Systeme, Industrieautomation und Software, erzählt so, wie man sie laut erklären würde."
+  },
+  "home": {
+    "eyebrow": "Digitales Ingenieurshandwerk",
+    "title": "Kinetic Code",
+    "subtitle": "Mechatronik, Code, und die Hartnäckigkeit von jemandem, der wirklich verstehen will, wie Dinge funktionieren.",
+    "bodyHtml": "<p>Dies ist das technische Tagebuch eines Mechatronik-Ingenieurs, der seine Tage zwischen SPS, C++ und Kabeln verbringt, die eigentlich nicht rauchen sollten — es aber manchmal trotzdem tun. Keine fertigen Tutorials, kein LinkedIn-Geschwafel: hier findest du den echten Prozess. Bugs, die mühsam gelöst wurden, Maschinenzyklen, die Bit für Bit optimiert wurden, Design-Entscheidungen, die — manchmal falsch — um zwei Uhr nachts vor einem Schaltschrank getroffen wurden.</p><p>Wenn dich der genaue Punkt interessiert, an dem Software auf Metall trifft, bist du hier richtig.</p>",
+    "ctaArticles": "Artikel lesen",
+    "ctaAbout": "Wer das hier schreibt",
+    "pillarsTitle": "Was dich hier erwartet",
+    "pillarsSubtitle": "Drei rote Fäden, eine gemeinsame Idee: es wirklich zum Laufen bringen.",
+    "pillars": [
+      { "category": "embedded", "text": "Firmware, die beim ersten Versuch funktionieren muss, nicht \"fast immer\"." },
+      { "category": "automazione", "text": "SPS, Modbus, Schaltschränke: die Software, die das Metall steuert." },
+      { "category": "software", "text": "C++- und Qt-Architekturen, in der Produktion erprobt, nicht in einem Tutorial." }
+    ],
+    "dashboardTeaserTitle": "Das Labor, in Zahlen",
+    "dashboardTeaserSubtitle": "Wie viel es schon zu lesen gibt, aufgeteilt nach Thema.",
+    "dashboardTeaserCta": "Vollständiges Dashboard öffnen",
+    "latestTitle": "Neu im Blog",
+    "latestCta": "Alle Artikel ansehen"
+  },
+  "about": {
+    "eyebrow": "Über mich",
+    "title": "Wer hier schreibt, ohne viele Worte",
+    "bodyHtml": "<p>Ich bin Mechatronik-Ingenieur. Ich arbeite an dem Punkt, an dem Software auf echte Maschinen trifft: SPS, die Modbus sprechen, Motoren, die sich in die richtige Richtung drehen müssen, Firmware, die es sich nicht leisten kann abzustürzen, während eine 200-Tonnen-Presse ihre Form schließt.</p><p>Meinen Namen, mein Alter oder meine Herkunft findest du hier nicht — darum geht es nicht. Es geht um die Arbeit: Jahre in der Produktion mit Tests und Inbetriebnahme, das Debuggen von C++- und Qt-Systemen, Stunden damit verbracht zu verstehen, warum sich ein Maschinenzyklus um vierzig Millisekunden verlangsamt, die kein Kunde je bemerken wird, die mir aber den Schlaf rauben.</p><p>Kinetic Code entstand aus einer einfachen Beobachtung: Im Zeitalter massenhaft produzierter Inhalte liegt der wahre Wert darin, die echte Arbeit zu zeigen — die gescheiterten Versuche, die dreimal überarbeiteten Architekturen, die Vorher-Nachher-Diagramme einer Optimierung. Keine Copy-Paste-Tutorials, sondern Überlegungen, so dargestellt, wie sie vor einem Whiteboard entstehen würden.</p><p>Ich nutze KI-Werkzeuge wie einen sehr schnellen Junior-Kollegen: Sie schlagen vor, ich prüfe, ich unterschreibe. Der Code, den du hier siehst, die Architekturentscheidungen, die Tests an echter Hardware — das ist alles von mir, im Feld verifiziert, bevor es zu einem Artikel wird.</p><p>Wenn du in der Automatisierung oder im Embedded-Bereich arbeitest, oder einfach gerne verstehst, wie Dinge von innen gebaut sind: willkommen.</p>",
+    "contactTitle": "Kontakt",
+    "contactText": "Fragen zu etwas, das du gelesen hast, Neugier auf ein bestimmtes Setup, oder eine berufliche Anfrage — Projektüberprüfung, Architekturberatung, Beratungsauftrag: schreib mir an <a href=\"mailto:kineticcode.dev@gmail.com\">kineticcode.dev@gmail.com</a>. Ich lese und beantworte alles selbst.",
+    "contactEmailLabel": "E-Mail schreiben",
+    "contactGithubLabel": "Code auf GitHub ansehen"
+  },
+  "articles": {
+    "eyebrow": "Artikel",
+    "title": "Alles, was ich bisher geschrieben habe",
+    "subtitle": "Durchsuche nach Thema, wenn du weißt, wonach du suchst, oder nach Datum, wenn du nur den neuesten Beitrag willst.",
+    "searchPlaceholder": "Suche nach Stichwort, z. B. \"matrix computation\"...",
+    "searchLabel": "Artikel durchsuchen",
+    "noResults": "Keine Artikel gefunden. Versuche ein anderes Stichwort.",
+    "resultsFound": "Ergebnisse gefunden",
+    "browseByTopic": "Nach Thema",
+    "browseByDate": "Chronologisch",
+    "allArticles": "Alle Artikel",
+    "readMore": "Lesen",
+    "minRead": "Min. Lesezeit",
+    "backToAll": "← Zurück zu allen Artikeln",
+    "previousArticle": "Vorheriger Artikel",
+    "nextArticle": "Nächster Artikel",
+    "notYetTranslated": "Dieser Artikel ist in dieser Sprache noch nicht verfügbar."
+  },
+  "dashboard": {
+    "eyebrow": "Dashboard",
+    "title": "Das Labor, in Zahlen",
+    "subtitle": "Ein schneller Überblick über alles, was bisher in dieser Sprache veröffentlicht wurde.",
+    "totalArticles": "Veröffentlichte Artikel",
+    "totalCategories": "Aktive Kategorien",
+    "totalWords": "Geschriebene Wörter",
+    "avgReadingTime": "Durchschnittliche Lesezeit",
+    "minutes": "Min",
+    "byCategory": "Verteilung nach Kategorie",
+    "latestUpdate": "Letzte Aktualisierung"
+  },
+  "footer": {
+    "rights": "Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.",
+    "rss": "RSS-Feed",
+    "backToTop": "Nach oben"
+  },
+  "theme": {
+    "toggleToLight": "Zum hellen Thema wechseln",
+    "toggleToDark": "Zum dunklen Thema wechseln"
+  },
+  "langSwitcher": {
+    "label": "Sprache"
+  }
+}

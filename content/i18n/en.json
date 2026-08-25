@@ -1,0 +1,83 @@
+{
+  "nav": {
+    "home": "Home",
+    "articles": "Articles",
+    "about": "About",
+    "dashboard": "Dashboard"
+  },
+  "meta": {
+    "siteTitle": "Kinetic Code — Digital Engineering Craft",
+    "siteDescription": "The technical journal of a mechatronics engineer: embedded systems, industrial automation and software, explained the way you would explain them out loud."
+  },
+  "home": {
+    "eyebrow": "Digital Engineering Craft",
+    "title": "Kinetic Code",
+    "subtitle": "Mechatronics, code, and the stubbornness of someone who wants to understand how things really work.",
+    "bodyHtml": "<p>This is the technical journal of a mechatronics engineer who spends the day between PLCs, C++, and cables that should not smoke — but sometimes do anyway. No ready-made tutorials, no LinkedIn fluff: here you find the real process. Bugs solved the hard way, machine cycles optimized bit by bit, design decisions made — and sometimes wrong — in front of an electrical cabinet at two in the morning.</p><p>If you are curious about the exact point where software meets metal, you are in the right place.</p>",
+    "ctaArticles": "Read the articles",
+    "ctaAbout": "Find out who writes this",
+    "pillarsTitle": "What you will find here",
+    "pillarsSubtitle": "Three main threads, one common idea: making it actually work.",
+    "pillars": [
+      { "category": "embedded", "text": "Firmware that has to work on the first try, not \"almost always\"." },
+      { "category": "automazione", "text": "PLCs, Modbus, electrical cabinets: the software that commands the metal." },
+      { "category": "software", "text": "C++ and Qt architectures tested in production, not in a tutorial." }
+    ],
+    "dashboardTeaserTitle": "The lab, in numbers",
+    "dashboardTeaserSubtitle": "How much there already is to read, split by topic.",
+    "dashboardTeaserCta": "Open the full dashboard",
+    "latestTitle": "Latest from the blog",
+    "latestCta": "See all articles"
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "Who writes this, without too many words",
+    "bodyHtml": "<p>I am a mechatronics engineer. I work at the point where software meets real machines: PLCs that speak Modbus, motors that must turn in the right direction, firmware that cannot afford to crash while a 200-ton press is closing its mold.</p><p>You will not find my name, my age, or where I come from here — that is not the point. The point is the work: years spent on the production floor doing testing and commissioning, debugging C++ and Qt systems, hours spent understanding why a machine cycle slows down by forty milliseconds that no customer will ever notice, but that keep me up at night.</p><p>Kinetic Code was born from a simple observation: in the age of mass-produced content, the real value is in showing the actual work — the failed attempts, the architectures rethought three times, the before-and-after charts of an optimization. Not copy-paste tutorials, but reasoning, explained the way it would happen in front of a whiteboard.</p><p>I use artificial intelligence tools the way you would use a very fast junior colleague: it proposes, I verify, I sign off. The code you see here, the architectural choices, the tests on real hardware — they are mine, verified in the field before becoming an article.</p><p>If you work in automation, in embedded systems, or you simply enjoy understanding how things are built from the inside: welcome.</p>",
+    "contactTitle": "Get in touch",
+    "contactText": "Questions about something you read, curiosity about a specific setup, or a professional inquiry — design review, architecture advice, consulting work: write to <a href=\"mailto:kineticcode.dev@gmail.com\">kineticcode.dev@gmail.com</a>. I read and answer everything myself.",
+    "contactEmailLabel": "Send an email",
+    "contactGithubLabel": "See the code on GitHub"
+  },
+  "articles": {
+    "eyebrow": "Articles",
+    "title": "Everything I have written so far",
+    "subtitle": "Browse by topic if you know what you are looking for, or by date if you just want the latest piece.",
+    "searchPlaceholder": "Search by keyword, e.g. \"matrix computation\"...",
+    "searchLabel": "Search the articles",
+    "noResults": "No articles found. Try a different keyword.",
+    "resultsFound": "results found",
+    "browseByTopic": "By topic",
+    "browseByDate": "Chronological order",
+    "allArticles": "All articles",
+    "readMore": "Read",
+    "minRead": "min read",
+    "backToAll": "← Back to all articles",
+    "previousArticle": "Previous article",
+    "nextArticle": "Next article",
+    "notYetTranslated": "This article is not available in this language yet."
+  },
+  "dashboard": {
+    "eyebrow": "Dashboard",
+    "title": "The lab, in numbers",
+    "subtitle": "A quick view of what has been published so far, in this language.",
+    "totalArticles": "Published articles",
+    "totalCategories": "Active categories",
+    "totalWords": "Words written",
+    "avgReadingTime": "Average read",
+    "minutes": "min",
+    "byCategory": "Breakdown by category",
+    "latestUpdate": "Last update"
+  },
+  "footer": {
+    "rights": "All content is the author's own work, verified in the field.",
+    "rss": "RSS feed",
+    "backToTop": "Back to top"
+  },
+  "theme": {
+    "toggleToLight": "Switch to light theme",
+    "toggleToDark": "Switch to dark theme"
+  },
+  "langSwitcher": {
+    "label": "Language"
+  }
+}

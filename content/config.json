@@ -1,0 +1,76 @@
+{
+  "siteName": "Kinetic Code",
+  "baseUrl": "https://kineticcode-dev.github.io",
+  "defaultLang": "en",
+  "languages": [
+    { "code": "it", "native": "Italiano", "htmlLang": "it" },
+    { "code": "en", "native": "English", "htmlLang": "en" },
+    { "code": "es", "native": "Español", "htmlLang": "es" },
+    { "code": "fr", "native": "Français", "htmlLang": "fr" },
+    { "code": "de", "native": "Deutsch", "htmlLang": "de" }
+  ],
+  "categories": [
+    {
+      "id": "embedded",
+      "labels": {
+        "it": "Embedded & Firmware",
+        "en": "Embedded & Firmware",
+        "es": "Embebido y Firmware",
+        "fr": "Embarqué & Firmware",
+        "de": "Embedded & Firmware"
+      }
+    },
+    {
+      "id": "automazione",
+      "labels": {
+        "it": "Automazione Industriale",
+        "en": "Industrial Automation",
+        "es": "Automatización Industrial",
+        "fr": "Automatisation Industrielle",
+        "de": "Industrielle Automatisierung"
+      }
+    },
+    {
+      "id": "software",
+      "labels": {
+        "it": "Software Engineering",
+        "en": "Software Engineering",
+        "es": "Ingeniería de Software",
+        "fr": "Génie Logiciel",
+        "de": "Software-Engineering"
+      }
+    },
+    {
+      "id": "progetti",
+      "labels": {
+        "it": "Progetti Hardware",
+        "en": "Hardware Projects",
+        "es": "Proyectos de Hardware",
+        "fr": "Projets Matériels",
+        "de": "Hardware-Projekte"
+      }
+    },
+    {
+      "id": "percorso",
+      "labels": {
+        "it": "Note di Percorso",
+        "en": "Field Notes",
+        "es": "Notas de Campo",
+        "fr": "Notes de Terrain",
+        "de": "Feldnotizen"
+      }
+    }
+  ],
+  "social": {
+    "github": "https://github.com/kineticCode-dev",
+    "email": "kineticcode.dev@gmail.com",
+    "linkedin": "",
+    "x": ""
+  },
+  "analytics": {
+    "provider": "umami",
+    "scriptUrl": "",
+    "websiteId": "",
+    "note": "Vedi README.md sezione Analytics per la configurazione di Umami. Lasciare vuoto per disattivare il tracking."
+  }
+}

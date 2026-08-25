@@ -1,0 +1,83 @@
+{
+  "nav": {
+    "home": "Home",
+    "articles": "Articoli",
+    "about": "About",
+    "dashboard": "Dashboard"
+  },
+  "meta": {
+    "siteTitle": "Kinetic Code — Artigianato Ingegneristico Digitale",
+    "siteDescription": "Diario tecnico di un ingegnere meccatronico: embedded, automazione industriale e software, raccontati come si racconterebbero a voce."
+  },
+  "home": {
+    "eyebrow": "Artigianato Ingegneristico Digitale",
+    "title": "Kinetic Code",
+    "subtitle": "Meccatronica, codice, e la cocciutaggine di chi vuole capire come funzionano davvero le cose.",
+    "bodyHtml": "<p>Questo è il diario tecnico di un ingegnere meccatronico che passa le giornate tra PLC, C++ e cavi che non dovrebbero fumare — ma a volte fumano lo stesso. Niente tutorial preconfezionati, niente fuffa da LinkedIn: qui trovi il processo reale. Bug risolti a fatica, cicli macchina ottimizzati bit a bit, decisioni di design prese — e a volte sbagliate — davanti a un quadro elettrico alle due di notte.</p><p>Se ti intriga il punto esatto in cui il software incontra il ferro, sei nel posto giusto.</p>",
+    "ctaArticles": "Leggi gli articoli",
+    "ctaAbout": "Scopri chi scrive",
+    "pillarsTitle": "Cosa trovi qui dentro",
+    "pillarsSubtitle": "Tre fili conduttori, un solo filo comune: farlo funzionare davvero.",
+    "pillars": [
+      { "category": "embedded", "text": "Firmware che deve funzionare al primo colpo, non \"quasi sempre\"." },
+      { "category": "automazione", "text": "PLC, Modbus, quadri elettrici: il software che comanda il ferro." },
+      { "category": "software", "text": "Architetture C++ e Qt collaudate in produzione, non in un tutorial." }
+    ],
+    "dashboardTeaserTitle": "Il laboratorio, in numeri",
+    "dashboardTeaserSubtitle": "Quanto c'è già da leggere, diviso per argomento.",
+    "dashboardTeaserCta": "Apri la dashboard completa",
+    "latestTitle": "Ultimo dal blog",
+    "latestCta": "Vedi tutti gli articoli"
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "Chi scrive, senza troppi giri di parole",
+    "bodyHtml": "<p>Sono un ingegnere meccatronico. Lavoro nel punto di incontro tra software e macchine reali: PLC che parlano Modbus, motori che devono girare nel verso giusto, firmware che non può permettersi di andare in crash mentre una pressa da 200 tonnellate sta chiudendo lo stampo.</p><p>Non troverai qui il mio nome, la mia età o da dove vengo — non è quello il punto. Il punto è il lavoro: anni passati in produzione a fare collaudo e commissioning, debug di sistemi in C++ e Qt, ore spese a capire perché un ciclo macchina rallenta di quaranta millisecondi che nessun cliente vedrà mai, ma che a me tolgono il sonno.</p><p>Kinetic Code nasce da un'osservazione semplice: nell'era dei contenuti generati in massa, il valore vero sta nel mostrare il lavoro reale — i tentativi falliti, le architetture ripensate tre volte, i grafici prima e dopo un'ottimizzazione. Non tutorial da copia-incolla: ragionamento, esposto nel modo in cui accadrebbe davanti a una lavagna.</p><p>Uso strumenti di intelligenza artificiale come si userebbe un collega junior molto veloce: propone, io verifico, io firmo. Il codice che vedi qui, le scelte architetturali, i test su hardware reale — sono miei, verificati sul campo prima di finire in un articolo.</p><p>Se lavori nell'automazione, nell'embedded, o semplicemente ti piace capire come sono fatte le cose da dentro: benvenuto.</p>",
+    "contactTitle": "Scrivimi",
+    "contactText": "Domande su qualcosa che hai letto, curiosità su una configurazione specifica, o una richiesta professionale — revisione di un progetto, consigli di architettura, consulenze: scrivimi a <a href=\"mailto:kineticcode.dev@gmail.com\">kineticcode.dev@gmail.com</a>. Leggo e rispondo di persona a tutto.",
+    "contactEmailLabel": "Scrivimi una mail",
+    "contactGithubLabel": "Guarda il codice su GitHub"
+  },
+  "articles": {
+    "eyebrow": "Articoli",
+    "title": "Tutto quello che ho scritto finora",
+    "subtitle": "Naviga per argomento se sai cosa cerchi, per data se vuoi solo l'ultimo pezzo caldo.",
+    "searchPlaceholder": "Cerca per parola chiave, es. \"matrix computation\"...",
+    "searchLabel": "Cerca negli articoli",
+    "noResults": "Nessun articolo trovato. Prova con un'altra parola chiave.",
+    "resultsFound": "risultati trovati",
+    "browseByTopic": "Per argomento",
+    "browseByDate": "Ordine cronologico",
+    "allArticles": "Tutti gli articoli",
+    "readMore": "Leggi",
+    "minRead": "min di lettura",
+    "backToAll": "← Torna a tutti gli articoli",
+    "previousArticle": "Articolo precedente",
+    "nextArticle": "Articolo successivo",
+    "notYetTranslated": "Questo articolo non è ancora disponibile in questa lingua."
+  },
+  "dashboard": {
+    "eyebrow": "Dashboard",
+    "title": "Il laboratorio, in numeri",
+    "subtitle": "Una vista rapida su cosa c'è stato pubblicato finora, in questa lingua.",
+    "totalArticles": "Articoli pubblicati",
+    "totalCategories": "Categorie attive",
+    "totalWords": "Parole scritte",
+    "avgReadingTime": "Lettura media",
+    "minutes": "min",
+    "byCategory": "Distribuzione per categoria",
+    "latestUpdate": "Ultimo aggiornamento"
+  },
+  "footer": {
+    "rights": "Tutti i contenuti sono opera dell'autore, verificati sul campo.",
+    "rss": "Feed RSS",
+    "backToTop": "Torna su"
+  },
+  "theme": {
+    "toggleToLight": "Passa al tema chiaro",
+    "toggleToDark": "Passa al tema scuro"
+  },
+  "langSwitcher": {
+    "label": "Lingua"
+  }
+}
