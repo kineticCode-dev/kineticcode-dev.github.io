@@ -69,8 +69,8 @@
   },
   "analytics": {
     "provider": "umami",
-    "scriptUrl": "",
-    "websiteId": "",
+    "scriptUrl": "https://cloud.umami.is/script.js",
+    "websiteId": "e4b7a7f7-6c8e-4fc5-8a54-74fb3857eb78",
     "note": "Vedi README.md sezione Analytics per la configurazione di Umami. Lasciare vuoto per disattivare il tracking."
   }
 }
