@@ -33,7 +33,7 @@
     );
   }
 
-  function cardHtml(entry) {
+  function articleCardHtml(entry) {
     var tagStyle = entry.categoryColor ? ' style="--tag-color:' + entry.categoryColor + '"' : "";
     return (
       '<a class="article-card" href="' + entry.url + '">' +
@@ -45,6 +45,25 @@
       '<div class="article-card__meta"><span>' + entry.dateDisplay + "</span><span>" + entry.minutes + " " + entry.minReadLabel + "</span></div>" +
       "</div></a>"
     );
+  }
+
+  // Learning Paths search results reuse this same script (same JSON shape,
+  // fetched from a different index file) but render as course cards, marked
+  // by cardType:"course" on each entry — see scripts/build.js.
+  function courseCardHtml(entry) {
+    return (
+      '<a class="course-card" href="' + entry.url + '">' +
+      '<div class="course-card__body">' +
+      '<span class="course-card__badge">' + entry.categoryLabel + "</span>" +
+      '<h3 class="course-card__title">' + entry.title + "</h3>" +
+      '<p class="course-card__excerpt">' + entry.excerpt + "</p>" +
+      '<div class="course-card__meta"><span>' + entry.dateDisplay + "</span></div>" +
+      "</div></a>"
+    );
+  }
+
+  function cardHtml(entry) {
+    return entry.cardType === "course" ? courseCardHtml(entry) : articleCardHtml(entry);
   }
 
   document.addEventListener("DOMContentLoaded", function () {

@@ -43,21 +43,21 @@
     {
       "id": "progetti",
       "labels": {
-        "it": "Progetti Hardware",
-        "en": "Hardware Projects",
-        "es": "Proyectos de Hardware",
-        "fr": "Projets Matériels",
-        "de": "Hardware-Projekte"
+        "it": "Progetti",
+        "en": "Projects",
+        "es": "Proyectos",
+        "fr": "Projets",
+        "de": "Projekte"
       }
     },
     {
-      "id": "percorso",
+      "id": "meccanica",
       "labels": {
-        "it": "Note di Percorso",
-        "en": "Field Notes",
-        "es": "Notas de Campo",
-        "fr": "Notes de Terrain",
-        "de": "Feldnotizen"
+        "it": "Meccanica",
+        "en": "Mechanics",
+        "es": "Mecanica",
+        "fr": "Mecanique",
+        "de": "Mechanik"
       }
     }
   ],
@@ -69,8 +69,17 @@
   },
   "analytics": {
     "provider": "umami",
-    "scriptUrl": "https://cloud.umami.is/script.js",
-    "websiteId": "e4b7a7f7-6c8e-4fc5-8a54-74fb3857eb78",
+    "scriptUrl": "",
+    "websiteId": "",
     "note": "Vedi README.md sezione Analytics per la configurazione di Umami. Lasciare vuoto per disattivare il tracking."
+  },
+  "paypal": {
+    "enabled": true,
+    "clientId": "BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4",
+    "hostedButtonId": "F7N5SENY2D93L",
+    "currency": "EUR",
+    "disableFunding": "venmo",
+    "components": "hosted-buttons",
+    "note": "Vedi README.md sezione 'Pulsante di supporto (PayPal)'. Imposta enabled a false per rimuovere il pulsante da tutto il sito senza toccare il codice."
   }
 }

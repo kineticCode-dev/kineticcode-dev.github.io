@@ -2,6 +2,7 @@
   "nav": {
     "home": "Accueil",
     "articles": "Articles",
+    "learningPaths": "Parcours",
     "about": "À propos",
     "dashboard": "Dashboard"
   },
@@ -79,5 +80,31 @@
   },
   "langSwitcher": {
     "label": "Langue"
+  },
+  "learningPaths": {
+    "eyebrow": "Parcours d'apprentissage",
+    "title": "Parcours",
+    "subtitle": "Des parcours séquentiels qui alternent leçons théoriques et projets pratiques : à lire dans l'ordre, du début à la fin, pour construire une compétence solide plutôt qu'un empilement d'articles isolés.",
+    "searchPlaceholder": "Rechercher un parcours...",
+    "searchLabel": "Rechercher dans les parcours",
+    "noResults": "Aucun parcours trouvé. Essayez un autre mot-clé.",
+    "resultsFound": "résultats trouvés",
+    "notYetTranslated": "Aucun parcours n'est encore disponible dans cette langue.",
+    "badgeLabel": "Parcours",
+    "lessonsCount": "leçons",
+    "backToLearningPaths": "← Retour aux parcours",
+    "backToCourse": "← Retour au parcours",
+    "modulesTitle": "Ce que vous allez apprendre, module par module",
+    "lessonTypeTheory": "Théorie",
+    "lessonTypeProject": "Projet",
+    "lessonOf": "Leçon",
+    "of": "sur",
+    "startCourse": "Commencer le parcours",
+    "previousLesson": "Leçon précédente",
+    "nextLesson": "Leçon suivante"
+  },
+  "support": {
+    "title": "Ça vous a été utile ?",
+    "text": "Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre."
   }
 }

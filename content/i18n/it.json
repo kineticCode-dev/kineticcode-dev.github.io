@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "articles": "Articoli",
+    "learningPaths": "Corsi",
     "about": "About",
     "dashboard": "Dashboard"
   },
@@ -79,5 +80,31 @@
   },
   "langSwitcher": {
     "label": "Lingua"
+  },
+  "learningPaths": {
+    "eyebrow": "Percorsi di apprendimento",
+    "title": "Corsi",
+    "subtitle": "Percorsi sequenziali che alternano lezioni teoriche e progetti pratici: si leggono in ordine, dall'inizio alla fine, per costruire una competenza solida invece di un accumulo di articoli slegati.",
+    "searchPlaceholder": "Cerca un percorso...",
+    "searchLabel": "Cerca nei percorsi",
+    "noResults": "Nessun percorso trovato. Prova con un'altra parola chiave.",
+    "resultsFound": "risultati trovati",
+    "notYetTranslated": "Nessun percorso è ancora disponibile in questa lingua.",
+    "badgeLabel": "Percorso",
+    "lessonsCount": "lezioni",
+    "backToLearningPaths": "← Torna ai percorsi",
+    "backToCourse": "← Torna al percorso",
+    "modulesTitle": "Cosa imparerai, modulo per modulo",
+    "lessonTypeTheory": "Teoria",
+    "lessonTypeProject": "Progetto",
+    "lessonOf": "Lezione",
+    "of": "di",
+    "startCourse": "Inizia il percorso",
+    "previousLesson": "Lezione precedente",
+    "nextLesson": "Lezione successiva"
+  },
+  "support": {
+    "title": "Ti va di offrirmi un caffè?",
+    "text": "Se questo contenuto ti è stato utile, puoi sostenere il progetto con una piccola donazione libera."
   }
 }

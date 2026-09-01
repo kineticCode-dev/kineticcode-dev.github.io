@@ -1,0 +1,66 @@
+{
+  "title": "Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine",
+  "eyebrow": "Kurse",
+  "introHtml": "<p>Ein praxisorientierter Lernpfad für alle, die bereits die Grundlagen von C++ beherrschen, aber noch nie mehrere Threads innerhalb desselben Prozesses ausführen mussten, ohne sich dabei selbst ins Knie zu schießen. Wir beginnen mit der unbedingt notwendigen Theorie — was ein Thread wirklich ist und was schiefgehen kann — und gehen anschließend zu anspruchsvolleren Konzepten über. Jedes Modul endet mit einem Projekt, in dem du das gerade Gelernte praktisch anwendest.</p><p>Die Lektionen sollten der Reihe nach bearbeitet werden: Jedes Projekt baut auf den Konzepten auf, die in der unmittelbar vorhergehenden Theorie eingeführt wurden.</p><p>Den gesamten Quellcode des Kurses findest du in diesem <a href=\"https://github.com/kineticCode-dev/MultithreadingLearningPath\" target=\"_blank\" rel=\"noopener noreferrer\">Repository</a>.</p>",
+  "durationLabel": "21 lektionen",
+  "level": "Niveau: Mittelstufe (Grundkenntnisse in C++ werden vorausgesetzt)",
+  "modules": [
+    {
+      "title": "Modul 0 — Grundlagen",
+      "lessons": [
+        { "slug": "modul-00-artikel-1-was-ist-ein-thread", "type": "theory" },
+		{ "slug": "modul-00-artikel-2-race-conditions-und-qts-einzelner-thread", "type": "theory" },
+		{ "slug": "modul-00-artikel-3-projekte-race-condition-und-einfrieren", "type": "project" }
+      ]
+    },
+    {
+      "title": "Modul 1 — QThread: Die beiden Modelle und die Event-Loop-Architektur von Qt",
+      "lessons": [
+        { "slug": "modul-01-artikel-1-qthread-ist-nicht-der-thread", "type": "theory" },
+		{ "slug": "modul-01-artikel-2-event-loops-und-lebenszyklus", "type": "theory" },
+		{ "slug": "modul-01-artikel-3-projekt-worker-thread", "type": "project" }
+      ]
+    },
+	{
+      "title": "Modul 2 — Synchronisation: Mutex, Wait Conditions, Semaphore und klassische Probleme",
+      "lessons": [
+        { "slug": "modul-02-artikel-1-qmutex-und-readwritelock", "type": "theory" },
+		{ "slug": "modul-02-artikel-2-waitcondition-deadlock-starvation", "type": "theory" },
+		{ "slug": "vertiefung-mars-pathfinder-prioritaetsinversion", "type": "theory" },
+		{ "slug": "modul-02-artikel-3-projekt-producer-consumer", "type": "project" }
+      ]
+    },
+	{
+      "title": "Modul 3 — QtConcurrent und das Future-/Promise-Modell",
+      "lessons": [
+        { "slug": "modul-03-artikel-1-qtconcurrent-run-mapped-threadpool", "type": "theory" },
+		{ "slug": "modul-03-artikel-2-qfuture-qfuturewatcher-wann-nicht-verwenden", "type": "theory" },
+		{ "slug": "modul-03-artikel-3-projekt-bildstapelverarbeitung", "type": "project" }
+      ]
+    },
+	{
+      "title": "Modul 4 — Sichere Kommunikation zwischen Threads: Qt-Verbindungen und kooperative Abbruchsteuerung",
+      "lessons": [
+        { "slug": "modul-04-artikel-1-die-vier-qt-verbindungstypen", "type": "theory" },
+		{ "slug": "modul-04-artikel-2-invokemethod-und-kooperative-abbruch", "type": "theory" },
+		{ "slug": "modul-04-artikel-3-projekt-worker-lebenszyklus", "type": "project" }
+      ]
+    },
+	{
+      "title": "Modul 5 — Fortgeschrittene Muster: Benutzerdefinierte Thread-Pools, Atomics und die versteckten Kosten des Caches",
+      "lessons": [
+        { "slug": "modul-05-artikel-1-qrunnable-qthreadpool", "type": "theory" },
+		{ "slug": "modul-05-artikel-2-speichermodell-und-false-sharing", "type": "theory" },
+		{ "slug": "modul-05-artikel-3-projekt-benchmark-mutex-atomic", "type": "project" }
+      ]
+    },
+	{
+      "title": "Modul 6 — Abschlussprojekt: Echtzeitnahe Bildverarbeitungspipeline",
+      "lessons": [
+        { "slug": "modul-06-artikel-1-architektur-erfassung-begrenzter-puffer", "type": "theory" },
+		{ "slug": "modul-06-artikel-2-verarbeitungspool-vollstaendige-abbruchbehandlung", "type": "theory" },
+		{ "slug": "modul-06-artikel-3-projekt-vision-pipeline-capstone", "type": "project" }
+      ]
+    }
+  ]
+}

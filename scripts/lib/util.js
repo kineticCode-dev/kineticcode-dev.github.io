@@ -62,6 +62,13 @@ export function wordCount(text) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+export function stripHtml(html) {
+  return String(html || "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function escapeHtml(str) {
   return String(str)
     .replace(/&/g, "&amp;")

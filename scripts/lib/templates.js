@@ -1,6 +1,6 @@
 import { ICONS } from "./icons.js";
 import { renderDonut } from "./donut.js";
-import { formatDateShort } from "./util.js";
+import { formatDateShort, stripHtml } from "./util.js";
 
 const CHART_VARS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
 
@@ -21,6 +21,60 @@ function renderAnalyticsScript(config) {
   const a = config.analytics;
   if (!a || !a.scriptUrl || !a.websiteId) return "";
   return `<script async defer src="${a.scriptUrl}" data-website-id="${a.websiteId}"></script>`;
+}
+
+/* -------------------------------------------------------------------------
+   PayPal "support" button — opt-in, wired from content/config.json.
+   The SDK <script> (Part 1 from PayPal) is injected once per page, only on
+   pages that actually render the button (via renderPaypalSdk -> extraHead).
+   The button itself (Part 2: container + render call) comes from
+   renderSupportBlock, used inside the post-nav on article/lesson pages.
+   ------------------------------------------------------------------------- */
+export function renderPaypalSdk(config) {
+  const p = config.paypal;
+  if (!p || !p.enabled || !p.clientId || !p.hostedButtonId) return "";
+  return `<script src="https://www.paypal.com/sdk/js?client-id=${p.clientId}&components=${p.components || "hosted-buttons"}&disable-funding=${p.disableFunding || "venmo"}&currency=${p.currency || "EUR"}"></script>`;
+}
+
+export function renderSupportBlock(config, i18n) {
+  const p = config.paypal;
+  if (!p || !p.enabled || !p.clientId || !p.hostedButtonId) return "";
+  const s = i18n.support || {};
+  return `<div class="support-card">
+        <div class="support-card__icon">${ICONS.coffee}</div>
+        <div class="support-card__text">
+          <h3>${s.title || ""}</h3>
+          <p>${s.text || ""}</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-${p.hostedButtonId}"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "${p.hostedButtonId}",
+            }).render("#paypal-container-${p.hostedButtonId}");
+          </script>
+        </div>
+      </div>`;
+}
+
+// Builds the prev/next post-nav row, optionally with a compact support card
+// slotted between the two links (or standing alone when there is only one,
+// or neither, of prev/next). When there is no support block to show, this
+// falls back to the original two-column behavior untouched.
+function buildPostNav({ prevLinkHtml, nextLinkHtml, supportHtml }) {
+  if (!supportHtml) {
+    return prevLinkHtml || nextLinkHtml ? `<div class="post-nav">${prevLinkHtml}${nextLinkHtml}</div>` : "";
+  }
+  const cols = [];
+  if (prevLinkHtml) cols.push("1fr");
+  cols.push("minmax(200px,300px)");
+  let nextCol = null;
+  if (nextLinkHtml) {
+    cols.push("1fr");
+    nextCol = cols.length;
+  }
+  const style = `--post-nav-cols:${cols.join(" ")};${nextCol ? `--post-nav-next-col:${nextCol};` : ""}`;
+  return `<div class="post-nav" style="${style}">${prevLinkHtml}${supportHtml}${nextLinkHtml}</div>`;
 }
 
 /* -------------------------------------------------------------------------
@@ -50,6 +104,7 @@ export function renderLayout({ lang, config, i18n, activeNav, title, description
   const navItems = [
     ["home", i18n.nav.home, `/${lang}/`],
     ["articles", i18n.nav.articles, `/${lang}/articles/`],
+    ["learningPaths", i18n.nav.learningPaths, `/${lang}/learning-paths/`],
     ["about", i18n.nav.about, `/${lang}/about/`],
     ["dashboard", i18n.nav.dashboard, `/${lang}/dashboard/`],
   ]
@@ -414,7 +469,8 @@ export function renderArticle({ lang, config, i18n, article, contentHtml, prevAr
         <span class="post-nav__title">${nextArticle.title}</span>
       </a>`
     : "";
-  const postNav = prevLink || nextLink ? `<div class="post-nav">${prevLink}${nextLink}</div>` : "";
+  const supportHtml = renderSupportBlock(config, i18n);
+  const postNav = buildPostNav({ prevLinkHtml: prevLink, nextLinkHtml: nextLink, supportHtml });
 
   return `
   <article>
@@ -490,6 +546,175 @@ export function renderDashboard({ lang, i18n, stats }) {
       </div>
     </div>
   </section>
+`;
+}
+
+/* -------------------------------------------------------------------------
+   Learning Paths — course preview card
+   ------------------------------------------------------------------------- */
+export function renderCourseCard(course, i18n, lang) {
+  const t = i18n.learningPaths;
+  const lessonCount = course.modules.reduce((n, m) => n + m.lessons.length, 0);
+  return `<a class="course-card" href="/${lang}/learning-paths/${course.slug}/">
+  <div class="course-card__media">${ICONS.course}</div>
+  <div class="course-card__body">
+    <span class="course-card__badge">${t.badgeLabel}</span>
+    <h3 class="course-card__title">${course.title}</h3>
+    <p class="course-card__excerpt">${stripHtml(course.introHtml)}</p>
+    <div class="course-card__meta"><span>${course.durationLabel || ""}</span><span>${lessonCount} ${t.lessonsCount}</span></div>
+  </div>
+</a>`;
+}
+
+/* -------------------------------------------------------------------------
+   Learning Paths — index page (cards + search)
+   ------------------------------------------------------------------------- */
+export function renderLearningPathsIndex({ lang, i18n, courses }) {
+  const t = i18n.learningPaths;
+
+  if (courses.length === 0) {
+    return `
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">${t.eyebrow}</span>
+      <h1>${t.title}</h1>
+      <p class="text-muted" style="margin-top:14px;max-width:60ch">${t.notYetTranslated}</p>
+    </div>
+  </section>`;
+  }
+
+  const cards = courses.map((c) => renderCourseCard(c, i18n, lang)).join("\n");
+
+  return `
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">${t.eyebrow}</span>
+      <h1 style="margin-top:10px">${t.title}</h1>
+      <p class="text-muted" style="margin-top:12px;max-width:64ch">${t.subtitle}</p>
+
+      <div style="margin-top:36px" data-search-root
+        data-index-url="/assets/data/search-index-learningpaths.${lang}.json"
+        data-no-results="${t.noResults}"
+        data-results-found="${t.resultsFound}">
+        <div class="search-box">
+          ${ICONS.search}
+          <input type="search" data-search-input placeholder="${t.searchPlaceholder}" aria-label="${t.searchLabel}">
+        </div>
+        <div class="search-status" data-search-status></div>
+      </div>
+
+      <div class="card-grid" style="margin-top:28px" data-browse-view="courses">
+        ${cards}
+      </div>
+      <div data-view-search style="display:none">
+        <div class="card-grid" data-search-results></div>
+      </div>
+    </div>
+  </section>
+`;
+}
+
+/* -------------------------------------------------------------------------
+   Learning Paths — course landing page
+   ------------------------------------------------------------------------- */
+export function renderCourseLanding({ lang, i18n, course }) {
+  const t = i18n.learningPaths;
+  const totalLessons = course.flatLessons.length;
+  const firstLesson = course.flatLessons[0];
+
+  const modulesHtml = course.modules
+    .map((mod) => {
+      const rows = mod.lessons
+        .map((lesson) => {
+          const isProject = lesson.type === "project";
+          const typeLabel = isProject ? t.lessonTypeProject : t.lessonTypeTheory;
+          const typeClass = isProject ? "lesson-row__type--project" : "lesson-row__type--theory";
+          return `<a class="lesson-row" href="/${lang}/learning-paths/${course.slug}/${lesson.slug}/">
+        <span class="lesson-row__index">${String(lesson.overallIndex).padStart(2, "0")}</span>
+        <span class="lesson-row__title">${lesson.title}</span>
+        <span class="lesson-row__type ${typeClass}">${typeLabel}</span>
+      </a>`;
+        })
+        .join("\n");
+      return `<div class="course-module">
+      <h3 class="course-module__title">${mod.title}</h3>
+      <div class="course-module__list">${rows}</div>
+    </div>`;
+    })
+    .join("\n");
+
+  return `
+  <section class="article-hero">
+    <div class="container">
+      <span class="eyebrow">${course.eyebrow || t.eyebrow}</span>
+      <h1>${course.title}</h1>
+      <div class="course-hero__meta">
+        ${course.level ? `<span>${course.level}</span>` : ""}
+        ${course.durationLabel ? `<span>${course.durationLabel}</span>` : ""}
+        <span>${totalLessons} ${t.lessonsCount}</span>
+      </div>
+    </div>
+  </section>
+  <div class="container">
+    <div class="prose" style="margin-top:36px">${course.introHtml}</div>
+    ${firstLesson ? `<div style="margin-top:26px"><a class="btn btn-primary" href="/${lang}/learning-paths/${course.slug}/${firstLesson.slug}/">${t.startCourse}</a></div>` : ""}
+    <h2 style="margin-top:52px">${t.modulesTitle}</h2>
+    <div class="course-modules">
+      ${modulesHtml}
+    </div>
+    <div class="article-footer">
+      <a class="btn btn-ghost" href="/${lang}/learning-paths/">${t.backToLearningPaths}</a>
+    </div>
+  </div>
+`;
+}
+
+/* -------------------------------------------------------------------------
+   Learning Paths — lesson page (theory or project)
+   ------------------------------------------------------------------------- */
+export function renderLessonPage({ lang, config, i18n, course, module, lesson, contentHtml, prevLesson, nextLesson }) {
+  const t = i18n.learningPaths;
+  const isProject = lesson.type === "project";
+  const typeLabel = isProject ? t.lessonTypeProject : t.lessonTypeTheory;
+
+  const prevLink = prevLesson
+    ? `<a class="post-nav__link post-nav__link--prev" href="/${lang}/learning-paths/${course.slug}/${prevLesson.slug}/">
+        <span class="post-nav__label">← ${t.previousLesson}</span>
+        <span class="post-nav__title">${prevLesson.title}</span>
+      </a>`
+    : "";
+  const nextLink = nextLesson
+    ? `<a class="post-nav__link post-nav__link--next" href="/${lang}/learning-paths/${course.slug}/${nextLesson.slug}/">
+        <span class="post-nav__label">${t.nextLesson} →</span>
+        <span class="post-nav__title">${nextLesson.title}</span>
+      </a>`
+    : "";
+  const supportHtml = renderSupportBlock(config, i18n);
+  const postNav = buildPostNav({ prevLinkHtml: prevLink, nextLinkHtml: nextLink, supportHtml });
+
+  return `
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/${lang}/learning-paths/${course.slug}/">${course.title}</a> · ${module.title}
+        </div>
+        <span class="eyebrow">${typeLabel} · ${t.lessonOf} ${lesson.overallIndex} ${t.of} ${course.flatLessons.length}</span>
+        <h1>${lesson.title}</h1>
+        <p class="article-hero__excerpt">${lesson.description}</p>
+        <div class="article-hero__meta"><span>${lesson.minutes} ${i18n.articles.minRead}</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        ${contentHtml}
+      </div>
+      ${postNav}
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/${lang}/learning-paths/${course.slug}/">${t.backToCourse}</a>
+      </div>
+    </div>
+  </article>
 `;
 }
 

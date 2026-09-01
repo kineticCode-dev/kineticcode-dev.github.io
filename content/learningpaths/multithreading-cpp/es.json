@@ -1,0 +1,66 @@
+{
+  "title": "Multithreading en C++: de la teoría a una máquina de estados funcional",
+  "eyebrow": "Cursos",
+  "introHtml": "<p>Un recorrido de aprendizaje práctico para quienes ya conocen los fundamentos de C++, pero nunca han tenido que ejecutar varios hilos dentro del mismo proceso sin pegarse un tiro en el pie. Empezamos con la teoría mínima indispensable — qué es realmente un hilo y qué puede salir mal — y luego avanzamos hacia conceptos más sofisticados. Cada módulo termina con un proyecto en el que pondrás en práctica lo que acabas de aprender.</p><p>Las lecciones deben seguirse en orden: cada proyecto se basa en los conceptos introducidos en la teoría inmediatamente anterior.</p><p>Puedes encontrar todo el código fuente del curso en este <a href=\"https://github.com/kineticCode-dev/MultithreadingLearningPath\" target=\"_blank\" rel=\"noopener noreferrer\">repositorio</a>.</p>",
+  "durationLabel": "21 lecciones",
+  "level": "Nivel: intermedio (se requieren conocimientos básicos de C++)",
+  "modules": [
+    {
+      "title": "Módulo 0 — Fundamentos",
+      "lessons": [
+        { "slug": "modulo-00-articulo-1-que-es-un-thread", "type": "theory" },
+		{ "slug": "modulo-00-articulo-2-condiciones-de-carrera-y-el-hilo-unico-de-qt", "type": "theory" },
+		{ "slug": "modulo-00-articulo-3-proyectos-condicion-de-carrera-y-congelamiento", "type": "project" }
+      ]
+    },
+    {
+      "title": "Módulo 1 — QThread: los dos modelos y la arquitectura del bucle de eventos de Qt",
+      "lessons": [
+        { "slug": "modulo-01-articulo-1-qthread-no-es-el-thread", "type": "theory" },
+		{ "slug": "modulo-01-articulo-2-bucles-de-eventos-y-ciclo-de-vida", "type": "theory" },
+		{ "slug": "modulo-01-articulo-3-proyecto-worker-thread", "type": "project" }
+      ]
+    },
+	{
+      "title": "Módulo 2 — Sincronización: mutexes, condiciones de espera, semáforos y problemas clásicos",
+      "lessons": [
+	    { "slug": "modulo-02-articulo-1-qmutex-y-readwritelock", "type": "theory" },
+		{ "slug": "modulo-02-articulo-2-waitcondition-deadlock-starvation", "type": "theory" },
+		{ "slug": "profundizacion-mars-pathfinder-inversion-de-prioridad", "type": "theory" },
+		{ "slug": "modulo-02-articulo-3-proyecto-productor-consumidor", "type": "project" }
+      ]
+    },
+	{
+      "title": "Módulo 3 — QtConcurrent y el modelo Future/Promise",
+      "lessons": [
+        { "slug": "modulo-03-articulo-1-qtconcurrent-run-mapped-threadpool", "type": "theory" },
+		{ "slug": "modulo-03-articulo-2-qfuture-qfuturewatcher-cuando-no-usarlo", "type": "theory" },
+		{ "slug": "modulo-03-articulo-3-proyecto-lote-imagenes", "type": "project" }
+      ]
+    },
+	{
+      "title": "Módulo 4 — Comunicación segura entre hilos: conexiones de Qt y cancelación cooperativa",
+      "lessons": [
+        { "slug": "modulo-04-articulo-1-los-cuatro-tipos-de-conexion-qt", "type": "theory" },
+		{ "slug": "modulo-04-articulo-2-invokemethod-y-cancelacion-cooperativa", "type": "theory" },
+		{ "slug": "modulo-04-articulo-3-proyecto-ciclo-vida-worker", "type": "project" }
+      ]
+    },
+	{
+      "title": "Módulo 5 — Patrones avanzados: grupos de hilos personalizados, atómicos y el coste oculto de la caché",
+      "lessons": [
+        { "slug": "modulo-05-articulo-1-qrunnable-qthreadpool", "type": "theory" },
+		{ "slug": "modulo-05-articulo-2-modelo-memoria-y-false-sharing", "type": "theory" },
+		{ "slug": "modulo-05-articulo-3-proyecto-benchmark-mutex-atomic", "type": "project" }
+      ]
+    },
+	{
+      "title": "Módulo 6 — Proyecto final: canalización de visión casi en tiempo real",
+      "lessons": [
+        { "slug": "modulo-06-articulo-1-arquitectura-captura-buffer-limitado", "type": "theory" },
+		{ "slug": "modulo-06-articulo-2-pool-procesamiento-cancelacion-completa", "type": "theory" },
+		{ "slug": "modulo-06-articulo-3-proyecto-pipeline-vision-capstone", "type": "project" }
+      ]
+    }
+  ]
+}

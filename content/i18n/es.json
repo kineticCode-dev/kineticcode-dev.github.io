@@ -2,6 +2,7 @@
   "nav": {
     "home": "Inicio",
     "articles": "Artículos",
+    "learningPaths": "Cursos",
     "about": "Sobre mí",
     "dashboard": "Dashboard"
   },
@@ -79,5 +80,31 @@
   },
   "langSwitcher": {
     "label": "Idioma"
+  },
+  "learningPaths": {
+    "eyebrow": "Rutas de aprendizaje",
+    "title": "Cursos",
+    "subtitle": "Rutas secuenciales que alternan lecciones teóricas con proyectos prácticos: se leen en orden, de principio a fin, para construir una competencia sólida en lugar de una pila de artículos sueltos.",
+    "searchPlaceholder": "Busca una ruta...",
+    "searchLabel": "Buscar en las rutas",
+    "noResults": "No se ha encontrado ninguna ruta. Prueba con otra palabra clave.",
+    "resultsFound": "resultados encontrados",
+    "notYetTranslated": "Todavía no hay ninguna ruta disponible en este idioma.",
+    "badgeLabel": "Ruta",
+    "lessonsCount": "lecciones",
+    "backToLearningPaths": "← Volver a las rutas",
+    "backToCourse": "← Volver a la ruta",
+    "modulesTitle": "Qué aprenderás, módulo por módulo",
+    "lessonTypeTheory": "Teoría",
+    "lessonTypeProject": "Proyecto",
+    "lessonOf": "Lección",
+    "of": "de",
+    "startCourse": "Empezar la ruta",
+    "previousLesson": "Lección anterior",
+    "nextLesson": "Lección siguiente"
+  },
+  "support": {
+    "title": "¿Te ha resultado útil?",
+    "text": "Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria."
   }
 }

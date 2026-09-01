@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "articles": "Articles",
+    "learningPaths": "Learning Paths",
     "about": "About",
     "dashboard": "Dashboard"
   },
@@ -79,5 +80,31 @@
   },
   "langSwitcher": {
     "label": "Language"
+  },
+  "learningPaths": {
+    "eyebrow": "Learning Paths",
+    "title": "Learning Paths",
+    "subtitle": "Sequential paths that alternate theory lessons with hands-on projects: read them in order, start to finish, to build solid skills instead of a pile of disconnected articles.",
+    "searchPlaceholder": "Search a learning path...",
+    "searchLabel": "Search learning paths",
+    "noResults": "No learning path found. Try a different keyword.",
+    "resultsFound": "results found",
+    "notYetTranslated": "No learning path is available in this language yet.",
+    "badgeLabel": "Learning Path",
+    "lessonsCount": "lessons",
+    "backToLearningPaths": "← Back to learning paths",
+    "backToCourse": "← Back to the course",
+    "modulesTitle": "What you'll learn, module by module",
+    "lessonTypeTheory": "Theory",
+    "lessonTypeProject": "Project",
+    "lessonOf": "Lesson",
+    "of": "of",
+    "startCourse": "Start the course",
+    "previousLesson": "Previous lesson",
+    "nextLesson": "Next lesson"
+  },
+  "support": {
+    "title": "Found this useful?",
+    "text": "If this content helped you, you can support the project with a small optional donation."
   }
 }

@@ -3,3 +3,13 @@ dist/
 .DS_Store
 npm-debug.log*
 README.md
+
+# Igiene di sicurezza — nel caso in futuro salvi la API key Anthropic (o altro
+# segreto) in un file locale invece che come variabile d'ambiente/secret di
+# GitHub Actions. Oggi non esiste nessuno di questi file nel progetto, ma se
+# mai lo creerai non finirà per sbaglio nel repository pubblico.
+.env
+.env.local
+.env.*.local
+*.pem
+*.key

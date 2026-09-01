@@ -2,6 +2,7 @@
   "nav": {
     "home": "Start",
     "articles": "Artikel",
+    "learningPaths": "Kurse",
     "about": "Über mich",
     "dashboard": "Dashboard"
   },
@@ -79,5 +80,31 @@
   },
   "langSwitcher": {
     "label": "Sprache"
+  },
+  "learningPaths": {
+    "eyebrow": "Lernpfade",
+    "title": "Kurse",
+    "subtitle": "Sequenzielle Lernpfade, die theoretische Lektionen mit praktischen Projekten abwechseln: der Reihe nach lesen, von Anfang bis Ende, um solides Wissen aufzubauen statt einer Ansammlung loser Artikel.",
+    "searchPlaceholder": "Lernpfad suchen...",
+    "searchLabel": "In Lernpfaden suchen",
+    "noResults": "Kein Lernpfad gefunden. Versuche ein anderes Stichwort.",
+    "resultsFound": "Ergebnisse gefunden",
+    "notYetTranslated": "In dieser Sprache ist noch kein Lernpfad verfügbar.",
+    "badgeLabel": "Lernpfad",
+    "lessonsCount": "Lektionen",
+    "backToLearningPaths": "← Zurück zu den Lernpfaden",
+    "backToCourse": "← Zurück zum Lernpfad",
+    "modulesTitle": "Was du lernen wirst, Modul für Modul",
+    "lessonTypeTheory": "Theorie",
+    "lessonTypeProject": "Projekt",
+    "lessonOf": "Lektion",
+    "of": "von",
+    "startCourse": "Lernpfad starten",
+    "previousLesson": "Vorherige Lektion",
+    "nextLesson": "Nächste Lektion"
+  },
+  "support": {
+    "title": "Hat dir das geholfen?",
+    "text": "Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen."
   }
 }
