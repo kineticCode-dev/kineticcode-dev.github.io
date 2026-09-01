@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Optimizing matrix multiplication in C++ — Part 2: tiling, threads, and one honest surprise — Kinetic Code</title>
+  <meta name="description" content="Part 2 of the hands-on performance engineering series: why splitting the matrices into small cache-sized tiles doesn't automatically pay off on its own, and how putting a second CPU core to work with a single OpenMP pragma pushes us to a measured 4.42x — all verified, all reproducible.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-2/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/matrix-multiplication-optimization-part-2/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-2/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/matrix-multiplication-optimization-part-2/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-2/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/matrix-multiplication-optimization-part-2/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-2/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Optimizing matrix multiplication in C++ — Part 2: tiling, threads, and one honest surprise — Kinetic Code">
+  <meta property="og:description" content="Part 2 of the hands-on performance engineering series: why splitting the matrices into small cache-sized tiles doesn't automatically pay off on its own, and how putting a second CPU core to work with a single OpenMP pragma pushes us to a measured 4.42x — all verified, all reproducible.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-2/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Optimizing matrix multiplication in C++ — Part 2: tiling, threads, and one honest surprise","description":"Part 2 of the hands-on performance engineering series: why splitting the matrices into small cache-sized tiles doesn't automatically pay off on its own, and how putting a second CPU core to work with a single OpenMP pragma pushes us to a measured 4.42x — all verified, all reproducible.","datePublished":"2026-08-23","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/matrix-multiplication-optimization-part-2/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/matrix-multiplication-optimization-part-2/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/matrix-multiplication-optimization-part-2/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/matrix-multiplication-optimization-part-2/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/matrix-multiplication-optimization-part-2/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-3);color:var(--chart-3)">Software Engineering</span>
+        <h1>Optimizing matrix multiplication in C++ — Part 2: tiling, threads, and one honest surprise</h1>
+        <p class="article-hero__excerpt">Part 2 of the hands-on performance engineering series: why splitting the matrices into small cache-sized tiles doesn't automatically pay off on its own, and how putting a second CPU core to work with a single OpenMP pragma pushes us to a measured 4.42x — all verified, all reproducible.</p>
+        <div class="article-hero__meta">
+          <span>Aug 23, 2026</span>
+          <span>·</span>
+          <span>11 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>If you read <a href="https://kineticcode-dev.github.io/astro-pulsar/blog/matrix-multiplication-optimization-part-1/">Part 1</a> of this series, you already know the punch line so far: the exact same matrix multiplication, same algorithm, same number of floating-point operations, went from 1.88 GFLOP/s to 4.16 GFLOP/s just by swapping the order of three <code>for</code> loops. Nothing clever, no new hardware feature, just respecting how memory actually gets read.</p>
+<p>If you&#39;re joining fresh — welcome, and here&#39;s the two-sentence version: matrices are stored as one flat, row-major array, and reading that array sequentially is dramatically cheaper than jumping around it, because CPUs fetch memory in cache lines, not single numbers. That single idea is going to keep paying off in this article too, just in two new, less obvious shapes: how you <em>group</em> the work you do with each cache line, and how many CPU cores you throw at it.</p>
+<p>By the end of this part we&#39;ll be sitting at <strong>4.42x</strong> faster than where Part 1 started — but the road there is not a straight line, and the detour is more interesting than the destination.</p>
+<p>You can check all the source code to this <a href="https://github.com/kineticCode-dev/MatrixMultiplicationOptimization">link</a></p>
+<h2>Reordering wasn&#39;t the end of the story</h2>
+<p>Stage 2 fixed the <em>direction</em> memory gets walked in. It did not fix a different problem: for every single row of the output matrix C, the reordered loop still sweeps across the <em>entire</em> matrix B, top to bottom. B itself, for a 1023×1023 matrix of <code>double</code>, is a little over 8 MB. That is nowhere near small enough to fit in L1 cache (tens of KB) or even L2 (a couple MB on most consumer CPUs) — so on every new row of C, the CPU is, in effect, starting from scratch with B, evicting whatever useful data it had just finished loading for the previous row.</p>
+<p>This is a different flavor of the same underlying idea from Part 1: spatial locality (walking memory in order) is not the same thing as temporal locality (reusing data you loaded a moment ago, before it gets evicted). Stage 2 nailed the first one. It leaves the second one entirely on the table.</p>
+<h2>Tiling: work on a piece small enough to stay put</h2>
+<p>The fix has a name — <strong>tiling</strong>, sometimes called <strong>blocking</strong> — and the idea, before any code, is almost embarrassingly simple: instead of sweeping across whole rows and columns, chop the matrices into small square <strong>tiles</strong>, sized so that a tile comfortably fits in L1 or L2 cache, and finish all the work that can be done with one tile before moving on to the next.</p>
+<p><img src="/assets/images/articles/06-tiling-concept.png" alt="Left: Stage 2 sweeps the entire matrix B on every row, far bigger than any cache level. Right: Stage 3 works one BS×BS tile at a time, small enough to stay resident in L1/L2 while reused across a whole band of rows." loading="lazy"></p>
+<p>In code, this means the flat two-loop structure of Stage 2 grows three more loops on the outside — one for each dimension, walked in steps of <code>BS</code> (block size) instead of steps of 1:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title">multiply_blocked_ikj</span><span class="hljs-params">(<span class="hljs-type">const</span> Matrix&amp; A, <span class="hljs-type">const</span> Matrix&amp; B, Matrix&amp; C, <span class="hljs-type">int</span> N, <span class="hljs-type">int</span> BS = <span class="hljs-number">64</span>)</span> </span>{
+    std::<span class="hljs-built_in">fill</span>(C.<span class="hljs-built_in">begin</span>(), C.<span class="hljs-built_in">end</span>(), <span class="hljs-number">0.0</span>);
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> ii = <span class="hljs-number">0</span>; ii &lt; N; ii += BS) {
+        <span class="hljs-type">const</span> <span class="hljs-type">int</span> i_max = std::<span class="hljs-built_in">min</span>(ii + BS, N);
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> kk = <span class="hljs-number">0</span>; kk &lt; N; kk += BS) {
+            <span class="hljs-type">const</span> <span class="hljs-type">int</span> k_max = std::<span class="hljs-built_in">min</span>(kk + BS, N);
+            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> jj = <span class="hljs-number">0</span>; jj &lt; N; jj += BS) {
+                <span class="hljs-type">const</span> <span class="hljs-type">int</span> j_max = std::<span class="hljs-built_in">min</span>(jj + BS, N);
+                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = ii; i &lt; i_max; ++i) {
+                    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = kk; k &lt; k_max; ++k) {
+                        <span class="hljs-type">const</span> <span class="hljs-type">double</span> a_ik = A[i * N + k];
+                        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = jj; j &lt; j_max; ++j) {
+                            C[i * N + j] += a_ik * B[k * N + j];
+                        }
+                    }
+                }
+            }
+        }
+    }
+}</code></pre>
+<p>Look closely and you&#39;ll notice the innermost three loops — over i, k, j — are <em>character-for-character</em> identical to Stage 2. Nothing about the arithmetic changed. The three new outer loops (<code>ii</code>, <code>kk</code>, <code>jj</code>) just carve the problem into <code>BS</code>×<code>BS</code> sub-blocks and restrict each pass of the inner loops to working within one sub-block at a time, so that block of B stays small enough to still be sitting in cache the next time it&#39;s needed. <code>std::min(ii + BS, N)</code> is there purely for correctness — it clips the last, partial tile when N isn&#39;t a clean multiple of <code>BS</code>.</p>
+<p>Compiled and run the same way as before:</p>
+<pre><code class="hljs language-bash">g++ -O2 -std=c++17 stage3_blocked.cpp -o stage3_blocked
+./stage3_blocked 1023 64</code></pre>
+<pre><code class="hljs language-apache"><span class="hljs-attribute">Stage</span> <span class="hljs-number">3</span> - blocked ikj        N=<span class="hljs-number">1023</span>   time=  <span class="hljs-number">0</span>.<span class="hljs-number">7194</span> s      <span class="hljs-number">2</span>.<span class="hljs-number">976</span> GFLOP/s</code></pre>
+<h2>The surprise: it&#39;s slower than Stage 2, not faster</h2>
+<p>Here it is, in black and white:</p>
+<p><img src="/assets/images/articles/07-stage1-2-3-benchmark.png" alt="Bar chart: Stage 1 at 1.88 GFLOP/s, Stage 2 at 4.16 GFLOP/s, Stage 3 (tiled, single-threaded) dropping back down to 2.98 GFLOP/s — an annotation calling out that tiling alone is slower than Stage 2." loading="lazy"></p>
+<p>If this were a tidy tutorial where every step is a clean win, this number would have quietly been left out, or the block size would have been fudged until it looked better. It isn&#39;t going to be. <strong>A measured result that goes the &quot;wrong&quot; way is not a mistake to hide — it&#39;s data</strong>, and this particular one teaches something that a monotonically increasing chart never would.</p>
+<p>Two things are true at once here, and it&#39;s worth pulling them apart.</p>
+<p>First, tiling has a real, non-zero cost: six nested loops instead of three, with <code>std::min</code> recomputed at every tile boundary. That overhead is only worth paying if the cache misses it eliminates outweigh it by a healthy margin.</p>
+<p>Second — and this is the machine-specific part — the L2 cache on the CPU used for these measurements is 2 MB per core. A 1023×1023 matrix of <code>double</code> is about 8 MB — far bigger than L2, sure, but Stage 2&#39;s <em>access pattern within one row</em> was already reasonably cache-friendly to begin with on this particular hardware, leaving less headroom for tiling, on its own, single-threaded, to reclaim. On a CPU with a smaller cache, or on a larger problem, this exact same comparison could easily flip the other way. That&#39;s not a caveat to brush past — it&#39;s the entire reason this series insists on <em>measuring</em>, on your machine, instead of trusting a rule of thumb copied from a blog post (including this one).</p>
+<p><strong>So why keep Stage 3 in the series at all</strong>, if it loses to Stage 2 on its own? Because tiling isn&#39;t really about single-threaded speed here — it&#39;s about setting up the next move.</p>
+<pre><code class="hljs language-applescript">(no-op marker <span class="hljs-keyword">for</span> <span class="hljs-keyword">the</span> two things this article <span class="hljs-keyword">does</span> NOT claim: <span class="hljs-keyword">it</span> <span class="hljs-keyword">does</span> <span class="hljs-keyword">not</span> claim tiling <span class="hljs-keyword">is</span> worthless, <span class="hljs-keyword">and</span> <span class="hljs-keyword">it</span> <span class="hljs-keyword">does</span> <span class="hljs-keyword">not</span> claim this <span class="hljs-built_in">number</span> generalizes <span class="hljs-keyword">to</span> <span class="hljs-keyword">every</span> CPU.)</code></pre>
+<h2>Splitting the work across cores</h2>
+<p>A tiled computation has a property Stage 2&#39;s flat loop didn&#39;t have as cleanly: it&#39;s already chopped into independent chunks. And independent chunks of work are exactly what you need to hand off to more than one CPU core.</p>
+<p><strong>OpenMP</strong> is the tool for this, and it is not a library you download separately — it&#39;s a compiler feature, enabled with a single flag (<code>-fopenmp</code> for GCC and Clang), plus a standard header, <code>&lt;omp.h&gt;</code>, that ships with the compiler itself. The way you actually use it, in the overwhelming majority of real code, is through <strong>pragma directives</strong>: special comment-like lines the compiler is told to interpret as instructions rather than ignore. That has a nice side effect — code that uses OpenMP pragmas still compiles and runs correctly without <code>-fopenmp</code>; the pragma is simply ignored and the code runs single-threaded.</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title">multiply_blocked_parallel</span><span class="hljs-params">(<span class="hljs-type">const</span> Matrix&amp; A, <span class="hljs-type">const</span> Matrix&amp; B, Matrix&amp; C, <span class="hljs-type">int</span> N, <span class="hljs-type">int</span> BS = <span class="hljs-number">64</span>)</span> </span>{
+    std::<span class="hljs-built_in">fill</span>(C.<span class="hljs-built_in">begin</span>(), C.<span class="hljs-built_in">end</span>(), <span class="hljs-number">0.0</span>);
+    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel for schedule(dynamic)</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> ii = <span class="hljs-number">0</span>; ii &lt; N; ii += BS) {
+        <span class="hljs-type">const</span> <span class="hljs-type">int</span> i_max = std::<span class="hljs-built_in">min</span>(ii + BS, N);
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> kk = <span class="hljs-number">0</span>; kk &lt; N; kk += BS) {
+            <span class="hljs-type">const</span> <span class="hljs-type">int</span> k_max = std::<span class="hljs-built_in">min</span>(kk + BS, N);
+            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> jj = <span class="hljs-number">0</span>; jj &lt; N; jj += BS) {
+                <span class="hljs-type">const</span> <span class="hljs-type">int</span> j_max = std::<span class="hljs-built_in">min</span>(jj + BS, N);
+                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = ii; i &lt; i_max; ++i) {
+                    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = kk; k &lt; k_max; ++k) {
+                        <span class="hljs-type">const</span> <span class="hljs-type">double</span> a_ik = A[i * N + k];
+                        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = jj; j &lt; j_max; ++j) {
+                            C[i * N + j] += a_ik * B[k * N + j];
+                        }
+                    }
+                }
+            }
+        }
+    }
+}</code></pre>
+<p>Compare this against Stage 3 above: it is identical, down to the whitespace, except for one line — <code>#pragma omp parallel for schedule(dynamic)</code>, sitting just above the outermost loop over <code>ii</code>. That single line tells the compiler: split the iterations of this loop across the available threads, and run them concurrently instead of one after another.</p>
+<h2>Why this is actually safe</h2>
+<p>Slapping a <code>parallel for</code> on a loop without thinking it through is one of the most common — and most dangerous-because-intermittent — mistakes in parallel code. If two threads write to the same memory location without coordination, you get a <strong>race condition</strong>, a bug that often doesn&#39;t show up on every run, which makes it miserable to debug with a traditional debugger.</p>
+<p><img src="/assets/images/articles/08-openmp-row-split.png" alt="Matrix C split into row-blocks; alternating blocks are handed to Thread 0 and Thread 1. Caption: each thread only ever writes into its own rows of C — A and B are read-only for everyone — so there&amp;#39;s no shared write, no race condition, no locks needed." loading="lazy"></p>
+<p>Here, it&#39;s worth actually walking through <em>why</em> it&#39;s safe, rather than taking it on faith. The loop being parallelized is the one over <code>ii</code> — blocks of <em>rows</em> of C. For whichever value of <code>ii</code> a given thread is handed, it only ever writes into the rows of C between <code>ii</code> and <code>i_max</code> — a row range that <strong>no other thread ever touches</strong>, because each value of <code>ii</code> is assigned to exactly one thread. There is no shared write on C, and therefore no race condition possible on it. A and B, meanwhile, are only ever <em>read</em> by every thread, never written — and concurrent reads of the same data are always safe, no synchronization required.</p>
+<p><code>schedule(dynamic)</code> is worth a specific mention too: it tells OpenMP to hand out blocks of iterations to threads as they become free, rather than splitting the work into equal fixed chunks up front. With blocks of fairly uniform size like these, the practical difference from the default static scheduling is small — but <code>dynamic</code> is the more robust default in general, since it stays efficient even if the workload per block isn&#39;t perfectly even (for instance, the last, partial tile when N isn&#39;t a multiple of <code>BS</code>).</p>
+<h2>Measuring it</h2>
+<pre><code class="hljs language-bash">g++ -O2 -std=c++17 -fopenmp stage4_parallel.cpp -o stage4_parallel
+./stage4_parallel 1023 64</code></pre>
+<pre><code class="hljs language-apache"><span class="hljs-attribute">OpenMP</span> active: <span class="hljs-number">2</span> threads available.
+<span class="hljs-attribute">Stage</span> <span class="hljs-number">4</span> - blocked parallel   N=<span class="hljs-number">1023</span>   time=  <span class="hljs-number">0</span>.<span class="hljs-number">2580</span> s      <span class="hljs-number">8</span>.<span class="hljs-number">298</span> GFLOP/s</code></pre>
+<p><img src="/assets/images/articles/09-stage1-4-benchmark.png" alt="Bar chart, four stages: 1.88, 4.16, 2.98, 8.30 GFLOP/s, with Stage 4 annotated as 4.42x faster than Stage 1." loading="lazy"></p>
+<p>That&#39;s a <strong>4.42x</strong> speedup over Stage 1 — worth reading carefully, because at first glance it looks disproportionate for a machine with only 2 cores. The honest comparison isn&#39;t against Stage 1, though — it&#39;s against Stage 3 (0.719 s), the same tiled algorithm running on a single core: <code>0.719 / 0.258 ≈ 2.79</code>, a speedup a bit <em>above</em> the theoretical 2x from doubling the core count — likely because splitting the work also eases pressure on the shared L3 cache, a secondary effect stacking on top of the raw parallelism. Against Stage 2 (0.514 s), the more apples-to-apples comparison, the number is a much more believable <strong>1.99x</strong> — almost exactly the doubling you&#39;d expect from 2 cores, and the fairest way to judge &quot;how much did parallelism itself actually buy us&quot; on this particular machine.</p>
+<p><strong>An honest limitation, stated plainly.</strong> These numbers were measured on a machine with only 2 CPU cores. The exact same code — not one line changed — would scale considerably further on a machine with 8 or 16 cores, up to (never quite reaching, thanks to synchronization overhead and shared memory bandwidth) a speedup proportional to the core count. If you have more cores available, rerunning <code>benchmark_all</code> yourself is the most direct way to see how much headroom parallelism actually leaves on the table beyond what this specific machine could show.</p>
+<h2>What&#39;s still on the table</h2>
+<p>Four honest data points so far: 1.88 → 4.16 → 2.98 (the detour) → 8.30 GFLOP/s. Two big levers are still untouched, and Part 3 picks them both up:</p>
+<ul>
+<li><strong>Manual vectorization with AVX2 and FMA</strong> — hand-writing the innermost loop with vector instructions that process four <code>double</code> values per instruction instead of one.</li>
+<li><strong>The full comparison, and two more honest surprises</strong> — why a matrix size that happens to be a power of two can run <em>dramatically</em> slower than a neighboring size that isn&#39;t, and why isolating the effect of aggressive compiler flags from the effect of algorithmic changes turns out to matter almost as much as the algorithm work itself.</li>
+</ul>
+<p>The complete, buildable code for every stage in this series — including the ones still to come — lives in the GitHub repository linked from Part 1. Clone it, build it with CMake, and run the numbers on your own hardware; yours will differ from these, and that&#39;s exactly the point.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/articles/matrix-multiplication-optimization-part-1/">
+        <span class="post-nav__label">← Previous article</span>
+        <span class="post-nav__title">Optimizing matrix multiplication in C++ — Part 1: what the loop order actually buys you</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/matrix-multiplication-optimization-part-3/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">Optimizing matrix multiplication in C++ — Part 3: vectorization, the full reveal, and two honest surprises</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redirigir los qDebug de Qt a un archivo sin recompilar: la clase LoggerManager — Kinetic Code</title>
+  <meta name="description" content="Un cuelgue en campo que no podía diagnosticar, sin forma de recompilar en el sitio, y la clase C++/Qt que escribí para capturar los logs en tiempo de ejecución — con todos los errores de enlazado que me encontré por el camino.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/articles/loggermanager-qdebug-redirect-article-en/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/loggermanager-qdebug-redirect-article-en/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/loggermanager-qdebug-redirect-article-en/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/loggermanager-qdebug-redirect-article-en/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/loggermanager-qdebug-redirect-article-en/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/loggermanager-qdebug-redirect-article-en/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/loggermanager-qdebug-redirect-article-en/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Redirigir los qDebug de Qt a un archivo sin recompilar: la clase LoggerManager — Kinetic Code">
+  <meta property="og:description" content="Un cuelgue en campo que no podía diagnosticar, sin forma de recompilar en el sitio, y la clase C++/Qt que escribí para capturar los logs en tiempo de ejecución — con todos los errores de enlazado que me encontré por el camino.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/articles/loggermanager-qdebug-redirect-article-en/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Redirigir los qDebug de Qt a un archivo sin recompilar: la clase LoggerManager","description":"Un cuelgue en campo que no podía diagnosticar, sin forma de recompilar en el sitio, y la clase C++/Qt que escribí para capturar los logs en tiempo de ejecución — con todos los errores de enlazado que me encontré por el camino.","datePublished":"2026-08-05","inLanguage":"es","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/" aria-current="page">Artículos</a>
+        <a href="/es/learning-paths/">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/loggermanager-qdebug-redirect-article-en/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/loggermanager-qdebug-redirect-article-en/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/loggermanager-qdebug-redirect-article-en/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/loggermanager-qdebug-redirect-article-en/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/loggermanager-qdebug-redirect-article-en/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-3);color:var(--chart-3)">Ingeniería de Software</span>
+        <h1>Redirigir los qDebug de Qt a un archivo sin recompilar: la clase LoggerManager</h1>
+        <p class="article-hero__excerpt">Un cuelgue en campo que no podía diagnosticar, sin forma de recompilar en el sitio, y la clase C++/Qt que escribí para capturar los logs en tiempo de ejecución — con todos los errores de enlazado que me encontré por el camino.</p>
+        <div class="article-hero__meta">
+          <span>05 ago 2026</span>
+          <span>·</span>
+          <span>7 min de lectura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h2>El problema, en campo</h2>
+<p>Una aplicación Qt en C++, ya compilada e instalada en la máquina de un cliente, había empezado a colgarse. Ninguna salida en absoluto: el ejecutable se había compilado sin <code>console</code> en el archivo <code>.pro</code>, así que cada línea de <code>qDebug()</code> desaparecía sin más en el instante en que la app se cerraba.</p>
+<p>La solución rápida la conoce cualquier desarrollador Qt: añadir <code>CONFIG += console</code> al archivo <code>.pro</code>, recompilar, ejecutar desde una terminal y leer la salida de <code>qDebug()</code> en vivo mientras la app se cuelga. Funcionó, pero me dejó con una pregunta incómoda: ¿y si no podía recompilar? Un cliente no espera a que prepares una build de depuración y se la envíes — quiere el archivo de log de lo que ya está corriendo en su máquina, ahora mismo.</p>
+<p>De ahí salió la idea: una pequeña librería que captura cada <code>qDebug()</code>, <code>qWarning()</code>, <code>qCritical()</code> de una aplicación Qt y los escribe en un archivo, activable y desactivable en tiempo de ejecución, sin tocar el código existente ni recompilar nada.</p>
+<p><a href="https://github.com/kineticCode-dev/qDebugRedirection">Repositorio</a></p>
+<h2>La restricción de diseño</h2>
+<p>Para ser realmente útil en un proyecto ya existente, la solución tenía que cumplir dos condiciones:</p>
+<ul>
+<li><strong>impacto casi nulo en el código del proyecto anfitrión</strong>: incluir un header y añadir dos líneas en <code>main</code>, nada más.</li>
+<li><strong>sin recompilar para activar o desactivar el logging</strong>: el comportamiento tiene que controlarse desde fuera, mediante variables de entorno.</li>
+</ul>
+<p>Qt ya nos da el gancho adecuado para esto: <code>qInstallMessageHandler()</code>. Es una función a nivel de sistema construida para interceptar <em>cada</em> mensaje del framework (<code>qDebug</code>, <code>qWarning</code>, <code>qCritical</code>, <code>qFatal</code>) y redirigirlo adonde quieras, antes incluso de que llegue a la consola.</p>
+<h2>La primera trampa: los callbacks al estilo C no tienen <code>this</code></h2>
+<p>El primer prototipo era una única función libre pasada a <code>qInstallMessageHandler</code>. Funcionaba, pero no era limpio: quería envolverla dentro de una clase, de modo que en <code>main</code> pudiera simplemente escribir</p>
+<pre><code class="hljs language-cpp">LoggerManager lm;
+lm.<span class="hljs-built_in">init</span>();</code></pre>
+<p>en lugar de dejar una función suelta flotando en el ámbito global. Aquí es donde apareció la primera restricción técnica no evidente: <code>qInstallMessageHandler</code> espera un puntero a función con una firma fija,</p>
+<pre><code class="hljs language-cpp"><span class="hljs-built_in">void</span> (*)(QtMsgType, <span class="hljs-type">const</span> QMessageLogContext &amp;, <span class="hljs-type">const</span> QString &amp;)</code></pre>
+<p>Un método de instancia normal tiene un parámetro extra oculto bajo el capó: el puntero <code>this</code>. Las dos firmas no coinciden, y el compilador no convierte un método de instancia en ese tipo de puntero a función. Qt sigue apoyándose en punteros a función al viejo estilo C para este tipo de gancho de sistema, sin ningún envoltorio como <code>std::function</code> o una lambda que capture contexto.</p>
+<p>La consecuencia práctica: <code>messageHandler</code> tiene que permanecer <code>static</code> (o ser una función libre fuera de la clase), y como resultado, cualquier estado que esa función lea — en nuestro caso, el nombre del archivo de log — también tiene que ser <code>static</code>. <code>init()</code>, en cambio, puede seguir siendo un método de instancia normal: ahí es donde se construye la ruta, se leen las variables de entorno, y se toma la decisión de instalar el handler.</p>
+<h2>El segundo tropiezo: LNK2019</h2>
+<p>Con la clase reescrita, la build fallaba con un clásico <code>LNK2019: unresolved external symbol</code> sobre el miembro estático <code>m_fileName</code>. La razón: en C++ (hasta C++17), declarar un miembro <code>static</code> en el header solo declara que <em>existe</em>, no reserva memoria para él. Hace falta una línea de definición explícita en el archivo <code>.cpp</code>:</p>
+<pre><code class="hljs language-cpp">QString LoggerManager::m_fileName = <span class="hljs-string">&quot;app_debug.log&quot;</span>;</code></pre>
+<p>Un detalle de manual, pero es exactamente el tipo de error que solo te tomas en serio cuando lo ves aparecer en el enlazador de un proyecto real, no en un tutorial.</p>
+<h2>Activarlo en tiempo de ejecución, sin un archivo <code>.ini</code></h2>
+<p>Para evitar depender de un archivo de configuración externo — que en un despliegue industrial podría faltar, ser sobrescrito, o acabar en solo lectura — elegí las variables de entorno como interruptor:</p>
+<ul>
+<li><code>ENABLE_FILE_LOG=1</code> activa el registro en archivo. Si falta o está establecida a cualquier valor distinto de <code>1</code>, la aplicación se comporta exactamente igual que antes: overhead cero, ningún archivo creado.</li>
+<li><code>MAX_LOG_COUNT</code> fija cuántos archivos de log mantener en rotación (por defecto: 10).</li>
+</ul>
+<p>Hay un detalle no evidente que vale la pena señalar al probar desde Qt Creator: <code>QProcessEnvironment::systemEnvironment()</code> devuelve una instantánea del entorno del <em>proceso padre</em>, tomada cuando este se inició. Si estableces la variable después de haber abierto ya el IDE, la app hija heredará igualmente el entorno antiguo. Hay que fijarla en <em>Projects → Run → Environment</em>, o reiniciar el IDE desde cero.</p>
+<h2>Dónde acaba realmente el archivo</h2>
+<p>Una ruta relativa como <code>QFile file(&quot;app_debug.log&quot;)</code> se resuelve respecto al <em>directorio de trabajo</em> del proceso, que <strong>no siempre coincide</strong> con la carpeta del ejecutable: desde una terminal normalmente sí, desde Qt Creator depende de la carpeta de build configurada en el proyecto, y en un servicio Linux (<code>systemd</code>) puede ser <code>/</code> o <code>/root</code>, a menudo de solo lectura.</p>
+<p>Para conseguir un comportamiento predecible, forcé la ruta relativa a la carpeta del ejecutable usando <code>QCoreApplication::applicationDirPath()</code>, y usé <code>QDir::filePath()</code> en lugar de la concatenación manual de cadenas — evita problemas de separador (<code>/</code> en Linux/macOS, <code>\</code> en Windows) y dobles barras cuando <code>applicationDirPath()</code> ya termina con un separador.</p>
+<h2>Rotación de logs: el bug del contador atascado</h2>
+<p>La primera versión de la lógica de rotación contaba los archivos <code>.log</code> de la carpeta y, al alcanzar el umbral <code>m_maxLogFiles</code>, siempre sobrescribía <code>logFile_1.log</code>. Parecía correcta hasta que piensas en lo que ocurre en la siguiente ejecución: al arrancar, el recuento de archivos en la carpeta vuelve a ser igual al máximo, así que la lógica vuelve a elegir <code>logFile_1.log</code> — <code>logFile_2.log</code> y <code>logFile_3.log</code> nunca vuelven a tocarse. Un bug silencioso: sin cuelgue, solo una rotación que deja de rotar sin avisar.</p>
+<p>La solución fue ordenar los archivos por fecha de modificación y reciclar siempre el más antiguo (una política FIFO), independientemente de los nombres de archivo:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function">QString <span class="hljs-title">LoggerManager::getNextLogFileName</span><span class="hljs-params">(<span class="hljs-type">const</span> QString &amp;folderPath)</span>
+</span>{
+    <span class="hljs-function">QDir <span class="hljs-title">dir</span><span class="hljs-params">(folderPath)</span></span>;
+    dir.<span class="hljs-built_in">setNameFilters</span>(<span class="hljs-built_in">QStringList</span>() &lt;&lt; <span class="hljs-string">&quot;*.log&quot;</span>);
+    dir.<span class="hljs-built_in">setFilter</span>(QDir::Files);
+
+    <span class="hljs-comment">// primer elemento: el más antiguo</span>
+    dir.<span class="hljs-built_in">setSorting</span>(QDir::Time | QDir::Reversed);
+
+    QFileInfoList logFiles = dir.<span class="hljs-built_in">entryInfoList</span>();
+
+    <span class="hljs-keyword">if</span> (logFiles.<span class="hljs-built_in">size</span>() &lt; m_maxLogFiles) {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;logFile_%1.log&quot;</span>).<span class="hljs-built_in">arg</span>(logFiles.<span class="hljs-built_in">size</span>() + <span class="hljs-number">1</span>);
+    }
+
+    <span class="hljs-keyword">return</span> logFiles.<span class="hljs-built_in">first</span>().<span class="hljs-built_in">fileName</span>();
+}</code></pre>
+<p>De este modo, una vez alcanzado el número máximo de archivos, el sistema siempre recicla el que se actualizó menos recientemente, sin superar nunca el espacio configurado — y sin depender de un esquema de numeración que el usuario pudiera romper borrando un archivo a mano.</p>
+<h2>El resultado: dos líneas en main</h2>
+<p>Todo este trabajo de encapsulación existe por una única razón: quien integre la librería en otro proyecto no debería tener que pensar en ello.</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;loggermanager.h&quot;</span></span>
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span>
+</span>{
+    <span class="hljs-function">QApplication <span class="hljs-title">a</span><span class="hljs-params">(argc, argv)</span></span>;
+
+    <span class="hljs-comment">// Debe ir después de QApplication a(argc, argv)</span>
+    LoggerManager lm;
+    lm.<span class="hljs-built_in">init</span>();
+
+    MainWindow w;
+    w.<span class="hljs-built_in">show</span>();
+
+    <span class="hljs-keyword">return</span> a.<span class="hljs-built_in">exec</span>();
+}</code></pre>
+<p>Comportamiento por defecto: sin variable de entorno establecida, ningún archivo creado, ninguna diferencia respecto al proyecto original. En campo, ante un cuelgue que no puedes reproducir, basta con establecer <code>ENABLE_FILE_LOG=1</code> antes de relanzar el ejecutable y recoger el archivo <code>.log</code> de la carpeta junto al <code>.exe</code> — sin tocar una sola línea de código ni recompilar nada.</p>
+<h2>Lo que me llevo de esto</h2>
+<p>El valor de esta herramienta no está en la clase en sí — un par de docenas de líneas — sino en las restricciones que la moldearon: sin dependencia de archivos externos, sin impacto en el proyecto anfitrión cuando está desactivada, y una rotación de logs que no se rompe silenciosamente después del primer ciclo. Son exactamente este tipo de detalles los que, en un sistema en producción, marcan la diferencia entre una herramienta que de verdad usas y una que escribes una vez y olvidas.</p>
+<p>El código vive en el repositorio de proyectos; si te resulta útil para uno de tus propios proyectos Qt, integrarlo lleva literalmente dos líneas: <a href="https://github.com/kineticCode-dev/qDebugRedirection">Repositorio</a></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/articles/securing-supabase-in-open-source-world/">
+        <span class="post-nav__label">← Artículo anterior</span>
+        <span class="post-nav__title">Asegurar Supabase en un mundo open source</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/articles/industrial-optics-fundamentals/">
+        <span class="post-nav__label">Artículo siguiente →</span>
+        <span class="post-nav__title">Fundamentos de óptica industrial: lo que realmente importa al elegir un objetivo</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/articles/">← Volver a todos los artículos</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

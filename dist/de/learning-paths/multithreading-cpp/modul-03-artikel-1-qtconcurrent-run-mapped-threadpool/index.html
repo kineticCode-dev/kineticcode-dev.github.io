@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QtConcurrent::run, mapped/filtered/reduced und der QThreadPool hinter den Kulissen — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ mit Qt — Modul 3">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-03-artikel-1-qtconcurrent-run-mapped-threadpool/">
+  <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-03-artikel-1-qtconcurrent-run-mapped-threadpool/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-03-artikel-1-qtconcurrent-run-mapped-threadpool/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="QtConcurrent::run, mapped/filtered/reduced und der QThreadPool hinter den Kulissen — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ mit Qt — Modul 3">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-03-artikel-1-qtconcurrent-run-mapped-threadpool/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/">Artikel</a>
+        <a href="/de/learning-paths/" aria-current="page">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <a href="/de/learning-paths/multithreading-cpp/modul-03-artikel-1-qtconcurrent-run-mapped-threadpool/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/de/learning-paths/multithreading-cpp/">Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine</a> · Modul 3 — QtConcurrent und das Future-/Promise-Modell
+        </div>
+        <span class="eyebrow">Theorie · Lektion 11 von 22</span>
+        <h1>QtConcurrent::run, mapped/filtered/reduced und der QThreadPool hinter den Kulissen</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ mit Qt — Modul 3</p>
+        <div class="article-hero__meta"><span>10 Min. Lesezeit</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Den gesamten Quellcode findest du <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">hier</a></p>
+<h1>QtConcurrent::run, mapped/filtered/reduced und der QThreadPool hinter den Kulissen</h1>
+<p>In den drei vorangegangenen Modulen hast du dir Stück für Stück das Vokabular und die Werkzeuge erarbeitet, mit denen Qt &quot;manuelles&quot; Multithreading handhabt: <code>QThread</code>, <code>moveToThread</code>, Signale und Slots, damit Threads kommunizieren können, ohne sich gegenseitig den Zustand zu zerschießen, und dann <code>QMutex</code>, <code>QWaitCondition</code>, <code>QReadWriteLock</code>, um wirklich gemeinsam genutzte Daten zu schützen und zu koordinieren. Das war bewusst ein langsamer Weg, denn jedes Stück dieses Vokabulars brauchst du, um zu verstehen, <em>was wirklich passiert</em>, wenn die Dinge kompliziert werden – ein Deadlock, ein Signal, das auf dem falschen Thread ankommt, ein Worker, der einfach nicht aufhört.</p>
+<p>Heute wechseln wir das Register komplett, und das tun wir bewusst genau an dieser Stelle des Kurses, an der du den Unterschied wirklich zu schätzen weißt. Wenn dein erster Kontakt mit Multithreading in Qt über <code>QtConcurrent</code> lief, ein bisschen &quot;nach Gefühl&quot; – ein Beispiel kopieren, laufen lassen, weitermachen, ohne genau zu wissen, warum es funktionierte –, dann schließen wir heute genau diesen Kreis: Du siehst exakt dieselben Werkzeuge wieder, aber diesmal weißt du präzise, was <code>QThreadPool</code> unter der Haube macht, warum <code>QFuture</code> nicht blockiert (es sei denn, du verlangst es ausdrücklich), und an welchem Punkt der Komfort von <code>QtConcurrent</code> aufhört die richtige Wahl zu sein und man wieder zum manuellen Pattern der vorherigen Module greifen muss.</p>
+<p>Die Frage, die das ganze Modul leitet, ist einfach zu formulieren und subtiler, gut anzuwenden: <strong>Ist die Arbeit, die ich parallelisieren will, eine unabhängige Transformation, die auf viele ähnliche Daten angewendet wird, oder ist es ein Zustand, der über die Zeit lebt und koordiniert werden muss?</strong> Das Producer-Consumer-Muster des vorherigen Moduls gehörte klar in die zweite Kategorie – zwei dauerhafte Threads, ein gemeinsamer Puffer, feine Koordination über Wait Conditions. Heute arbeiten wir in der ersten Kategorie, genau der, für die <code>QtConcurrent</code> entworfen wurde, um zu glänzen: Du hast eine Sammlung von Daten (in deinem beruflichen Alltag fast immer Frames oder Bilder eines Vision-Systems) und willst dieselbe Operation auf jedes einzelne Element anwenden, so parallel wie möglich, ohne auch nur einen einzigen <code>QThread</code> von Hand zu schreiben.</p>
+<h2>QtConcurrent::run(): ein asynchroner Aufruf, ohne Umstände</h2>
+<p>Beginnen wir mit dem denkbar einfachsten Fall: Du hast eine einzelne Funktion, die etwas Zeit braucht, und willst sie auf einem anderen Thread ausführen, ohne den Aufrufer zu blockieren. Im Modul über <code>QThread</code> hat dich das mindestens gekostet: eine von <code>QObject</code> abgeleitete Worker-Klasse, einen Slot, der die Arbeit erledigt, einen eigenen <code>QThread</code>, ein <code>moveToThread()</code>, die Verbindung <code>started</code> → Slot, das geordnete Herunterfahren im Destruktor. Fünf bis sechs Zeilen Infrastruktur, um <em>eine</em> einzige Funktion ein einziges Mal auszuführen.</p>
+<p><code>QtConcurrent::run()</code> macht dasselbe in einer Zeile:</p>
+<pre><code class="hljs language-cpp">QFuture&lt;<span class="hljs-type">int</span>&gt; future = QtConcurrent::<span class="hljs-built_in">run</span>([]() {
+    <span class="hljs-comment">// time-consuming work, executed on another thread</span>
+    QThread::<span class="hljs-built_in">msleep</span>(<span class="hljs-number">500</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">42</span>;
+});</code></pre>
+<p>Diese eine Zeile erledigt drei Dinge gleichzeitig: Sie nimmt die Funktion (hier eine Lambda, aber es kann auch ein Zeiger auf eine freie Funktion, eine Member-Methode oder ein Funktor sein), reiht sie auf einem Thread ein, der aus einem Lager bereits laufender Threads geliehen wird (dem globalen <code>QThreadPool</code> – Thema des nächsten Abschnitts), und gibt dir sofort ein <code>QFuture&lt;int&gt;</code> zurück: ein handliches Objekt, das &quot;das Ergebnis, das kommen wird&quot; repräsentiert, nicht das Ergebnis selbst. Die Zeile <code>QtConcurrent::run(...)</code> <strong>blockiert nicht</strong> – sie kehrt sofort zurück, noch bevor die Lambda überhaupt zu laufen begonnen hat, genau so wie <code>m_thread-&gt;start()</code> nicht darauf gewartet hat, dass die Arbeit des Worker-Threads fertig wird.</p>
+<p>Der Gewinn ist offensichtlich: keine neuen Klassen, keine manuelle Verwaltung des Lebenszyklus eines <code>QThread</code>, kein Risiko, <code>quit()</code>+<code>wait()</code> im Destruktor zu vergessen. Für eine &quot;Feuer und vergiss&quot;-Arbeit – oder &quot;feuer, und hol das Ergebnis später ab&quot; – ist das fast immer die richtige Wahl.</p>
+<p>Was du dabei verlierst, ist genauso wichtig, sofort zu erkennen, denn es ist der rote Faden des ganzen Moduls: <strong>Du hast kein persistentes Objekt mehr, mit dem du sprechen kannst, während die Arbeit läuft.</strong> Der Producer aus dem vorherigen Modul lebte auf seinem eigenen Thread für die gesamte Programmlaufzeit, empfing Signale, sendete welche, konnte geordnet gestoppt werden. Ein Aufruf von <code>QtConcurrent::run()</code> ist konzeptionell eine reine Funktion, die startet, läuft und endet – kein Objekt, mit dem du zwischendurch interagierst. Wenn dein Problem diese Art kontinuierlicher Interaktion braucht (Pause, feingranulare Abbruchmöglichkeit, granulare Fortschrittsbenachrichtigungen während der Ausführung), ahnst du bereits, warum <em>nicht alles</em> über <code>QtConcurrent</code> laufen muss – darauf kommen wir im nächsten Artikel in Ruhe zurück.</p>
+<h2>mapped, filtered, reduced: Parallelität auf den Daten</h2>
+<p><code>QtConcurrent::run()</code> führt <em>eine</em> Funktion einmal aus. Der weitaus häufigere Fall in deiner Arbeit – N Bilder einer Inspektion verarbeiten, N Frames einer aufgezeichneten Sequenz, N Messwerte eines Sensors – ist es, <em>dieselbe</em> Funktion auf <em>jedes Element</em> einer Sammlung anzuwenden, unabhängig voneinander. Dieses Muster hat in der Literatur zum parallelen Rechnen einen genauen Namen, <strong>Data Parallelism</strong> (Datenparallelität, im Gegensatz zum <em>Task Parallelism</em>, bei dem verschiedene Operationen parallel laufen), und genau das ist der Fall, den <code>QtConcurrent::mapped()</code> abdeckt.</p>
+<pre><code class="hljs language-cpp">QList&lt;QImage&gt; blurredImages = QtConcurrent::<span class="hljs-built_in">blockingMapped</span>(originalImages, blurImage);</code></pre>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-03/15-map-filter-reduce-visual.png" alt="Visual diagram of map, filter and reduce data-parallel operations" loading="lazy"></p>
+<p><code>mapped()</code> nimmt eine Sammlung (hier eine <code>QList&lt;QImage&gt;</code>) und eine einargumentige Funktion (hier <code>blurImage</code>, die eine <code>QImage</code> entgegennimmt und eine neue zurückgibt) und wendet diese Funktion auf <em>jedes</em> Element an, wobei die Arbeit auf die im Pool verfügbaren Threads verteilt wird. Jedes Element wird <strong>unabhängig</strong> von den anderen verarbeitet – kein gemeinsamer Zustand, kein Mutex nötig, denn per Definition des Problems berühren sich zwei Verarbeitungen nie. Genau das ist der Grund, warum sich dieses Muster so gut für Parallelität eignet: Der kritische Abschnitt aus dem vorherigen Modul existierte, weil mehrere Threads <em>dieselben</em> Daten anfassten; hier fasst jeder Worker ein anderes Element an, also existiert der kritische Abschnitt schlicht nicht.</p>
+<p>Ein Detail, das es wert ist, schriftlich festzuhalten, weil man es leicht auf die falsche Weise für selbstverständlich hält: Die Worker vollenden die Elemente <strong>in beliebiger Reihenfolge</strong>, je nachdem, wie lange jedes einzelne braucht und welcher Thread es sich schnappt – aber die Sammlung von Ergebnissen, die du am Ende erhältst, <strong>bewahrt immer die ursprüngliche Reihenfolge</strong>. <code>result[i]</code> entspricht immer <code>f(element[i])</code>, unabhängig davon, welcher Worker es berechnet hat oder in welcher Reihenfolge es berechnet wurde. Für deine Arbeit mit Frame-Sequenzen ist das eine wertvolle Garantie: Frame Nummer 10 in der Ergebnisliste ist immer die Verarbeitung von Frame Nummer 10 aus der Ausgangsliste, nie die eines anderen Frames, der rein durch Zufall des Schedulings früher fertig wurde.</p>
+<p>Neben <code>mapped()</code> bietet <code>QtConcurrent</code> zwei Varianten desselben allgemeinen Schemas. <strong><code>filtered()</code></strong> wendet ein Prädikat (eine Funktion, die <code>bool</code> zurückgibt) auf jedes Element an und liefert eine neue Sammlung, die nur die Elemente enthält, für die das Prädikat wahr ist – berechnet parallel, wobei die relative Reihenfolge der überlebenden Elemente stets erhalten bleibt:</p>
+<pre><code class="hljs language-cpp">QList&lt;QImage&gt; darkImagesOnly = QtConcurrent::<span class="hljs-built_in">blockingFiltered</span>(images, [](<span class="hljs-type">const</span> QImage &amp;img) {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">averageBrightness</span>(img) &lt; DARK_THRESHOLD;
+});</code></pre>
+<p><strong><code>reduced()</code></strong> kombiniert alle Ergebnisse eines <code>mapped()</code> zu einem einzigen akkumulierten Wert, mittels einer assoziativen Kombinationsfunktion – der Summe, dem Maximum, der Konkatenation, jeder Operation, bei der die Reihenfolge, in der man Paare kombiniert, das Endergebnis nicht verändert:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-type">double</span> totalBrightness = QtConcurrent::<span class="hljs-built_in">blockingMappedReduced</span>(
+    images,
+    computeBrightness,                       <span class="hljs-comment">// map: QImage -&gt; double</span>
+    [](<span class="hljs-type">double</span> &amp;accumulator, <span class="hljs-type">double</span> value) { accumulator += value; }  <span class="hljs-comment">// reduce</span>
+);</code></pre>
+<p>Beachte <code>mappedReduced</code>: Es ist die Verschmelzung von Map und Reduce in einem einzigen Durchgang, der es vermeidet, die gesamte Zwischensammlung der gemappten Ergebnisse aufzubauen und im Speicher zu halten, bevor sie kombiniert werden – nützlich, wenn diese Zwischensammlung groß wäre und du sie als solche nie brauchst, sondern nur den finalen akkumulierten Wert.</p>
+<p>Es gibt auch ein Paar kleingeschriebener Varianten, <code>QtConcurrent::map()</code> und <code>QtConcurrent::filter()</code> (nicht mit <code>mapped</code>/<code>filtered</code> zu verwechseln), die die Sammlung <strong>an Ort und Stelle</strong> verändern, statt eine neue zurückzugeben – nützlich, wenn du die Originaldaten nicht behalten musst und dir den Speicher einer Kopie sparen willst. Im praktischen Projekt dieses Moduls verwenden wir die &quot;nicht mutierende&quot; Form (<code>mapped</code>), weil wir sowohl die Originalbilder als auch die verarbeiteten für einen Vergleich behalten wollen – aber wisse, dass die Alternative existiert, und sie ist die richtige Wahl, wenn dich nur das Endergebnis in-place interessiert.</p>
+<p>Dir ist sicher aufgefallen, dass die obigen Beispiele <code>QtConcurrent::blockingMapped()</code> verwenden, nicht <code>QtConcurrent::mapped()</code>. Der Unterschied ist genau das, was der Name nahelegt: Die <code>blocking*</code>-Version führt die Arbeit parallel auf den anderen Threads aus, <strong>wartet</strong> aber (blockiert dabei den aufrufenden Thread), bis alles fertig ist, bevor sie die Ergebnissammlung direkt zurückgibt – praktisch für ein Kommandozeilenskript oder für Code, der bereits auf einem sekundären Thread läuft, aber <strong>auf dem GUI-Thread zu vermeiden</strong>, aus genau dem Grund, den der nächste Artikel formalisiert. Die Version ohne Präfix, <code>QtConcurrent::mapped()</code>, gibt sofort ein <code>QFuture&lt;T&gt;</code> zurück, ohne auf irgendetwas zu warten – und diese verwenden wir im praktischen Projekt.</p>
+<h2>Der globale QThreadPool: das Threadlager hinter den Kulissen</h2>
+<p>Keiner der Aufrufe von <code>QtConcurrent::run()</code>, <code>mapped()</code>, <code>filtered()</code> oder <code>reduced()</code>, die du bisher gesehen hast, gibt jemals explizit an, <em>auf welchen Threads</em> die Arbeit laufen soll. Das ist keine Magie: dahinter steckt ein <code>QThreadPool</code>, und standardmäßig ist es der globale, von der gesamten Anwendung geteilte, erreichbar über <code>QThreadPool::globalInstance()</code>.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-03/13-global-thread-pool.png" alt="Diagram of the implicit global QThreadPool shared by QtConcurrent operations" loading="lazy"></p>
+<p>Im Modell der vorherigen Module bedeutete jeder Job, den du auf einem separaten Thread ausführen wolltest, die Erzeugung eines neuen <code>QThread</code> – ein Objekt des Betriebssystems, mit eigenem Stack, eigener Identität, nicht vernachlässigbaren Kosten für Erzeugung und Zerstörung. Das ist völlig in Ordnung für einen Worker, der lange lebt (dein Producer oder Consumer, die für die gesamte Programmlaufzeit leben), wird aber zur offensichtlichen Verschwendung, wenn der &quot;Job&quot; nur wenige Millisekunden dauert und hunderte davon eintreffen: Du würdest Hunderte von Betriebssystem-Threads erzeugen und wieder zerstören, jedes Mal die vollen Kosten zahlend, für Arbeit, die bestenfalls einen kleinen Bruchteil dieser Zeit beansprucht.</p>
+<p>Der <code>QThreadPool</code> löst das Problem, indem er eine feste Anzahl <strong>bereits erzeugter und einsatzbereiter</strong> Threads unterhält und sie wiederverwendet: Wenn du einen Job einreihst (über <code>QtConcurrent::run()</code> oder einen der Algorithmen <code>mapped</code>/<code>filtered</code>/<code>reduced</code>), weist der Pool ihn dem ersten freien Worker-Thread zu; wenn dieser Thread fertig ist, <strong>stirbt er nicht</strong> – er wird wieder verfügbar für den nächsten Job in der Warteschlange. Die Erzeugungskosten des Betriebssystem-Threads zahlst du nur einmal, beim Start, nicht bei jedem einzelnen Job.</p>
+<p>Die Standardgröße des Pools ist <code>QThread::idealThreadCount()</code> – typischerweise die Anzahl der auf der Maschine verfügbaren logischen Kerne (auf der Entwicklungsmaschine dieses Kurses, gemessen mit <code>qDebug() &lt;&lt; QThread::idealThreadCount();</code>, liegt der Wert bei <strong>2</strong>: Du wirst ihn im praktischen Projekt mehrfach erwähnt sehen, weil er eine der Zahlen ist, die bestimmt, wie lange unser Bild-Batch tatsächlich braucht). Die Idee dahinter: Für genuin CPU-gebundene Arbeit wie unseren Blur hilft es nicht, mehr aktive Threads als physische Kerne zur Verfügung zu haben – im Gegenteil, das führt nur zu zusätzlichem Overhead durch Kontextwechsel – also dimensioniert sich der Pool so, dass er genau den von der Hardware gebotenen Parallelismus nutzt, weder mehr noch weniger.</p>
+<p>Du kannst diese Größe mit <code>QThreadPool::globalInstance()-&gt;setMaxThreadCount(n)</code> ändern und auch einen eigenen privaten <code>QThreadPool</code> erzeugen (indem du ihn als ersten Parameter an dedizierte Overloads von <code>QtConcurrent::run()</code>/<code>mapped()</code> übergibst), wenn du eine bestimmte Art von Arbeit vom Rest der Anwendung isolieren willst – nützlich zum Beispiel, wenn du ein Subsystem mit niedriger Priorität hast, das niemals mit der Hauptverarbeitung um Threads konkurrieren soll. Im heutigen praktischen Projekt verwenden wir immer den standardmäßigen globalen Pool: Für eine Anwendung mit nur einer Art CPU-gebundener Arbeit wie der unseren gibt es keinen Grund, die Dinge mit mehreren Pools zu verkomplizieren.</p>
+<p>Von hier an eine einfache Regel: Wenn deine Arbeit sich <strong>in kurze und zahlreiche Jobs zerlegen lässt</strong>, lass den <code>QThreadPool</code> sie verwalten – genau dafür wurde er entworfen. Brauchst du hingegen <strong>einen einzelnen, lange lebenden Worker, der Zustand zwischen Operationen behält</strong> (wieder das Producer/Consumer-Beispiel des vorherigen Moduls), bleibt ein dedizierter <code>QThread</code> das richtige Werkzeug – nicht alles muss über den globalen Pool laufen.</p>
+<h2>Was noch zu klären bleibt</h2>
+<p>Du weißt jetzt, wie man mit <code>QtConcurrent::run()</code> und <code>mapped()</code>/<code>filtered()</code>/<code>reduced()</code> parallele Arbeit startet, und was hinter den Kulissen im globalen <code>QThreadPool</code> passiert. Offen bleibt, wie man Fortschrittsbenachrichtigungen erhält, ohne jemals den GUI-Thread zu blockieren – die Rolle von <code>QFuture</code> und vor allem von <code>QFutureWatcher</code> – und in welchen Fällen genau man stattdessen zum manuellen Muster der vorherigen Module zurückkehrt. Das ist das Thema des nächsten Artikels.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/de/learning-paths/multithreading-cpp/modul-02-artikel-3-projekt-producer-consumer/">
+        <span class="post-nav__label">← Vorherige Lektion</span>
+        <span class="post-nav__title">Projekt: Producer, Consumer, und der Puffer, der sie im Gleichgewicht hält</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/de/learning-paths/multithreading-cpp/modul-03-artikel-2-qfuture-qfuturewatcher-wann-nicht-verwenden/">
+        <span class="post-nav__label">Nächste Lektion →</span>
+        <span class="post-nav__title">QFuture, QFutureWatcher und die Frage, die Vibe Coding immer überspringt</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/learning-paths/multithreading-cpp/">← Zurück zum Lernpfad</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Einen persönlichen Ausgaben-Tracker von Grund auf bauen: Architektur und Datenbankdesign (Teil 3) — Kinetic Code</title>
+  <meta name="description" content="Dieser Artikel zeichnet den Design- und Entwicklungsprozess einer Webanwendung zur Verfolgung persönlicher Ausgaben nach. Das Ziel ist nicht nur, ein funktionierendes Tool zu bauen, sondern jede technische Entscheidung zu analysieren und das Warum hinter unseren technologischen Entscheidungen zu verstehen.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/articles/personal-expense-trackerp3/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/personal-expense-trackerp3/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/personal-expense-trackerp3/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/personal-expense-trackerp3/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/personal-expense-trackerp3/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/personal-expense-trackerp3/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/personal-expense-trackerp3/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Einen persönlichen Ausgaben-Tracker von Grund auf bauen: Architektur und Datenbankdesign (Teil 3) — Kinetic Code">
+  <meta property="og:description" content="Dieser Artikel zeichnet den Design- und Entwicklungsprozess einer Webanwendung zur Verfolgung persönlicher Ausgaben nach. Das Ziel ist nicht nur, ein funktionierendes Tool zu bauen, sondern jede technische Entscheidung zu analysieren und das Warum hinter unseren technologischen Entscheidungen zu verstehen.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/articles/personal-expense-trackerp3/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Einen persönlichen Ausgaben-Tracker von Grund auf bauen: Architektur und Datenbankdesign (Teil 3)","description":"Dieser Artikel zeichnet den Design- und Entwicklungsprozess einer Webanwendung zur Verfolgung persönlicher Ausgaben nach. Das Ziel ist nicht nur, ein funktionierendes Tool zu bauen, sondern jede technische Entscheidung zu analysieren und das Warum hinter unseren technologischen Entscheidungen zu verstehen.","datePublished":"2026-07-18","inLanguage":"de","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/" aria-current="page">Artikel</a>
+        <a href="/de/learning-paths/">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/personal-expense-trackerp3/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/personal-expense-trackerp3/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/personal-expense-trackerp3/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/personal-expense-trackerp3/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/personal-expense-trackerp3/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-4);color:var(--chart-4)">Projekte</span>
+        <h1>Einen persönlichen Ausgaben-Tracker von Grund auf bauen: Architektur und Datenbankdesign (Teil 3)</h1>
+        <p class="article-hero__excerpt">Dieser Artikel zeichnet den Design- und Entwicklungsprozess einer Webanwendung zur Verfolgung persönlicher Ausgaben nach. Das Ziel ist nicht nur, ein funktionierendes Tool zu bauen, sondern jede technische Entscheidung zu analysieren und das Warum hinter unseren technologischen Entscheidungen zu verstehen.</p>
+        <div class="article-hero__meta">
+          <span>18 Jul 2026</span>
+          <span>·</span>
+          <span>6 Min. Lesezeit</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Willkommen zurück! In <strong>Teil 2</strong> haben wir die Entwicklung des Frontends mit <strong>Flutter</strong> behandelt. Wir haben das Projekt aufgesetzt, es mit unserer Cloud-Datenbank verbunden und angefangen, die Benutzeroberfläche zu bauen.</p>
+<p><a href="https://github.com/kineticCode-dev/03-webappTrackingSpeseDummy">Link zum Github-Repository</a></p>
+<h1>Webapp-Mockups</h1>
+<p>Die Webapp besteht aus zwei verschiedenen Bildschirmen:</p>
+<ul>
+<li>Ein Dashboard: auf dem wir Balken- und Kreisdiagramme anzeigen.</li>
+<li>Ein Eingabebildschirm: auf dem wir Ausgaben in unsere Datenbank eintragen können.</li>
+</ul>
+<p>Das Mockup des Dashboards sieht so aus:
+<img src="/assets/images/articles/mainView.png" alt="Hauptansicht" loading="lazy"></p>
+<p>Das Mockup der Eingabeansicht sieht so aus:
+<img src="/assets/images/articles/insertView.png" alt="Eingabeansicht" loading="lazy"></p>
+<h2>Entwicklung der Eingabeansicht</h2>
+<p>In diesem Abschnitt entwickeln wir die Eingabeansicht, mit der wir eine Ausgabe in die Datenbank eintragen können.
+Der Nutzer muss Folgendes eingeben:</p>
+<ul>
+<li>Den Betrag der Ausgabe/Einnahme. Ausgaben werden als negative Beträge erfasst, Einnahmen als positive.</li>
+<li>Das Datum, an dem die Ausgabe angefallen ist.</li>
+<li>Die Kategorie, zu der sie gehört.</li>
+<li>Notizen.</li>
+</ul>
+<p>Die endgültige Oberfläche sieht so aus:
+<img src="/assets/images/articles/insert_view.png" alt="Eingabeansicht" loading="lazy"></p>
+<h2>Entwicklung der Dashboard-Ansicht</h2>
+<p>Jetzt entwickeln wir die Dashboard-Ansicht, die der zusammenfassende Bildschirm unserer Finanzen sein wird. Die Idee ist, einige Diagramme einzufügen, um unseren finanziellen Status sofort sichtbar zu machen. Wir müssen bedenken, dass die App hauptsächlich mobil genutzt wird, der Bildschirm also klein ist. Es ist sehr wichtig, den Platz so gut wie möglich zu nutzen. Eine gute Idee könnte sein: Ich zeige jeweils nur ein Diagramm, und habe irgendwie die Möglichkeit, die Ansicht zu wechseln.</p>
+<p>Beginnen wir damit, das Flutter-Paket zu installieren, mit dem wir Diagramme zeichnen können:</p>
+<pre><code class="hljs language-bash">$ flutter pub add fl_chart</code></pre>
+<p>Dann importieren wir das Paket:</p>
+<pre><code class="hljs language-dart"><span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;package:fl_chart/fl_chart.dart&#x27;</span>;</code></pre>
+<p>Das erste Diagramm, das wir entwickeln, ist das für die Ausgaben des aktuellen Monats. Dafür verwenden wir ein klassisches Kreisdiagramm.
+Bei der Berechnung der monatlichen Ausgaben gibt es zwei mögliche Ansätze:</p>
+<ul>
+<li>Ich lese alle monatlichen Ausgaben aus der Datenbank in Flutter ein und durchlaufe innerhalb von Flutter Ausgabe für Ausgabe, um zu berechnen, was ich brauche, etwa den Gesamtbetrag und den Betrag pro Kategorie.</li>
+<li>Ich aggregiere die Daten direkt in der Datenbank und arbeite mit einem Teil der Daten, der bereits aggregiert ist.</li>
+</ul>
+<p>Wir gehen den zweiten Weg. So können wir möglichst viel der schweren Arbeit und Filterung an die Datenbank delegieren, denn eine Datenbank ist genau für Aggregationen gemacht.
+Dafür verwenden wir eine Stored Procedure. Eine <code>Stored Procedure</code>, oder <code>Function</code>, ist ein Codeblock in SQL, der direkt in der Datenbank gespeichert und ausgeführt wird. Man kann sie sich wie eine echte Softwarefunktion vorstellen, mit Eingabeargumenten und einem Rückgabewert, die auf dem Datenbankserver lebt. Jeder Client, der sich mit der Datenbank verbindet, hat diese Funktionen zur Verfügung.</p>
+<p>Warum ist es in unserem Fall besser, eine Stored Procedure zu verwenden? Hier die Gründe:</p>
+<ul>
+<li><strong>Netzwerkeffizienz:</strong> Wenn ein Nutzer in einem Monat 200 Ausgaben erfasst hat, würde eine Standardabfrage 200 JSON-Datensätze über das Internet herunterladen. Mit der Stored Procedure berechnet die Datenbank die Summen intern und gibt nur wenige Zeilen zurück (eine pro aktiver Kategorie, z. B. 5 Zeilen). Weniger übertragene Daten bedeuten eine schnellere App.</li>
+<li><strong>Performance:</strong> Die SQL-Engine von PostgreSQL ist hochgradig für das Durchlaufen und Aggregieren von Datensätzen optimiert. Die Summenbildung (<code>SUM</code>) und Gruppierung (<code>GROUP BY</code>) nativ auf dem Server auszuführen ist unendlich viel schneller, als dieselbe Operation durch das Durchlaufen einer Liste in Dart auf der CPU eines Smartphones zu erledigen.</li>
+<li><strong>Die Grenzen der Client-API überwinden:</strong> Die Client-Bibliotheken von Supabase sind hervorragend für einfache CRUD-Operationen, unterstützen aber die SQL-Klausel <code>GROUP BY</code> nicht nativ. Mit einer Funktion in der Datenbank können wir die volle Leistungsfähigkeit von SQL (PL/pgSQL) nutzen und sie Flutter über einen sehr einfachen Aufruf zur Verfügung stellen.</li>
+</ul>
+<p>All das gilt auch für wöchentliche Ausgaben, also erstellen wir eine generische Stored Procedure, die als Eingabe entgegennimmt:</p>
+<ul>
+<li>Jahr</li>
+<li>Monat/Woche</li>
+<li>Granularität (monatlich/wöchentlich)</li>
+</ul>
+<p>Und für diesen bestimmten Monat/diese Woche zurückgibt:</p>
+<ul>
+<li>Ausgabenkategorie</li>
+<li>Betrag</li>
+</ul>
+<p>Dazu gehen wir in Supabase, in den SQL-Editor, und schreiben diesen Code:</p>
+<pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">OR</span> REPLACE <span class="hljs-keyword">FUNCTION</span> get_aggregated_expenses(
+    req_year <span class="hljs-type">INT</span>,
+    req_value <span class="hljs-type">INT</span>, <span class="hljs-comment">-- Monat (1-12) oder Woche (1-53)</span>
+    time_frame TEXT <span class="hljs-comment">-- Kann &#x27;monthly&#x27; oder &#x27;weekly&#x27; sein</span>
+)
+<span class="hljs-keyword">RETURNS</span> <span class="hljs-keyword">TABLE</span> (category_name TEXT, total_amount <span class="hljs-type">NUMERIC</span>) <span class="hljs-keyword">AS</span> $$
+<span class="hljs-keyword">BEGIN</span>
+    IF time_frame <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;weekly&#x27;</span> <span class="hljs-keyword">THEN</span>
+        <span class="hljs-keyword">RETURN</span> QUERY
+        <span class="hljs-keyword">SELECT</span>
+            t.name::TEXT <span class="hljs-keyword">as</span> category_name,
+            <span class="hljs-built_in">SUM</span>(e.importo)::<span class="hljs-type">NUMERIC</span> <span class="hljs-keyword">as</span> total_amount
+        <span class="hljs-keyword">FROM</span> expenses e
+        <span class="hljs-keyword">JOIN</span> tag t <span class="hljs-keyword">ON</span> e.id_tag <span class="hljs-operator">=</span> t.id
+        <span class="hljs-keyword">WHERE</span> <span class="hljs-built_in">EXTRACT</span>(<span class="hljs-keyword">YEAR</span> <span class="hljs-keyword">FROM</span> e.data) <span class="hljs-operator">=</span> req_year
+          <span class="hljs-keyword">AND</span> <span class="hljs-built_in">EXTRACT</span>(WEEK <span class="hljs-keyword">FROM</span> e.data) <span class="hljs-operator">=</span> req_value
+        <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> t.name;
+    <span class="hljs-keyword">ELSE</span>
+        <span class="hljs-keyword">RETURN</span> QUERY
+        <span class="hljs-keyword">SELECT</span>
+            t.name::TEXT <span class="hljs-keyword">as</span> category_name,
+            <span class="hljs-built_in">SUM</span>(e.importo)::<span class="hljs-type">NUMERIC</span> <span class="hljs-keyword">as</span> total_amount
+        <span class="hljs-keyword">FROM</span> expenses e
+        <span class="hljs-keyword">JOIN</span> tag t <span class="hljs-keyword">ON</span> e.id_tag <span class="hljs-operator">=</span> t.id
+        <span class="hljs-keyword">WHERE</span> <span class="hljs-built_in">EXTRACT</span>(<span class="hljs-keyword">YEAR</span> <span class="hljs-keyword">FROM</span> e.data) <span class="hljs-operator">=</span> req_year
+          <span class="hljs-keyword">AND</span> <span class="hljs-built_in">EXTRACT</span>(<span class="hljs-keyword">MONTH</span> <span class="hljs-keyword">FROM</span> e.data) <span class="hljs-operator">=</span> req_value
+        <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> t.name;
+    <span class="hljs-keyword">END</span> IF;
+<span class="hljs-keyword">END</span>;
+$$ <span class="hljs-keyword">LANGUAGE</span> plpgsql;</code></pre>
+<p>Client-seitig müssen wir, um die Liste der Ausgaben für einen bestimmten Monat zu erhalten, einfach Folgendes tun:</p>
+<pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> get_aggregated_expenses(<span class="hljs-number">2026</span>, <span class="hljs-number">7</span>, <span class="hljs-string">&#x27;monthly&#x27;</span>);</code></pre>
+<p>Und um die Liste der Ausgaben für eine bestimmte Woche zu erhalten:</p>
+<pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> get_aggregated_expenses(<span class="hljs-number">2026</span>, <span class="hljs-number">28</span>, <span class="hljs-string">&#x27;weekly&#x27;</span>);</code></pre>
+<p>Und die Datenbank antwortet mit den angeforderten Daten.</p>
+<p>Das fertige Dashboard sieht so aus:</p>
+<p><img src="/assets/images/articles/dashboard_view.png" alt="Dashboard" loading="lazy"></p>
+<p><img src="/assets/images/articles/dashboard_view2.png" alt="Dashboard2" loading="lazy"></p>
+<h2>Die Webapp online veröffentlichen</h2>
+<p>Um unsere Flutter-Webapp zu hosten, verwenden wir GitHub Pages als Hosting-Dienst für statische Websites, der vollkommen kostenlos ist. Einmal kompiliert, ist unsere Webapp nichts anderes als eine Sammlung von <code>HTML-, CSS-, JavaScript- und Asset</code>-Dateien.</p>
+<p>Sehen wir uns die dafür nötigen Schritte an. Die Voraussetzungen sind:</p>
+<ul>
+<li>Ein GitHub-Konto</li>
+<li>Git auf dem PC installiert</li>
+<li>Der Build der Webapp</li>
+</ul>
+<h3>Schritt 1: Den <code>base href</code> in Flutter ändern</h3>
+<p>Öffnen wir das Terminal im Root-Verzeichnis des Flutter-Projekts, wo sich die Datei <code>pubspec.yaml</code> befindet, und führen den folgenden Befehl im Terminal aus:</p>
+<pre><code class="hljs language-bash">flutter build web --release --base-href <span class="hljs-string">&quot;/&lt;name-of-your-repo&gt;/&quot;</span> --pwa-strategy=none</code></pre>
+<p>Jetzt beginnt die Kompilierung innerhalb des Ordners <code>/build/web</code>. Wenn sie abgeschlossen ist, finden wir die Dateien <code>index.html</code>, <code>main.dart.js</code>, <code>flutter_bootstrap.js</code> und <code>flutter_service_worker.js</code>.</p>
+<h3>Schritt 2: Das Repository auf GitHub erstellen</h3>
+<ol>
+<li>Gehen wir zu GitHub und erstellen ein neues Repository.</li>
+<li>Wählen wir den Namen (denselben, der im <code>--base-href</code> verwendet wurde).</li>
+<li>Stellen wir das Repository auf öffentlich, was notwendig ist, um GitHub Pages kostenlos zu nutzen.</li>
+<li>Lassen wir die Optionen &quot;<code>Add a README</code>&quot; oder &quot;<code>.gitignore</code>&quot; deaktiviert.</li>
+</ol>
+<h3>Schritt 3: Der 404-Trick für SPAs</h3>
+<p>Um das Problem mit Seiten-Neuladen zu lösen, wenden wir folgende Lösung an:</p>
+<ol>
+<li>Wir navigieren auf unserem PC zum Ordner <code>build/web</code>.</li>
+<li>Wir duplizieren die Datei <code>index.html</code> und benennen sie in <code>404.html</code> um.
+Auf diese Weise findet GitHub die Seite nicht, wenn ein Nutzer die Seite bei einer tiefen URL neu lädt, sondern lädt die Datei <code>404.html</code> (die identisch mit <code>index.html</code> ist), und Flutter übernimmt die Kontrolle, liest die URL aus und bringt den Nutzer zum richtigen Bildschirm.</li>
+</ol>
+<h3>Schritt 4: Dateien hochladen</h3>
+<p>Wir fügen den gesamten Ordner <code>build/web</code> zum neu erstellten GitHub-Repository hinzu.</p>
+<h3>Schritt 5: GitHub Pages aktivieren</h3>
+<ol>
+<li>Gehen wir zu unserem GitHub-Repository.</li>
+<li>Klicken wir oben rechts auf <strong>Settings</strong>.</li>
+<li>Im linken Menü klicken wir auf <strong>Pages</strong>.</li>
+<li>Unter <strong>Build and deployment</strong> stellen wir die Quelle auf <strong>Deploy from a branch</strong>.</li>
+<li>Unter <strong>Branch</strong> wählen wir <code>main</code> und den Ordner <code>/ (root)</code>, dann klicken wir auf <strong>Save</strong>.</li>
+<li>GitHub Actions baut die Seite. Wir finden die endgültige URL oben im selben Pages-Abschnitt, sobald der Vorgang abgeschlossen ist – das dauert ein paar Minuten.</li>
+</ol>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/de/articles/personal-expense-tracker-p2/">
+        <span class="post-nav__label">← Vorheriger Artikel</span>
+        <span class="post-nav__title">Einen persönlichen Ausgaben-Tracker von Grund auf bauen: Architektur und Datenbankdesign (Teil 2)</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/de/articles/windows-autostart-article/">
+        <span class="post-nav__label">Nächster Artikel →</span>
+        <span class="post-nav__title">So startest du ein Programm unter Windows automatisch</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/articles/">← Zurück zu allen Artikeln</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

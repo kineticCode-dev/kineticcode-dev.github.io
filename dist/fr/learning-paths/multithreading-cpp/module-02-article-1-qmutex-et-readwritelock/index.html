@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La section critique formalisée : QMutex, QMutexLocker et QReadWriteLock — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code</title>
+  <meta name="description" content="Multithreading en C++ avec Qt — Module 2">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-02-article-1-qmutex-et-readwritelock/">
+  <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-02-article-1-qmutex-et-readwritelock/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-02-article-1-qmutex-et-readwritelock/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="La section critique formalisée : QMutex, QMutexLocker et QReadWriteLock — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code">
+  <meta property="og:description" content="Multithreading en C++ avec Qt — Module 2">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-02-article-1-qmutex-et-readwritelock/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/">Articles</a>
+        <a href="/fr/learning-paths/" aria-current="page">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <a href="/fr/learning-paths/multithreading-cpp/module-02-article-1-qmutex-et-readwritelock/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/fr/learning-paths/multithreading-cpp/">Multithreading en C++ : de la théorie à une machine à états fonctionnelle</a> · Module 2 — Synchronisation : Mutex, Wait Conditions, Sémaphores et problèmes classiques
+        </div>
+        <span class="eyebrow">Théorie · Leçon 7 sur 22</span>
+        <h1>La section critique formalisée : QMutex, QMutexLocker et QReadWriteLock</h1>
+        <p class="article-hero__excerpt">Multithreading en C++ avec Qt — Module 2</p>
+        <div class="article-hero__meta"><span>8 min de lecture</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Tu peux trouver tout le code source <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">ici</a></p>
+<h1>La section critique formalisée : QMutex, QMutexLocker et QReadWriteLock</h1>
+<p>Dans le module précédent, tu as appris à faire tourner du travail sur un thread séparé et à le faire communiquer avec la GUI en sécurité — mais si tu y prêtes attention, tu n&#39;as jamais eu besoin d&#39;un vrai mutex. Le worker et la fenêtre ne touchaient jamais la même variable au même moment : ils échangeaient des messages via des signaux, et Qt se chargeait de les livrer en file, un par un, sans chevauchement. C&#39;est une façon élégante d&#39;éviter le problème de la mémoire partagée en évitant, justement, de la partager — un worker isolé, avec son propre état privé, qui ne parle vers l&#39;extérieur que par des signaux.</p>
+<p>Cet article aborde le cas où cette élégance ne suffit plus : deux threads ou plus qui doivent réellement lire et écrire la <strong>même structure de données</strong>, au même moment, parce que c&#39;est précisément ce partage qui est le but du programme — pas un effet de bord à éviter. C&#39;est le cas classique, ancien dans l&#39;histoire des systèmes d&#39;exploitation et pourtant encore aujourd&#39;hui le pain quotidien de quiconque écrit du logiciel concurrent sérieusement : le <strong>producteur-consommateur</strong>. Un thread génère des données à un rythme qu&#39;il ne contrôle pas totalement (un capteur, un réseau, dans un système de vision une caméra qui livre des images à un certain framerate) ; un autre les traite à un rythme différent, presque toujours plus lent et variable. Entre les deux, un entrepôt de capacité limitée — le <strong>buffer</strong> — qui absorbe les différences de vitesse, jusqu&#39;à un certain point : si le producteur va trop vite, l&#39;entrepôt se remplit et doit attendre ; si le consommateur manque de travail, c&#39;est lui qui attend.</p>
+<h2>La section critique, formalisée</h2>
+<p>Tu as déjà vu la section critique comme « le morceau de code qu&#39;un seul thread doit exécuter à la fois ». Il est utile de se la représenter comme un couloir avec une seule porte, large exactement de la place d&#39;une personne. Celui qui arrive et trouve la porte occupée attend en file dehors ; celui qui est dedans sort quand il a fini, et c&#39;est seulement alors que le suivant dans la file peut entrer.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-02/09-critical-section-corridor.png" alt="The critical section as a one-way corridor" loading="lazy"></p>
+<p>Mais « un thread à la fois » à lui seul ne suffit pas à définir une solution <em>correcte</em>, et cela vaut la peine de poser par écrit, une fois pour toutes, les trois propriétés que la théorie classique des systèmes d&#39;exploitation exige de tout mécanisme de synchronisation — parce que chaque outil que nous verrons dans ce module doit être jugé par rapport à ces trois-là, pas seulement par rapport à « ça marche dans mes tests ».</p>
+<p><strong>Exclusion mutuelle</strong> : jamais plus d&#39;un thread dans la section critique au même instant. C&#39;est la propriété la plus évidente, celle sur laquelle nous nous sommes déjà attardés précédemment, et aucun outil que nous verrons aujourd&#39;hui ne la viole jamais — c&#39;est le minimum syndical.</p>
+<p><strong>Progrès</strong> : si la section critique est libre et qu&#39;un ou plusieurs threads veulent y entrer, la décision de qui entre ne peut pas être reportée indéfiniment par des facteurs qui n&#39;ont rien à voir avec l&#39;usage réel de la ressource. En clair : il ne doit pas exister de scénario où la porte est libre mais où personne ne parvient jamais à passer à cause d&#39;un défaut du mécanisme lui-même.</p>
+<p><strong>Attente bornée</strong> : un thread qui attend d&#39;entrer doit, tôt ou tard, y parvenir — il n&#39;est pas admis que quelqu&#39;un d&#39;autre continue à le doubler indéfiniment. C&#39;est la propriété la plus subtile, et c&#39;est précisément celle qui est mise en défaut dans les problèmes de <strong>famine</strong> (<em>starvation</em>) que nous rencontrerons plus loin : un thread pourrait techniquement entrer, la garantie d&#39;exclusion mutuelle n&#39;est jamais violée, et pourtant dans les faits son tour ne vient jamais parce que le « trafic » dans la section critique le double toujours.</p>
+<p>Garde ces trois propriétés en tête comme critère de jugement : chaque fois que tu conçois un schéma de synchronisation — dans ce module ou dans ton travail réel — ce sont les trois questions à te poser, dans cet ordre.</p>
+<h2>QMutex et QMutexLocker : l&#39;outil de base</h2>
+<p><code>QMutex</code> est l&#39;équivalent natif de Qt de <code>std::mutex</code>, que tu as déjà utilisé dans le premier article de ce cours. Le fonctionnement conceptuel est identique — <code>lock()</code> entre dans la section critique (en attendant si nécessaire), <code>unlock()</code> en sort — avec quelques différences pratiques qui valent la peine d&#39;être connues.</p>
+<p>Ce n&#39;est pas une redondance gratuite que Qt ait son propre mutex. <code>QMutex</code> existait dans Qt avant même que <code>std::mutex</code> ne devienne partie du standard C++ (arrivé seulement avec C++11), et reste aujourd&#39;hui le choix naturel en code Qt pour deux raisons concrètes : il s&#39;intègre mieux avec les outils de débogage de Qt Creator (qui sait inspecter l&#39;état d&#39;un <code>QMutex</code> dans le débogueur de façon plus lisible), et surtout Qt offre, distincte de <code>QMutex</code>, une classe <code>QRecursiveMutex</code> pour les cas (rares, et à utiliser avec suspicion) où un thread doit pouvoir acquérir plusieurs fois le même verrou sans se bloquer lui-même — utile dans des hiérarchies d&#39;appels récursifs qui repassent plusieurs fois par la même section critique, mais aussi un signal d&#39;alarme presque toujours symptomatique d&#39;une conception de la synchronisation qui pourrait être simplifiée.</p>
+<p>Exactement comme <code>std::lock_guard</code>, <code>QMutexLocker</code> acquiert le verrou dans le constructeur et le libère dans le destructeur :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">SharedBuffer::produce</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span> </span>{
+    <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+    <span class="hljs-comment">// ... critical section ...</span>
+} <span class="hljs-comment">// automatic unlock here, whichever way the function exits</span></code></pre>
+<p>L&#39;avantage du pattern RAII ici n&#39;est pas seulement esthétique : si dans la section critique il y a un <code>return</code> anticipé, ou si une exception venait à être lancée, <code>QMutexLocker</code> garantit quand même le déverrouillage — un <code>mutex.lock()</code> / <code>mutex.unlock()</code> écrits à la main te laisseraient avec un mutex bloqué pour toujours dans chacun de ces cas, l&#39;un des bugs les plus sournois et les plus difficiles à diagnostiquer de toute la programmation concurrente, parce que le symptôme (le programme se bloque) apparaît très loin, dans le temps et dans le code, de la cause (l&#39;<code>unlock()</code> manquant).</p>
+<p>Au-delà de <code>lock()</code> (bloquant, attend le temps qu&#39;il faut), <code>QMutex</code> offre <code>tryLock()</code>, qui tente d&#39;acquérir le verrou et retourne immédiatement avec <code>true</code> ou <code>false</code> selon qu&#39;il y est parvenu, sans jamais se bloquer — utile quand ton thread a une alternative sensée à faire si la ressource est occupée, plutôt que de se mettre en file. Il existe aussi une variante avec timeout, <code>tryLock(milliseconds)</code>, qui attend au maximum le temps indiqué avant d&#39;abandonner. Nous ne les utiliserons pas dans le projet pratique de ce module — notre producteur et notre consommateur <em>doivent</em> attendre, ils n&#39;ont pas de plan B — mais tu les retrouveras naturellement le jour où tu concevras du code avec des contraintes de réactivité plus strictes.</p>
+<h2>QReadWriteLock : quand la majorité du trafic est en lecture</h2>
+<p>Il y a un scénario très courant dans lequel <code>QMutex</code> est plus restrictif que nécessaire : quand une donnée partagée est <strong>lue</strong> très souvent par plusieurs threads et <strong>écrite</strong> rarement. Pense à une table de configuration ou à une carte de calibration d&#39;un système de vision, chargée une fois puis consultée en continu par plusieurs threads de traitement : avec un <code>QMutex</code> ordinaire, même deux lectures — des opérations qui, en elles-mêmes, ne se gênent jamais mutuellement, parce qu&#39;aucune des deux ne modifie rien — seraient forcées de se mettre en file l&#39;une derrière l&#39;autre, gaspillant un parallélisme que le matériel t&#39;offrirait gratuitement.</p>
+<p><code>QReadWriteLock</code> distingue explicitement les deux intentions. Quand plusieurs threads veulent seulement <strong>lire</strong>, ils peuvent tous le faire ensemble, au même moment — aucun d&#39;eux ne bloque l&#39;autre, parce qu&#39;une lecture ne modifie pas l&#39;état qu&#39;une autre lecture est en train d&#39;observer. Au moment où un thread veut <strong>écrire</strong>, en revanche, le verrou devient exclusif au sens le plus strict : aucun autre thread, lecteur ou écrivain, ne peut accéder à la donnée tant que l&#39;écrivain n&#39;a pas fini.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-02/12-readwritelock-readers-writer.png" alt="QReadWriteLock: concurrent reads, exclusive write" loading="lazy"></p>
+<p>L&#39;usage pratique reprend le même esprit RAII déjà vu : <code>QReadLocker</code> pour acquérir en lecture, <code>QWriteLocker</code> pour acquérir en écriture, tous deux avec libération automatique en fin de portée.</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">double</span> <span class="hljs-title">readCalibration</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span> <span class="hljs-type">const</span> </span>{
+    <span class="hljs-function">QReadLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_lock)</span></span>;
+    <span class="hljs-keyword">return</span> m_calibrationValues.<span class="hljs-built_in">at</span>(index);
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updateCalibration</span><span class="hljs-params">(<span class="hljs-type">int</span> index, <span class="hljs-type">double</span> newValue)</span> </span>{
+    <span class="hljs-function">QWriteLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_lock)</span></span>;
+    m_calibrationValues[index] = newValue;
+}</code></pre>
+<p>Un mot de prudence, car c&#39;est une erreur conceptuelle courante : <code>QReadWriteLock</code> <strong>n&#39;est pas toujours plus rapide</strong> que <code>QMutex</code>, même dans des scénarios à lecture prédominante. Le mécanisme qui tient le compte de « combien de lecteurs sont dedans en ce moment » a un coût interne non nul, et pour des sections critiques très courtes (quelques instructions) ce coût de comptabilité peut dépasser le bénéfice du parallélisme gagné — la même leçon de granularité déjà rencontrée à propos des changements de contexte, réappliquée ici : le bon choix dépend du temps réellement passé dans la section critique et du déséquilibre entre lectures et écritures, pas d&#39;une intuition générique sur la primitive qui « sonne » la plus efficace.</p>
+<h2>Ce qu&#39;il reste à comprendre</h2>
+<p>Avec <code>QMutex</code>, <code>QMutexLocker</code> et <code>QReadWriteLock</code>, tu sais déjà comment protéger une donnée partagée contre des accès simultanés. Mais le producteur-consommateur a besoin de quelque chose de plus subtil : pas seulement « puis-je entrer ? », mais « dois-je attendre que <em>quelque chose change</em>, pas seulement que le verrou se libère ». C&#39;est le thème du prochain article, ainsi que les dangers classiques — deadlock, famine, inversion de priorité — que toute synchronisation sérieuse doit savoir reconnaître.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/learning-paths/multithreading-cpp/module-01-article-3-projet-worker-thread/">
+        <span class="post-nav__label">← Leçon précédente</span>
+        <span class="post-nav__title">Projet : soigner le freeze pour de bon, en déplaçant le calcul sur un worker thread</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/learning-paths/multithreading-cpp/module-02-article-2-waitcondition-deadlock-starvation/">
+        <span class="post-nav__label">Leçon suivante →</span>
+        <span class="post-nav__title">Attendre un événement, pas un verrou : QWaitCondition, QSemaphore, et comment se tirer une balle dans le pied</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/learning-paths/multithreading-cpp/">← Retour au parcours</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

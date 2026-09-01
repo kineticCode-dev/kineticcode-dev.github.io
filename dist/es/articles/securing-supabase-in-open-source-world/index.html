@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asegurar Supabase en un mundo open source — Kinetic Code</title>
+  <meta name="description" content="Cómo permitir el acceso a la Base de datos de Supabase solo a cuentas autorizadas">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/articles/securing-supabase-in-open-source-world/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/securing-supabase-in-open-source-world/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/securing-supabase-in-open-source-world/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/securing-supabase-in-open-source-world/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/securing-supabase-in-open-source-world/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/securing-supabase-in-open-source-world/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/securing-supabase-in-open-source-world/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Asegurar Supabase en un mundo open source — Kinetic Code">
+  <meta property="og:description" content="Cómo permitir el acceso a la Base de datos de Supabase solo a cuentas autorizadas">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/articles/securing-supabase-in-open-source-world/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Asegurar Supabase en un mundo open source","description":"Cómo permitir el acceso a la Base de datos de Supabase solo a cuentas autorizadas","datePublished":"2026-07-19","inLanguage":"es","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/" aria-current="page">Artículos</a>
+        <a href="/es/learning-paths/">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/securing-supabase-in-open-source-world/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/securing-supabase-in-open-source-world/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/securing-supabase-in-open-source-world/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/securing-supabase-in-open-source-world/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/securing-supabase-in-open-source-world/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-3);color:var(--chart-3)">Ingeniería de Software</span>
+        <h1>Asegurar Supabase en un mundo open source</h1>
+        <p class="article-hero__excerpt">Cómo permitir el acceso a la Base de datos de Supabase solo a cuentas autorizadas</p>
+        <div class="article-hero__meta">
+          <span>19 jul 2026</span>
+          <span>·</span>
+          <span>4 min de lectura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h1>Índice</h1>
+<ul>
+<li><a href="#1-the-paradox-of-api-keys-in-the-frontend">1. La paradoja de las API Key en el frontend</a></li>
+<li><a href="#2-row-level-security-rls-and-database-policies">2. Row Level Security (RLS) y Database Policies</a></li>
+<li><a href="#3-implementing-the-authentication-flow">3. Implementando el flujo de autenticación</a></li>
+</ul>
+<h2>1. La paradoja de las API Key en el frontend</h2>
+<p>En el desarrollo de software tradicional, es el backend quien se comunica directamente con la base de datos, guardando todas las credenciales de conexión. Sin embargo, en el mundo Serverless y con las plataformas Backend-as-a-Service (BaaS) como Supabase, es el frontend quien habla directamente con la base de datos. Para hacerlo, necesita dos datos clave:</p>
+<ul>
+<li>La URL de Supabase</li>
+<li>La <code>anon_key</code> (clave anónima), que le dice a Supabase: &quot;Este tráfico viene de la webapp X, asígnale a esta petición el rol de usuario anónimo.&quot;</li>
+</ul>
+<p>El problema es que tanto la URL como la clave anónima quedan guardadas dentro de los archivos JavaScript que se descargan al navegador del usuario. Basta con abrir las herramientas de desarrollador del navegador (F12) para verlas.</p>
+<p>Por eso, el frontend es un entorno inseguro. No podemos esconder nada dentro de un archivo JavaScript que se ejecuta en el lado del cliente. Y como una web app tiene que estar en una URL pública para ser accesible desde cualquier sitio, tenemos que aceptar que el frontend está abierto a todo el mundo. Es evidente que la seguridad no puede gestionarse solo en el frontend: tiene que aplicarse a nivel de base de datos. Para lograrlo, usamos una funcionalidad llamada <strong>Row Level Security (RLS)</strong>.</p>
+<h2>2. Row Level Security (RLS) y Database Policies</h2>
+<p>Las bases de datos tradicionales suelen usar un control de acceso horizontal: si tienes las credenciales de acceso, entras a la tabla; si no las tienes, no entras.
+RLS introduce en cambio un control vertical. Cuando la app hace una petición, la base de datos no responde de inmediato: primero revisa fila por fila, aplicando una regla específica definida por el desarrollador. Si la regla devuelve <code>TRUE</code>, la fila se muestra; si no, permanece oculta.</p>
+<p>Si habilitamos RLS en Supabase sin haber configurado ninguna política de acceso, la base de datos se bloquea al instante. Aunque alguien se conecte con la URL y la clave anónima correctas, solo recibirá una lista vacía.</p>
+<h2>3. Implementando el flujo de autenticación</h2>
+<p>Para recuperar el acceso a nuestros datos de forma segura, necesitamos que la base de datos reconozca exactamente quién está haciendo la petición. Esto requiere cambios tanto en la base de datos SQL como en el código del frontend.</p>
+<h3>Paso 1: Habilita RLS en Supabase</h3>
+<p>Primero, ve al panel de Supabase, entra en <strong>Database &gt; Tables</strong>, selecciona tus tablas y haz clic en <strong>Enable RLS</strong>. A partir de este momento, tu URL pública dejará de mostrar datos a cualquiera (incluido tú, por ahora).</p>
+<h3>Paso 2: Añade un usuario</h3>
+<p>Ve a la pestaña <strong>Authentication</strong> de Supabase y añade un nuevo usuario. El correo y la contraseña que configures aquí serán los que uses para iniciar sesión desde el frontend.</p>
+<h3>Paso 3: Añade una columna de usuario a la base de datos</h3>
+<p>Para que la base de datos sepa a quién pertenecen ciertos datos, la tabla debe tener una columna vinculada al sistema de autenticación de Supabase:</p>
+<ul>
+<li>Crea una nueva columna llamada <code>user_id</code> de tipo <code>uuid</code>.</li>
+<li>Establece su valor por defecto en <code>auth.uid()</code> (una función nativa de Supabase que obtiene el ID del usuario que está realizando la acción).</li>
+</ul>
+<h3>Paso 4: Actualiza el frontend</h3>
+<p>Ahora tenemos que modificar el frontend para incluir un proceso de inicio de sesión cuando arranca la app. Si el usuario introduce las credenciales correctas, nos conectamos a Supabase usando el siguiente método (ejemplo en Dart/Flutter):</p>
+<pre><code class="hljs language-dart"><span class="hljs-keyword">await</span> <span class="hljs-title class_">Supabase</span>.instance.client.auth.<span class="hljs-title function_">signInWithPassword</span>(
+  email: _emailController.text.<span class="hljs-title function_">trim</span>(),
+  password: _passwordController.text.<span class="hljs-title function_">trim</span>(),
+);</code></pre>
+<p>Llegados a este punto, la conexión queda autenticada con una contraseña. Supabase ya sabe quiénes somos, pero aún no mostrará los datos de la tabla hasta que creemos las políticas de seguridad.</p>
+<h3>Paso 5: Crea las políticas de seguridad</h3>
+<p>Podemos crear la política de seguridad directamente desde el editor SQL de Supabase:</p>
+<pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> POLICY &quot;Allow access only to owner&quot;
+<span class="hljs-keyword">ON</span> public.YOUR_TABLE_NAME
+<span class="hljs-keyword">FOR</span> <span class="hljs-keyword">ALL</span> <span class="hljs-comment">-- Válido para SELECT, INSERT, UPDATE, DELETE</span>
+<span class="hljs-keyword">TO</span> authenticated <span class="hljs-comment">-- Se aplica solo a usuarios autenticados</span>
+<span class="hljs-keyword">USING</span> (auth.uid() <span class="hljs-operator">=</span> user_id) 
+<span class="hljs-keyword">WITH</span> <span class="hljs-keyword">CHECK</span> (auth.uid() <span class="hljs-operator">=</span> user_id); </code></pre>
+<p>Con esta política activa, la base de datos muestra de forma segura las filas de la tabla solo a sus legítimos propietarios.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/articles/windows-autostart-article/">
+        <span class="post-nav__label">← Artículo anterior</span>
+        <span class="post-nav__title">Cómo iniciar automáticamente un programa en Windows</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/articles/loggermanager-qdebug-redirect-article-en/">
+        <span class="post-nav__label">Artículo siguiente →</span>
+        <span class="post-nav__title">Redirigir los qDebug de Qt a un archivo sin recompilar: la clase LoggerManager</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/articles/">← Volver a todos los artículos</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

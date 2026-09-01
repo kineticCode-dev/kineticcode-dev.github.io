@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Créer un suivi de dépenses personnelles de zéro : architecture et conception de la base de données (Partie 1) — Kinetic Code</title>
+  <meta name="description" content="Cet article retrace le processus de conception et de développement d'une application web de suivi des dépenses personnelles. L'objectif n'est pas seulement de créer un outil fonctionnel, mais d'analyser chaque décision d'ingénierie et de comprendre le « pourquoi » derrière nos choix technologiques.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/articles/personal-expense-tracker-p1/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/personal-expense-tracker-p1/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p1/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/personal-expense-tracker-p1/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/personal-expense-tracker-p1/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/personal-expense-tracker-p1/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p1/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Créer un suivi de dépenses personnelles de zéro : architecture et conception de la base de données (Partie 1) — Kinetic Code">
+  <meta property="og:description" content="Cet article retrace le processus de conception et de développement d'une application web de suivi des dépenses personnelles. L'objectif n'est pas seulement de créer un outil fonctionnel, mais d'analyser chaque décision d'ingénierie et de comprendre le « pourquoi » derrière nos choix technologiques.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/articles/personal-expense-tracker-p1/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Créer un suivi de dépenses personnelles de zéro : architecture et conception de la base de données (Partie 1)","description":"Cet article retrace le processus de conception et de développement d'une application web de suivi des dépenses personnelles. L'objectif n'est pas seulement de créer un outil fonctionnel, mais d'analyser chaque décision d'ingénierie et de comprendre le « pourquoi » derrière nos choix technologiques.","datePublished":"2026-07-18","inLanguage":"fr","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <link rel="stylesheet" href="/assets/vendor/katex/katex.min.css">
+<script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/" aria-current="page">Articles</a>
+        <a href="/fr/learning-paths/">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/personal-expense-tracker-p1/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/personal-expense-tracker-p1/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/personal-expense-tracker-p1/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/personal-expense-tracker-p1/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/personal-expense-tracker-p1/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-4);color:var(--chart-4)">Projets</span>
+        <h1>Créer un suivi de dépenses personnelles de zéro : architecture et conception de la base de données (Partie 1)</h1>
+        <p class="article-hero__excerpt">Cet article retrace le processus de conception et de développement d'une application web de suivi des dépenses personnelles. L'objectif n'est pas seulement de créer un outil fonctionnel, mais d'analyser chaque décision d'ingénierie et de comprendre le « pourquoi » derrière nos choix technologiques.</p>
+        <div class="article-hero__meta">
+          <span>18 juil. 2026</span>
+          <span>·</span>
+          <span>4 min de lecture</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Cet article retrace le processus de conception et de développement d&#39;une application web de suivi des dépenses personnelles. L&#39;objectif n&#39;est pas seulement de créer un outil fonctionnel, mais d&#39;analyser chaque décision d&#39;ingénierie et de comprendre le « pourquoi » derrière nos choix technologiques.</p>
+<p>Ce projet se veut pédagogique mais concret, avec une approche professionnelle, sans tomber dans l&#39;over-engineering ni se perdre dans des fonctionnalités superflues. C&#39;est parti !</p>
+<p><a href="https://github.com/kineticCode-dev/03-webappTrackingSpeseDummy">Lien vers le dépôt GitHub</a></p>
+<h1>Sommaire</h1>
+<ol>
+<li><a href="#technical-specifications">Spécifications Techniques</a></li>
+<li><a href="#project-architecture">Architecture du Projet</a></li>
+<li><a href="#database-modeling">Modélisation de la Base de Données</a></li>
+<li><a href="#cloud-database-setup-supabase">Configuration de la Base de Données Cloud : Supabase</a></li>
+</ol>
+<hr>
+<h2>Spécifications Techniques</h2>
+<p>L&#39;objectif est simple : créer un suivi de dépenses personnelles. Les idées principales sont les suivantes :</p>
+<ul>
+<li>Développer une base de données pour stocker toutes les dépenses de l&#39;utilisateur.</li>
+<li>Construire une web app à double usage :<ul>
+<li>Ajouter, supprimer ou modifier des dépenses dans la base de données.</li>
+<li>Afficher un tableau de bord récapitulatif avec différents graphiques (dépenses hebdomadaires, mensuelles, etc.).</li>
+</ul>
+</li>
+</ul>
+<p>Le cas d&#39;usage typique est le suivant : ouvrir la web app directement depuis un navigateur (PC, tablette, smartphone), ajouter une dépense et visualiser l&#39;évolution financière. Pour garantir qu&#39;elle soit vraiment utilisable au quotidien, une base de données dans le cloud est la solution privilégiée, afin que l&#39;app reste accessible 24 heures sur 24, 7 jours sur 7.</p>
+<p>Il existe déjà de nombreuses applications de suivi de dépenses, mais notre objectif ici est d&#39;apprendre la technologie sous-jacente, en ne gardant que ce qui est essentiel pour l&#39;objectif du projet.</p>
+<h2>Architecture du Projet</h2>
+<p>Le logiciel est structuré en composants distincts. Au départ, une architecture standard à 3 niveaux avait été envisagée :</p>
+<ul>
+<li><strong>Frontend :</strong> interface graphique accessible via le navigateur.</li>
+<li><strong>Backend :</strong> application qui gère les requêtes du frontend et les redirige vers la base de données.</li>
+<li><strong>Base de données :</strong> source de données hébergée dans le cloud.</li>
+</ul>
+<p>Cependant, en utilisant une base de données cloud moderne de type Backend-as-a-Service (BaaS), on peut se passer du développement d&#39;une API backend sur mesure. Par souci de simplicité et d&#39;efficacité, nous développerons uniquement le frontend, en <strong>Flutter</strong>, qui communiquera directement avec notre base de données cloud.</p>
+<h2>Modélisation de la Base de Données</h2>
+<p>Dans cette phase, nous définissons la structure conceptuelle des données, choisissons notre fournisseur cloud, et configurons les tables initiales ainsi que leurs relations.</p>
+<p>Il nous faut deux tables distinctes :</p>
+<ol>
+<li><strong>Table des Catégories</strong> (Tag)</li>
+<li><strong>Table des Dépenses</strong></li>
+</ol>
+<h3>1. Table des Catégories</h3>
+<p>Cette table contient les différents types de dépenses.</p>
+<table>
+<thead>
+<tr>
+<th align="left">id</th>
+<th align="left">category_name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>1</strong></td>
+<td align="left">Alimentation</td>
+</tr>
+<tr>
+<td align="left"><strong>2</strong></td>
+<td align="left">Voiture et transports</td>
+</tr>
+<tr>
+<td align="left"><strong>3</strong></td>
+<td align="left">Factures et logement</td>
+</tr>
+<tr>
+<td align="left"><strong>4</strong></td>
+<td align="left">Loisirs</td>
+</tr>
+</tbody></table>
+<h3>2. Table des Dépenses</h3>
+<p>Cette table enregistre chaque transaction.</p>
+<table>
+<thead>
+<tr>
+<th align="left">expense_id</th>
+<th align="left">amount</th>
+<th align="left">date</th>
+<th align="left">category_id</th>
+<th align="left">notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>101</strong></td>
+<td align="left">45.50</td>
+<td align="left">2026-07-06</td>
+<td align="left"><strong>1</strong></td>
+<td align="left">Courses hebdomadaires</td>
+</tr>
+<tr>
+<td align="left"><strong>102</strong></td>
+<td align="left">62.00</td>
+<td align="left">2026-07-07</td>
+<td align="left"><strong>2</strong></td>
+<td align="left">Station-service</td>
+</tr>
+<tr>
+<td align="left"><strong>103</strong></td>
+<td align="left">12.50</td>
+<td align="left">2026-07-08</td>
+<td align="left"><strong>4</strong></td>
+<td align="left">Cinéma entre amis</td>
+</tr>
+<tr>
+<td align="left"><strong>104</strong></td>
+<td align="left">120.00</td>
+<td align="left">2026-07-08</td>
+<td align="left"><strong>3</strong></td>
+<td align="left">Facture d&#39;électricité</td>
+</tr>
+<tr>
+<td align="left"><strong>105</strong></td>
+<td align="left">4.80</td>
+<td align="left">2026-07-08</td>
+<td align="left"><strong>1</strong></td>
+<td align="left"><em>vide</em></td>
+</tr>
+</tbody></table>
+<p>Il existe une <strong>relation 1:N (un-à-plusieurs)</strong> entre ces deux tables : une même catégorie peut être associée à plusieurs lignes de la table des dépenses. Par exemple, la mensualité d&#39;un prêt immobilier apparaîtra <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.109em;">N</span></span></span></span> fois dans la table des dépenses, toujours reliée à la même catégorie.</p>
+<h2>Configuration de la Base de Données Cloud : Supabase</h2>
+<p>Nos tables étant définies, nous pouvons configurer notre base de données avec <strong>Supabase</strong>, une alternative open source à Firebase.</p>
+<ol>
+<li>Créez un compte sur le dashboard de Supabase et démarrez un nouveau projet.</li>
+<li>Il vous sera demandé de saisir un mot de passe de base de données (que le frontend utilisera pour communiquer avec la BD). Laissez les autres paramètres à leurs valeurs par défaut.</li>
+<li>Une fois le projet créé, rendez-vous dans le <strong>Table Editor</strong> pour créer nos deux tables. La table des dépenses aura une foreign key pointant vers l&#39;ID de la catégorie.</li>
+</ol>
+<h3>Définition des Tables dans Supabase :</h3>
+<p><strong>Table des Catégories (<code>tag</code>)</strong></p>
+<ul>
+<li><code>id</code> : identifiant unique (Primary Key)</li>
+<li><code>name</code> : nom de la catégorie (ex. : prêt immobilier, essence, courses)</li>
+</ul>
+<p><strong>Table des Dépenses (<code>expenses</code>)</strong></p>
+<ul>
+<li><code>id</code> : identifiant unique (Primary Key)</li>
+<li><code>amount</code> : valeur numérique</li>
+<li><code>date</code> : date de la transaction</li>
+<li><code>id_tag</code> : Foreign Key liée à la table des Catégories</li>
+<li><code>notes</code> : texte optionnel</li>
+</ul>
+<p>La base de données étant créée, nous sommes prêts à nous y connecter depuis notre frontend et à commencer à insérer des données de test. Vous trouverez les paramètres de connexion à la base de données (host, port, nom de la base, utilisateur) dans le dashboard de Supabase, au niveau des paramètres de connexion (en sélectionnant en particulier le transaction pooler).</p>
+<hr>
+<p><em>Dans la Partie 2, nous verrons comment configurer notre frontend Flutter, le connecter à Supabase et concevoir notre interface utilisateur. Restez connectés !</em></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/articles/demystifying-c-libraries-on-windows/">
+        <span class="post-nav__label">← Article précédent</span>
+        <span class="post-nav__title">Démystifier les bibliothèques C sous Windows : comment inspecter et profiler des fichiers .dll inconnus</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/articles/personal-expense-tracker-p2/">
+        <span class="post-nav__label">Article suivant →</span>
+        <span class="post-nav__title">Créer un Suivi de Dépenses Personnelles depuis Zéro : Architecture et Conception de la Base de Données (Partie 2)</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/articles/">← Retour à tous les articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

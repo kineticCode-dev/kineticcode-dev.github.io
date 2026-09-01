@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fundamentos de óptica industrial: lo que realmente importa al elegir un objetivo — Kinetic Code</title>
+  <meta name="description" content="Una guía práctica sobre la óptica en visión artificial — campo de visión, distancia de trabajo, profundidad de campo, distancia focal, monturas, número F y los compromisos que deciden si un sistema de inspección realmente funciona.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/articles/industrial-optics-fundamentals/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/industrial-optics-fundamentals/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/industrial-optics-fundamentals/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/industrial-optics-fundamentals/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/industrial-optics-fundamentals/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/industrial-optics-fundamentals/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/industrial-optics-fundamentals/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Fundamentos de óptica industrial: lo que realmente importa al elegir un objetivo — Kinetic Code">
+  <meta property="og:description" content="Una guía práctica sobre la óptica en visión artificial — campo de visión, distancia de trabajo, profundidad de campo, distancia focal, monturas, número F y los compromisos que deciden si un sistema de inspección realmente funciona.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/articles/industrial-optics-fundamentals/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Fundamentos de óptica industrial: lo que realmente importa al elegir un objetivo","description":"Una guía práctica sobre la óptica en visión artificial — campo de visión, distancia de trabajo, profundidad de campo, distancia focal, monturas, número F y los compromisos que deciden si un sistema de inspección realmente funciona.","datePublished":"2026-08-18","inLanguage":"es","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/" aria-current="page">Artículos</a>
+        <a href="/es/learning-paths/">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/industrial-optics-fundamentals/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/industrial-optics-fundamentals/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/industrial-optics-fundamentals/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/industrial-optics-fundamentals/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/industrial-optics-fundamentals/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automatización Industrial</span>
+        <h1>Fundamentos de óptica industrial: lo que realmente importa al elegir un objetivo</h1>
+        <p class="article-hero__excerpt">Una guía práctica sobre la óptica en visión artificial — campo de visión, distancia de trabajo, profundidad de campo, distancia focal, monturas, número F y los compromisos que deciden si un sistema de inspección realmente funciona.</p>
+        <div class="article-hero__meta">
+          <span>18 ago 2026</span>
+          <span>·</span>
+          <span>18 min de lectura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h2>Qué hace realmente un sistema óptico industrial</h2>
+<p>Un objetivo tiene una única tarea: recoger la luz que rebota en un objeto y reconstruir su imagen sobre un sensor — normalmente un CCD o un CMOS, las dos tecnologías detrás de todo sensor de cámara digital. Tu propio ojo hace lo mismo: la córnea y el cristalino desvían la luz entrante hacia la retina, y es precisamente esa desviación la que te permite reconstruir una imagen. Una cámara industrial hace exactamente lo mismo, con un objetivo en lugar de una córnea y un sensor en lugar de una retina.</p>
+<p>En un laboratorio o en un proyecto personal, un encuadre &quot;suficientemente bueno&quot; está bien. En un sistema de inspección industrial no lo está. Si estás comprobando si una pieza mecánica está dentro de tolerancia, o si una etiqueta se imprimió correctamente, necesitas saber exactamente qué tamaño tendrá el objeto en el sensor, qué nitidez necesita y en qué punto exacto del espacio debe situarse para que el sistema funcione. Por eso un puñado de parámetros, tomados en conjunto, describen por completo el comportamiento de un sistema óptico.</p>
+<h2>Los parámetros que definen un sistema óptico</h2>
+<ul>
+<li><strong>Campo de visión (FoV)</strong> — el área total que enmarca el objetivo. Si necesitas inspeccionar un objeto de 5 cm, tu FoV tiene que ser de al menos 5 cm.</li>
+<li><strong>Distancia de trabajo (WD)</strong> — la distancia entre el objeto y el objetivo a la que el objeto queda perfectamente enfocado. No es una distancia arbitraria: la fija el objetivo y su configuración.</li>
+<li><strong>Profundidad de campo (DoF)</strong> — el rango, por delante y por detrás del plano de enfoque perfecto, dentro del cual el objeto sigue viéndose &quot;aceptablemente&quot; nítido. Es uno de los parámetros más importantes en la práctica.</li>
+<li><strong>Tamaño del sensor</strong> — el tamaño físico del sensor, en milímetros, obtenido multiplicando el tamaño del píxel (típicamente unos pocos micrómetros) por el número de píxeles.</li>
+<li><strong>Aumento</strong> — la relación entre el tamaño de la imagen en el sensor y el tamaño real del objeto. Por debajo de 1, el sensor ve menos detalle que la escena real; por encima de 1, está efectivamente ampliando un detalle.</li>
+<li><strong>Resolución</strong> — la distancia mínima entre dos puntos que el sistema todavía puede distinguir como dos puntos separados, en lugar de una única mancha borrosa. Depende de la combinación de objetivo y sensor, no de uno solo por separado.</li>
+</ul>
+<p>Ninguno de estos seis parámetros es independiente. Están vinculados por relaciones precisas, y cambiar uno modifica automáticamente los demás: acerca el objeto al objetivo, y el campo de visión se reduce, el aumento sube y la profundidad de campo baja. Diseñar un sistema óptico significa conocer estas relaciones lo bastante bien como para equilibrarlas de forma deliberada, no por ensayo y error.</p>
+<h2>La ecuación de la lente delgada</h2>
+<p>Para que las matemáticas sean manejables, la óptica básica se apoya en dos simplificaciones:</p>
+<ul>
+<li><strong>Aproximación paraxial</strong> — solo se consideran los rayos que entran en el objetivo formando un ángulo pequeño con el eje óptico (la línea imaginaria que pasa por el centro del sistema). Los rayos que inciden en los bordes con ángulos pronunciados se ignoran, lo que mantiene la geometría lineal.</li>
+<li><strong>Aproximación de lente delgada</strong> — el grosor físico de la lente se considera despreciable, de modo que la lente se modela como un único plano en lugar de como un objeto sólido.</li>
+</ul>
+<p>Con estas dos simplificaciones se obtiene la ecuación sobre la que se construye todo lo demás en este artículo:</p>
+<pre><code class="hljs language-apache"><span class="hljs-attribute">1</span>/s&#x27; - <span class="hljs-number">1</span>/s = <span class="hljs-number">1</span>/f</code></pre>
+<p>donde <code>s</code> es la posición del objeto respecto al objetivo (negativa por convención, ya que el objeto se sitúa &quot;antes&quot; del objetivo en la dirección de propagación de la luz), <code>s&#39;</code> es la posición de la imagen (positiva), y <code>f</code> es la distancia focal del objetivo.</p>
+<p>Otros dos términos que conviene tener bien diferenciados, porque aparecen constantemente en las hojas de datos de los objetivos: la <strong>distancia de trabajo</strong> es la distancia entre el objeto y la parte frontal del objetivo, mientras que la <strong>back focal distance</strong> (distancia focal posterior) es la distancia entre la parte posterior del objetivo y el sensor. Están en lados opuestos del objetivo — no hay que confundirlas.</p>
+<h2>Distancia focal</h2>
+<p>Los rayos que entran en un objetivo convergen hacia un único punto tras ser desviados por el vidrio. La distancia entre el objetivo y ese punto es la distancia focal. En una lente convergente (positiva), los rayos realmente se encuentran en un foco real. En una lente divergente (negativa), los rayos se separan después de la lente, así que no existe un foco real — solo uno virtual, el punto del que los rayos parecen provenir si se prolongan hacia atrás.</p>
+<p><img src="/assets/images/articles/focal-length.png" alt="Lente convergente que forma un foco real, lente divergente que forma un foco virtual" loading="lazy"></p>
+<p>Todo objetivo usado en visión artificial es, en conjunto, un sistema positivo (convergente): la luz siempre tiene que converger sobre el plano del sensor, o no se forma ninguna imagen. Un objetivo puede contener internamente tanto elementos positivos como negativos para corregir aberraciones ópticas, pero el conjunto en su totalidad siempre es convergente.</p>
+<p>La distancia focal y el campo de visión se mueven en direcciones opuestas: cuanto más larga es la focal, más estrecho es el campo de visión. Es exactamente lo que ocurre cuando haces zoom con una cámara — focal más larga, menos escena en el encuadre.</p>
+<p>Hay una excepción importante: cuando el objeto se sitúa a una distancia menor de aproximadamente 10 veces la distancia focal, las ecuaciones estándar de la lente delgada dejan de ser precisas. Esto se llama <strong>modo macro</strong>, y requiere objetivos diseñados específicamente para trabajar a corta distancia.</p>
+<h2>Aumento y campo de visión</h2>
+<p>Formalmente, el aumento es:</p>
+<pre><code class="hljs language-freedesktop"><span class="hljs-attr">M</span> <span class="hljs-operator">=</span> h&#x27; / h</code></pre>
+<p>donde <code>h&#39;</code> es el tamaño de la imagen en el sensor y <code>h</code> es el tamaño real del objeto. Un objeto de 10 mm que produce una imagen de 5 mm en el sensor da M = 0.5.</p>
+<p>Una fórmula relacionada vincula directamente la distancia de trabajo con la distancia focal y el aumento:</p>
+<pre><code class="hljs language-abnf"><span class="hljs-attribute">s</span> <span class="hljs-operator">=</span> f(M - <span class="hljs-number">1</span>) / M</code></pre>
+<p>Conociendo la distancia focal de un objetivo y el aumento que necesitas, esta fórmula te dice exactamente dónde colocar el objeto — es el cálculo que se hace al dimensionar una estación de control de calidad: conoces el tamaño de la pieza, conoces el tamaño de tu sensor, calculas el aumento que necesitas, y de ahí obtienes la distancia de trabajo requerida.</p>
+<p>También existe una convención de nomenclatura que conviene conocer, porque te dice de un vistazo para qué está pensado un objetivo:</p>
+<ul>
+<li><strong>Los objetivos macro y telecéntricos</strong> están diseñados para trabajar a distancias comparables a su propia distancia focal (&quot;conjugados finitos&quot;), y se clasifican y venden según el aumento — &quot;0.5X&quot;, &quot;1X&quot;, &quot;2X&quot;.</li>
+<li><strong>Los objetivos de focal fija</strong> están diseñados para distancias de trabajo mucho mayores que su distancia focal (&quot;conjugados infinitos&quot; — piensa en los rayos paralelos de la luz solar), y se clasifican y venden según la distancia focal — &quot;8mm&quot;, &quot;25mm&quot;, &quot;50mm&quot;.</li>
+</ul>
+<p>Si un objetivo aparece listado como &quot;2X&quot; en lugar de &quot;50mm&quot;, ya sabes a qué familia pertenece: construido para trabajar de cerca, sobre detalles pequeños. Un objetivo &quot;25mm&quot; pertenece a la segunda familia: construido para trabajar a distancia, como un objetivo fotográfico normal.</p>
+<h2>Monturas y distancia focal de brida</h2>
+<p>Antes de seguir avanzando en la óptica, hay una cuestión mecánica igual de importante: ¿cómo se fija físicamente un objetivo a una cámara? La distancia entre la brida de montaje y el sensor — la <strong>distancia focal de brida</strong> (flange focal distance) — interviene en todos los cálculos ópticos anteriores. Si se calcula mal, la ecuación de la lente delgada deja de coincidir con la realidad: la imagen no quedará enfocada donde debería.</p>
+<table>
+<thead>
+<tr>
+<th>Montura</th>
+<th>Distancia focal de brida</th>
+<th>Notas</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-mount</td>
+<td>17.526 mm</td>
+<td>La montura más común en cámaras industriales. Diámetro de 1 pulgada, 32 hilos por pulgada.</td>
+</tr>
+<tr>
+<td>CS-mount</td>
+<td>12.526 mm</td>
+<td>5 mm más corta que el C-mount. Un objetivo C-mount en una cámara CS-mount (o al revés) coloca el sensor a la distancia incorrecta y la imagen no quedará enfocada.</td>
+</tr>
+<tr>
+<td>F-mount</td>
+<td>Bayoneta (insertar y girar)</td>
+<td>Desarrollada por Nikon, se usa en sensores más grandes. A diferencia de las demás, en esta montura la back focal distance no es ajustable.</td>
+</tr>
+<tr>
+<td>Montura Mxx (p. ej. M42, M72)</td>
+<td>Variable</td>
+<td>Una familia de monturas roscadas definidas por diámetro, paso de rosca y distancia focal de brida — usada en sensores incluso más grandes que el F-mount.</td>
+</tr>
+</tbody></table>
+<p>Al elegir un objetivo para una cámara específica, la primera pregunta mecánica es siempre &quot;¿qué montura usa mi cámara?&quot; — si te equivocas de montura, o no puedes fijar físicamente el objetivo, o lo fijas a la distancia incorrecta y nada de lo que venga después importa.</p>
+<p>Incluso con una montura correctamente emparejada, las cámaras reales rara vez alcanzan exactamente la distancia focal de brida nominal — el vidrio de protección que cubre el sensor tiene su propio grosor, y la luz que lo atraviesa desplaza ligeramente el punto de enfoque efectivo. Por eso los fabricantes de objetivos venden <strong>kits de shims</strong>: espaciadores finos que se usan, sobre todo con objetivos telecéntricos, para ajustar con precisión la distancia real a su valor óptimo. No es un detalle menor — en un objetivo telecéntrico, un error de unas pocas décimas de milímetro en la back focal distance puede cambiar de forma perceptible el aumento medido, lo cual importa muchísimo si el objetivo se usa para medición dimensional y no solo para &quot;ver&quot; la pieza.</p>
+<h2>Formatos de sensor</h2>
+<p>Hay dos tablas de referencia que aparecen constantemente al especificar un sistema de visión: una para los sensores <strong>line scan</strong> (que capturan la imagen una fila de píxeles a la vez — típicos de las líneas de producción donde el objeto se mueve bajo la cámara), y otra para los sensores <strong>area scan</strong> (el tipo más habitual, que captura una imagen completa de una sola vez, como una cámara normal).</p>
+<p><strong>Sensores line scan (longitud en píxeles de una sola fila)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Resolución × tamaño de píxel</th>
+<th>Longitud del sensor</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2048 px × 10 µm</td>
+<td>20.5 mm</td>
+</tr>
+<tr>
+<td>2048 px × 14 µm</td>
+<td>28.6 mm</td>
+</tr>
+<tr>
+<td>4096 px × 7 µm</td>
+<td>28.6 mm</td>
+</tr>
+<tr>
+<td>4096 px × 10 µm</td>
+<td>41 mm</td>
+</tr>
+<tr>
+<td>6144 px × 7 µm</td>
+<td>43 mm</td>
+</tr>
+<tr>
+<td>8192 px × 7 µm</td>
+<td>57.3 mm</td>
+</tr>
+<tr>
+<td>12288 px × 5 µm</td>
+<td>62 mm</td>
+</tr>
+</tbody></table>
+<p><strong>Sensores area scan (formatos estándar)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Formato</th>
+<th>Ancho</th>
+<th>Alto</th>
+<th>Diagonal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1/3″</td>
+<td>4.8 mm</td>
+<td>3.6 mm</td>
+<td>6.000 mm</td>
+</tr>
+<tr>
+<td>1/2.5″</td>
+<td>5.76 mm</td>
+<td>4.29 mm</td>
+<td>7.182 mm</td>
+</tr>
+<tr>
+<td>1/2″</td>
+<td>6.4 mm</td>
+<td>4.8 mm</td>
+<td>8.000 mm</td>
+</tr>
+<tr>
+<td>1/1.8″</td>
+<td>7.176 mm</td>
+<td>5.319 mm</td>
+<td>8.933 mm</td>
+</tr>
+<tr>
+<td>2/3″</td>
+<td>8.8 mm</td>
+<td>6.6 mm</td>
+<td>11.000 mm</td>
+</tr>
+<tr>
+<td>1″</td>
+<td>12.8 mm</td>
+<td>9.6 mm</td>
+<td>16.000 mm</td>
+</tr>
+<tr>
+<td>4/3″</td>
+<td>18.8 mm</td>
+<td>13.5 mm</td>
+<td>22.500 mm</td>
+</tr>
+<tr>
+<td>Full frame 35 mm</td>
+<td>36.0 mm</td>
+<td>24.0 mm</td>
+<td>43.300 mm</td>
+</tr>
+</tbody></table>
+<p>Vale la pena señalarlo, porque confunde a casi todo el que empieza: estas etiquetas en &quot;pulgadas&quot; son históricas, no físicas. Un sensor de &quot;1/3 de pulgada&quot; tiene una diagonal de 6 mm, no de 8.47 mm como sugeriría un cálculo literal de un tercio de pulgada. La denominación se remonta a las cámaras de tubo de vacío de los años 50, donde el <em>diámetro exterior del tubo de vidrio</em> era, aproximadamente, de una pulgada — mientras que el área útil sensible a la luz era mucho más pequeña que el propio tubo. Cuando llegaron los sensores CCD de estado sólido en los años 80 y 90, los fabricantes mantuvieron la denominación en &quot;pulgadas&quot; por compatibilidad comercial, aunque ya no corresponda directamente a ninguna dimensión física. Nunca deduzcas el tamaño real de un sensor a partir de su etiqueta en pulgadas mediante cálculo directo — comprueba siempre los valores en milímetros de la hoja de datos.</p>
+<p>También conviene saber que dos cámaras con el mismo &quot;formato&quot; nominal pueden tener sensores sensiblemente distintos, porque la relación ancho-alto puede variar entre modelos. Al elegir un objetivo para una cámara específica, comprueba las dimensiones reales del sensor en milímetros — nunca te fíes solo del formato nominal.</p>
+<h2>Apertura (número F) y profundidad de campo</h2>
+<p>Esta es la parte más densa del tema, y también la más práctica: cuán &quot;abierto&quot; o &quot;cerrado&quot; está un objetivo, y qué cambia con eso.</p>
+<h3>El número F</h3>
+<p>La apertura de un objetivo — lo grande que es el &quot;agujero&quot; por el que pasa la luz, exactamente igual que la pupila de tu ojo al dilatarse o contraerse — se expresa como número F, definido en condiciones estándar como:</p>
+<pre><code class="hljs language-r"><span class="hljs-built_in">F</span><span class="hljs-operator">/</span><span class="hljs-comment"># = f / d</span></code></pre>
+<p>donde <code>d</code> es el diámetro de la apertura y <code>f</code> es la distancia focal. Al principio resulta contraintuitivo: un número F <strong>más alto</strong> significa una apertura <strong>más pequeña</strong>, porque <code>d</code> está en el denominador. F/16 es una apertura mucho más pequeña que F/2.</p>
+<p>Los valores estándar que aparecen en todo objetivo son F/1.0, F/1.4, F/2, F/2.8, F/4, F/5.6, F/8, F/11, F/16, F/22. Cada paso hacia arriba (apertura más pequeña) <strong>reduce a la mitad</strong> la cantidad de luz que entra en el objetivo.</p>
+<p><img src="/assets/images/articles/aperture-fnumber.png" alt="Tamaño de la apertura disminuyendo de F/2 a F/8 a F/16" loading="lazy"></p>
+<p>Para objetivos macro o telecéntricos (la familia de conjugados finitos descrita más arriba), se usa una variante corregida, el <strong>número F de trabajo</strong>:</p>
+<pre><code class="hljs language-awk">wF<span class="hljs-regexp">/# = (1 + M) × F/</span><span class="hljs-comment">#</span></code></pre>
+<p>La corrección tiene en cuenta que, cuando el objeto está cerca (como ocurre con estos objetivos), el propio aumento cambia cuán &quot;cerrada&quot; se comporta efectivamente la apertura.</p>
+<h3>Profundidad de campo</h3>
+<p>Ahora ya se puede definir la profundidad de campo con precisión: es el rango entre el punto más cercano y el más lejano en el que un objeto todavía se ve aceptablemente enfocado.</p>
+<p>Hay un matiz en el que vale la pena detenerse: físicamente existe un único plano, en el espacio del objeto, perfectamente conjugado con el plano del sensor — un único plano que produce una imagen matemáticamente perfecta. Todo lo demás que llamamos &quot;profundidad de campo&quot; es en realidad una cuestión de <em>aceptabilidad</em>, no de perfección: cuánto desenfoque cuenta como &quot;todavía aceptable&quot; depende por completo de la aplicación. Un control dimensional de precisión (medir una pieza con una tolerancia de una centésima de milímetro) exige muchísima más nitidez que una inspección visual genérica (solo comprobar que una etiqueta está presente y es legible).</p>
+<p><img src="/assets/images/articles/depth-of-field.png" alt="La profundidad de campo como la zona alrededor de un único plano perfectamente enfocado" loading="lazy"></p>
+<p>Una fórmula práctica para estimar la profundidad de campo:</p>
+<pre><code class="hljs language-inform7">DoF <span class="hljs-comment">[mm]</span> = wF/# × p<span class="hljs-comment">[µm]</span> × k / M²</code></pre>
+<p>donde <code>p</code> es el tamaño del píxel del sensor en micrómetros, <code>M</code> es el aumento del objetivo, y <code>k</code> es un factor adimensional que depende de la aplicación — típicamente <strong>0.008</strong> para aplicaciones de medición dimensional (donde la nitidez es lo que más importa) y <strong>0.015</strong> para aplicaciones de inspección de defectos (donde se acepta algo más de tolerancia).</p>
+<p><strong>Ejemplo resuelto.</strong> Aumento del objetivo M = 0.25X, número F de trabajo wF/# = 8, tamaño de píxel del sensor p = 5.5 µm, aplicación de inspección de defectos, así que k = 0.015.</p>
+<ol>
+<li>M² = 0.25 × 0.25 = 0.0625</li>
+<li>numerador: wF/# × p × k = 8 × 5.5 × 0.015 = 0.66</li>
+<li>DoF = 0.66 / 0.0625 = 10.56 mm ≈ <strong>10.5 mm</strong></li>
+</ol>
+<p>Una breve nota honesta sobre las unidades: el tamaño de píxel en esa fórmula está en micrómetros, mientras que el resultado se expresa directamente en milímetros — un salto de tres órdenes de magnitud que la fórmula no explicita. En la práctica, la constante <code>k</code> casi con toda seguridad incorpora tanto un factor de conversión dimensional como un criterio empírico de desenfoque aceptable, calibrado a partir de pruebas reales más que derivado de primeros principios. Eso no hace que la fórmula esté mal — los números cuadran — pero conviene saber que es un atajo de ingeniería, no una derivación desde primeros principios, para que no intentes rederivarla desde cero y pienses que te has equivocado cuando tus propios cálculos no la reproducen de forma limpia.</p>
+<p>Sobre qué número F elegir: F/8 es un punto óptimo habitual. Las aperturas más pequeñas (números F más altos, como F/16 o F/22) empiezan a sufrir <strong>difracción</strong> — un efecto de óptica ondulatoria por el que la luz se dispersa cuando la apertura se vuelve muy pequeña, lo que paradójicamente perjudica la nitidez aunque la profundidad de campo siga aumentando. Las aperturas más grandes (números F más bajos, como F/1.4 o F/2) son más propensas a <strong>aberraciones ópticas y distorsión</strong>, imperfecciones inherentes a cualquier diseño óptico que se vuelven más visibles al usar la apertura completa.</p>
+<p>Merece la pena interiorizar el compromiso de fondo: una apertura pequeña (número F alto) necesita más luz pero ofrece más profundidad de campo y menos aberraciones; una apertura grande (número F bajo) necesita menos luz pero ofrece menos profundidad de campo y más aberraciones/distorsión. No existe una apertura universalmente &quot;correcta&quot; — F/8 es un valor por defecto razonable, pero la elección adecuada siempre depende de cuánta luz tienes realmente disponible y cuánta profundidad de campo necesita la aplicación en relación con la nitidez máxima.</p>
+<h2>Otros cuatro términos que conviene conocer</h2>
+<p>Hay un puñado de conceptos que se mencionan constantemente al hablar de óptica industrial sin que siempre se expliquen del todo:</p>
+<ul>
+<li><strong>MTF (Modulation Transfer Function, función de transferencia de modulación)</strong> — la manera estándar de medir objetivamente cuán &quot;nítido&quot; es un objetivo, a distintos niveles de detalle. En lugar de decir en términos genéricos que un objetivo es &quot;nítido&quot;, la MTF indica numéricamente qué tan bien reproduce el sistema el contraste entre líneas cada vez más finas — es la herramienta que los fabricantes usan realmente para comparar la calidad de los objetivos con rigor.</li>
+<li><strong>Telecentricidad</strong> — un objetivo normal (&quot;entocéntrico&quot;) hace que los objetos se vean más pequeños a medida que se alejan, exactamente igual que la percepción de perspectiva humana. Un objetivo <strong>telecéntrico</strong> está diseñado específicamente para eliminar este efecto dentro de un determinado rango de distancia: un objeto mide lo mismo en la imagen sin importar exactamente en qué punto de la profundidad de campo se encuentre. Por eso los objetivos telecéntricos son la opción estándar para medición dimensional de precisión, donde un pequeño error de posicionamiento no debe traducirse en un error de medida.</li>
+<li><strong>Ópticas pericéntricas</strong> — una tercera familia menos habitual, diseñada para captar las superficies internas de un objeto hueco (el interior de un tubo, por ejemplo) desde una vista ligeramente angulada en lugar de frontal.</li>
+<li><strong>Distorsión</strong> — una deformación geométrica de la imagen respecto a la realidad: las líneas rectas de la escena real aparecen curvadas en la imagen (distorsión de barril, que curva hacia fuera, y distorsión de cojín, que curva hacia dentro). Es un defecto que importa en aplicaciones de medición y, cuando es necesario, se corrige por software, porque afecta directamente a la precisión de cualquier medida dimensional tomada a partir de la imagen.</li>
+</ul>
+<h2>Cómo encaja todo</h2>
+<ol>
+<li>La <strong>distancia focal (f)</strong>, junto con la distancia del objeto, determina dónde se forma la imagen (la ecuación de la lente delgada) y cuán grande es el <strong>campo de visión (FoV)</strong>.</li>
+<li>La relación entre el tamaño de la imagen y el tamaño real del objeto define el <strong>aumento (M)</strong>, que a su vez determina la <strong>distancia de trabajo (WD)</strong> que necesita un objetivo dado.</li>
+<li>El <strong>diámetro de la apertura</strong>, en relación con la distancia focal, da el <strong>número F</strong> — que controla tanto cuánta luz entra como, junto con el aumento y el tamaño de píxel, cuán grande es la <strong>profundidad de campo (DoF)</strong>.</li>
+<li>Todo esto tiene que encajar con la mecánica: la <strong>montura</strong> y la <strong>back focal distance</strong> correcta determinan si el plano donde la imagen &quot;debería&quot; formarse coincide realmente con el plano físico del sensor.</li>
+<li>Por último, que todo esto se traduzca en una imagen realmente útil también depende de la <strong>resolución, la MTF, la telecentricidad y la distorsión</strong> — factores que van más allá de los parámetros básicos pero que importan igual de mucho en un sistema real.</li>
+</ol>
+<p>Si solo tuvieras que elegir dos hilos para profundizar, serían la telecentricidad y la MTF. Son los conceptos que más a menudo se mencionan solo de pasada, y sin embargo son centrales en cualquier aplicación industrial real que implique medición o control de calidad — entenderlos bien es lo que hace que una hoja de datos de un objetivo resulte realmente legible.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/articles/loggermanager-qdebug-redirect-article-en/">
+        <span class="post-nav__label">← Artículo anterior</span>
+        <span class="post-nav__title">Redirigir los qDebug de Qt a un archivo sin recompilar: la clase LoggerManager</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/articles/matrix-multiplication-optimization-part-1/">
+        <span class="post-nav__label">Artículo siguiente →</span>
+        <span class="post-nav__title">Optimizando la multiplicación de matrices en C++ — Parte 1: qué te da realmente el orden de los bucles</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/articles/">← Volver a todos los artículos</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

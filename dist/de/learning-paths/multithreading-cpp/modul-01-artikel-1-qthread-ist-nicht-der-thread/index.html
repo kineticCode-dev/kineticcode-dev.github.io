@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QThread ist nicht der Thread: er ist eine Fernbedienung (und warum ihn zu unterklassen täuscht) — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ mit Qt — Modul 1">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-01-artikel-1-qthread-ist-nicht-der-thread/">
+  <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-01-artikel-1-qthread-ist-nicht-der-thread/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-01-artikel-1-qthread-ist-nicht-der-thread/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="QThread ist nicht der Thread: er ist eine Fernbedienung (und warum ihn zu unterklassen täuscht) — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ mit Qt — Modul 1">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-01-artikel-1-qthread-ist-nicht-der-thread/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/">Artikel</a>
+        <a href="/de/learning-paths/" aria-current="page">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <a href="/de/learning-paths/multithreading-cpp/modul-01-artikel-1-qthread-ist-nicht-der-thread/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/de/learning-paths/multithreading-cpp/">Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine</a> · Modul 1 — QThread: Die beiden Modelle und die Event-Loop-Architektur von Qt
+        </div>
+        <span class="eyebrow">Theorie · Lektion 4 von 22</span>
+        <h1>QThread ist nicht der Thread: er ist eine Fernbedienung (und warum ihn zu unterklassen täuscht)</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ mit Qt — Modul 1</p>
+        <div class="article-hero__meta"><span>7 Min. Lesezeit</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Den gesamten Quellcode findest du <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">hier</a></p>
+<h1>QThread ist nicht der Thread: er ist eine Fernbedienung (und warum ihn zu unterklassen täuscht)</h1>
+<p>Im vorherigen Artikel hast du das Problem mit eigenen Augen gesehen: ein Button, der beim Klick den Herzschlag des Fensters für einige Sekunden zum Stillstand bringt, weil der Slot, der auf den Klick reagiert, eine schwere Berechnung direkt auf dem Thread ausführt, der die Event-Loop der GUI besitzt. Dieser Artikel beginnt die Behandlung, und es lohnt sich, gleich von Anfang an ehrlich zu einer Sache zu sein: <code>QThread</code> ist wahrscheinlich die in ihrer Geschichte am meisten missverstandene Klasse der gesamten Qt-Bibliothek — nicht aus Schuld derer, die sie benutzen, sondern wegen eines präzisen historischen Unfalls. Jahrelang haben die offizielle Qt-Dokumentation selbst und ihre Beispiele eine Verwendungsweise gelehrt, die ein Ingenieur des Qt-Teams persönlich in einem Artikel aus dem Jahr 2010, der in der Qt-Community legendär geworden ist, öffentlich mit <em>&quot;You&#39;re doing it wrong&quot;</em> betitelt hat — &quot;du machst es falsch&quot; — bezogen auf die Art, wie sogar die offiziellen Beispiele des Frameworks sie bis dahin präsentierten. Wenn du irgendwo gelesen hast, oder dich aus einem vor Jahren gesehenen Tutorial erinnerst, dass &quot;man, um QThread zu benutzen, davon eine Unterklasse erstellen und <code>run()</code> überschreiben muss&quot;, ist es nicht deine Schuld, dass es wie der natürliche Weg erschien: es war, buchstäblich, das, was Qt selbst lehrte.</p>
+<h2>QThread ist nicht &quot;der Thread&quot;: es ist eine Fernbedienung</h2>
+<p>Beginne mit einem Intuitionsfehler, der so verbreitet ist, dass es sich lohnt, ihn sofort zu entlarven, bevor du auch nur eine Zeile Code schreibst: Wenn du ein <code>QThread</code>-Objekt erzeugst, <strong>ist</strong> dieses Objekt nicht der Betriebssystem-Thread. Es ist ein <code>QObject</code> — eine C++-Klasse wie jede andere, mit ihrem Konstruktor, ihren Methoden, ihrer Position im Qt-Verwandtschaftsbaum — die einen Betriebssystem-Thread <strong>repräsentiert und steuert</strong>, ein bisschen wie die Fernbedienung eines Fernsehers nicht der Fernseher selbst ist: du schaltest ihn ein, aus, wechselst den Kanal, aber die Fernbedienung selbst liegt bequem auf deinem Sofa, nicht im Gerät.</p>
+<p>Wenn du <code>QThread *thread = new QThread(this);</code> schreibst, sagen wir, im Konstruktor deiner <code>MainWindow</code>, entsteht und lebt diese <code>QThread</code>-Instanz <strong>auf dem Thread, auf dem du sie erzeugt hast</strong> — fast immer der Hauptthread der GUI, genau wie jedes andere <code>QObject</code>, das du dort konstruierst. Sie hat eine Handvoll Methoden, die ihr &quot;Bedienfeld&quot; bilden: <code>start()</code>, um den von ihr verwalteten Betriebssystem-Thread zu starten, <code>quit()</code>, um ihn höflich zu bitten, seine Event-Loop zu beenden, <code>wait()</code>, um zu blockieren, bis dieser Thread wirklich beendet ist, <code>isRunning()</code>, um seinen Status abzufragen. Diese Methoden vom Hauptthread aus aufzurufen ist sicher, gerade weil das <code>QThread</code>-Objekt selbst dort lebt.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-01/05-qthread-is-a-remote-control.png" alt="QThread is not the thread: it&amp;#39;s a remote control" loading="lazy"></p>
+<p>Wenn du <code>thread-&gt;start()</code> aufrufst, geschieht etwas Eigenständiges und Getrenntes: Qt führt den Systemaufruf aus, der wirklich einen neuen Betriebssystem-Thread erzeugt (derselbe zugrundeliegende Mechanismus wie <code>std::thread</code>, dem du bereits zuvor begegnet bist), und auf diesem neuen Thread startet es die Ausführung der virtuellen Methode <code>QThread::run()</code>. Wenn du sie nicht überschrieben hast — und im Pattern, das wir in diesem Artikel übernehmen, werden wir sie nie überschreiben —, tut die Standardimplementierung von <code>run()</code> einfach eines: Sie ruft <code>exec()</code> auf, das heißt, sie startet eine <strong>Event-Loop</strong> auf diesem neuen Thread, konzeptionell identisch mit der, die der Hauptthread mit <code>QApplication::exec()</code> beim Start der Anwendung startet. Von diesem Moment an existiert dieser Betriebssystem-Thread für einen genauen Zweck: auf Ereignisse zu warten (in diesem Fall fast immer Signale, die von anderen Threads eintreffen) und sie eines nach dem anderen, der Reihe nach, zu verarbeiten — genau wie der GUI-Thread, nur dass diese zweite Event-Loop nun auf einem völlig getrennten Thread läuft.</p>
+<h2>Das alte Pattern: QThread unterklassen (und warum es täuscht)</h2>
+<p>Der natürliche Instinkt, wenn du Code auf einem separaten Thread mithilfe einer objektorientierten Klasse wie <code>QThread</code> laufen lassen willst, ist dieser: Ich erstelle eine eigene Klasse, die von <code>QThread</code> erbt, packe die Logik hinein, die auf dem separaten Thread laufen soll, vielleicht auch ein paar Slots, um Befehle zu empfangen. Im Code:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyThread</span> : <span class="hljs-keyword">public</span> QThread {
+    Q_OBJECT
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> <span class="hljs-keyword">override</span> </span>{
+        <span class="hljs-comment">// heavy work here</span>
+    }
+
+<span class="hljs-keyword">public</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">otherMethod</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-comment">// ... here comes the surprise</span>
+    }
+};</code></pre>
+<p>Dieser Code kompiliert, und der Teil in <code>run()</code> läuft genau dort, wo du es erwartest: auf dem Betriebssystem-Thread, den diese Instanz verwaltet, weil <code>run()</code> genau die Methode ist, die Qt auf diesem Thread aufruft, sobald er startet. So weit, ganz der Intuition entsprechend. Das Problem, das den Artikel &quot;You&#39;re doing it wrong&quot; und Jahre verwirrter Bug-Reports in Qt-Foren hervorgebracht hat, betrifft <code>otherMethod()</code>: Es ist ein in derselben Klasse deklarierter Slot, läuft aber <strong>überhaupt nicht auf dem von dieser Instanz verwalteten Thread</strong>. Er läuft auf dem Thread, der das <code>MyThread</code>-Objekt selbst <strong>besitzt</strong> — also fast immer der Hauptthread, der es mit <code>new MyThread()</code> erzeugt hat. Der Grund ist derselbe wie zuvor: Ein <code>QObject</code> (und <code>QThread</code> ist trotzdem ein <code>QObject</code>, mit der gesamten Signal-Slot-Infrastruktur, die das mit sich bringt) führt seine eigenen Slots auf dem Thread aus, dem es <strong>gehört</strong> — seine Thread-Affinität — nicht auf dem Thread, den es eventuell als &quot;Inhalt&quot; von <code>run()</code> verwaltet. <code>run()</code> ist ein Sonderfall, die einzige Methode, bei der Qt garantiert, dass sie wirklich auf dem verwalteten Thread läuft; jeder andere Slot derselben Klasse folgt der allgemeinen Regel, nicht dieser Ausnahme.</p>
+<p>Historisch hat das Entwickler dazu gebracht, Code zu schreiben, der in einfachen Fällen zu funktionieren schien — wenn das Einzige, was gebraucht wird, ein isolierter Berechnungsblock ist, ohne dass später Befehle über Signale empfangen werden müssen — und still zu brechen, sobald dieser Thread während der Ausführung auch auf externe Ereignisse reagieren musste, mit Race Conditions oder unerklärlichem Verhalten, das niemand diagnostizieren konnte, ohne eben jenen Artikel von 2010 gelesen zu haben.</p>
+<h2>Das empfohlene Pattern: Worker-Objekt und moveToThread()</h2>
+<p>Die Lösung, die die Qt-Community (und heute die offizielle Dokumentation selbst) empfiehlt, kehrt den Ansatz um: <strong><code>QThread</code> niemals unterklassen</strong>. Benutze es immer so, wie es ist, identisch in jedem Projekt — die Fernbedienung von vorhin, unverändert. Die Geschäftslogik hingegen kommt in eine separate Klasse, die nur von <code>QObject</code> erbt — wir nennen sie üblicherweise den <strong>Worker</strong> — und die nichts von Threads oder <code>QThread</code> weiß, noch sich dafür interessiert. Sie ist ein reines Stück Logik. Dann erledigt eine einzige Methode die ganze Magie:</p>
+<pre><code class="hljs language-cpp">worker-&gt;<span class="hljs-built_in">moveToThread</span>(thread);</code></pre>
+<p><code>moveToThread()</code> ändert die <strong>Thread-Affinität</strong> des <code>worker</code>-Objekts: Ab diesem Moment &quot;gehört&quot; dieses Objekt zu <code>thread</code> statt zu dem Thread, der es erzeugt hat, und — das ist der entscheidende Teil — <strong>jeder seiner Slots, aufgerufen über eine queued Verbindung, läuft auf dem von <code>thread</code> verwalteten Thread</strong>, ohne Ausnahmen, ohne Sonderfälle, die man sich merken müsste.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-01/08-thread-affinity-before-after.png" alt="Thread affinity before and after moveToThread" loading="lazy"></p>
+<p>Es gibt eine technische Einschränkung, die du kennen solltest, weil du sie gleich im praktischen Projekt antreffen wirst: Ein <code>QObject</code> <strong>mit einem Elternobjekt</strong> (im Sinne des Qt-Verwandtschaftsbaums, <code>new Worker(this)</code>) <strong>kann nicht</strong> mit <code>moveToThread()</code> verschoben werden — der Aufruf schlägt still mit einer Laufzeitwarnung fehl, nicht mit einem Kompilierfehler, was ihn zu einer leicht zu übersehenden Falle macht. Der Grund ist logisch, sobald man darüber nachdenkt: Der Qt-Verwandtschaftsbaum geht davon aus, dass ein Elternobjekt und seine Kinder auf demselben Thread leben (so funktioniert zum Beispiel die kaskadierende Zerstörung); ein Kind auf einen anderen Thread als den des Elternobjekts zu verschieben würde diese Garantie brechen. Die praktische Konsequenz ist, dass dein Worker <strong>ohne Elternobjekt</strong> konstruiert werden muss — <code>new PrimeCalculator()</code>, nicht <code>new PrimeCalculator(this)</code> —, und sein Lebenszyklus explizit von dir verwaltet wird, wie wir im nächsten Artikel zum Thema Lebenszyklus sehen werden.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-01/07-subclass-vs-movetothread-comparison.png" alt="Comparing the two patterns: subclassing QThread versus worker plus moveToThread" loading="lazy"></p>
+<p>Mit diesem Pattern bleibt <code>QThread</code> ein anonymes, nie angepasstes Objekt, identisch wiederverwendbar in jedem Qt-Projekt, das du von nun an schreibst; der Worker, eine ganz normale <code>QObject</code>-Klasse mit ihren Slots und Signalen, trägt die gesamte Logik — und <strong>jeder</strong> seiner Slots läuft, ohne Ausnahmen, die man sich merken müsste, korrekt auf dem verwalteten Thread. Genau das ist das Pattern, das wir gemeinsam im praktischen Projekt dieses Moduls aufbauen.</p>
+<h2>Was noch zu verstehen bleibt</h2>
+<p>Du kennst jetzt den Unterschied zwischen dem <code>QThread</code>-Objekt und dem Thread, den es verwaltet, und warum das Unterklassen von <code>QThread</code> fast immer die falsche Wahl gegenüber dem Pattern Worker + <code>moveToThread()</code> ist. Es bleibt eine offensichtliche praktische Frage: Wenn der Worker jetzt auf einem anderen Thread lebt, wie sage ich ihm vom GUI-Thread aus &quot;beginne die Berechnung&quot;, und wie lasse ich mir von ihm &quot;ich bin fertig&quot; zurück auf die GUI melden, ohne die Race Conditions wieder einzuführen, die wir studiert haben? Das ist das Thema des nächsten Artikels, zusammen mit dem vollständigen Lebenszyklus eines Worker-Threads — und dann, endlich, Hand an die Tastatur, um den Freeze aus dem vorherigen Modul wirklich zu heilen.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/de/learning-paths/multithreading-cpp/modul-00-artikel-3-projekte-race-condition-und-einfrieren/">
+        <span class="post-nav__label">← Vorherige Lektion</span>
+        <span class="post-nav__title">Zwei Demonstrationen, keine zwei Erzählungen: die Race Condition und das Einfrieren mit eigenen Händen gebaut</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/de/learning-paths/multithreading-cpp/modul-01-artikel-2-event-loops-und-lebenszyklus/">
+        <span class="post-nav__label">Nächste Lektion →</span>
+        <span class="post-nav__title">Zwei Event-Loops, die sicher miteinander sprechen: Queued-Verbindungen und der Lebenszyklus eines Worker-Threads</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/learning-paths/multithreading-cpp/">← Zurück zum Lernpfad</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

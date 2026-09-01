@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demystifying C Libraries on Windows: How to Inspect and Profile Unknown .dll Files — Kinetic Code</title>
+  <meta name="description" content="A practical guide to inspecting and profiling unknown .dll files in Windows environments.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/demystifying-c-libraries-on-windows/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/demystifying-c-libraries-on-windows/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/demystifying-c-libraries-on-windows/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/demystifying-c-libraries-on-windows/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/demystifying-c-libraries-on-windows/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/demystifying-c-libraries-on-windows/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/demystifying-c-libraries-on-windows/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Demystifying C Libraries on Windows: How to Inspect and Profile Unknown .dll Files — Kinetic Code">
+  <meta property="og:description" content="A practical guide to inspecting and profiling unknown .dll files in Windows environments.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/demystifying-c-libraries-on-windows/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Demystifying C Libraries on Windows: How to Inspect and Profile Unknown .dll Files","description":"A practical guide to inspecting and profiling unknown .dll files in Windows environments.","datePublished":"2026-07-18","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/demystifying-c-libraries-on-windows/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/demystifying-c-libraries-on-windows/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/demystifying-c-libraries-on-windows/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/demystifying-c-libraries-on-windows/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/demystifying-c-libraries-on-windows/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-3);color:var(--chart-3)">Software Engineering</span>
+        <h1>Demystifying C Libraries on Windows: How to Inspect and Profile Unknown .dll Files</h1>
+        <p class="article-hero__excerpt">A practical guide to inspecting and profiling unknown .dll files in Windows environments.</p>
+        <div class="article-hero__meta">
+          <span>Jul 18, 2026</span>
+          <span>·</span>
+          <span>3 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h1>Table of Contents</h1>
+<ol>
+<li><a href="#introduction-the-real-world-problem">Introduction: The Real-World Problem</a></li>
+<li><a href="#the-challenge-missing-information">The Challenge: Missing Information</a></li>
+<li><a href="#inspecting-and-profiling-binaries-dll-and-h">Inspecting and Profiling Binaries (.dll and .h)</a><ol>
+<li><a href="#determining-the-librarys-architecture">Determining the Library&#39;s Architecture</a></li>
+<li><a href="#identifying-the-compiler-used">Identifying the Compiler Used</a></li>
+</ol>
+</li>
+<li><a href="#summary--general-rules">Summary &amp; General Rules</a></li>
+</ol>
+<hr>
+<h2>Introduction: The Real-World Problem</h2>
+<p>The idea for this article stems from a concrete problem I recently encountered. We work closely with a partner company that provided us with several C libraries, which we believed could be useful for the application we are currently developing. Following a meeting where they suggested the most appropriate libraries, they sent over a batch of <code>.zip</code> files. </p>
+<p>Inside each <code>.zip</code> file, we found:</p>
+<ul>
+<li>Header files (<code>.h</code>)</li>
+<li>Compiled dynamic libraries (<code>.dll</code>)</li>
+</ul>
+<h2>The Challenge: Missing Information</h2>
+<p>My main development environment is Windows, writing C code using Visual Studio Code. I have previous experience importing libraries in Qt and Visual Studio, but in those environments, alongside the <code>.h</code> and <code>.dll</code> files, I usually also had <code>.lib</code> import files. Here, those were completely missing.</p>
+<p>Furthermore, a golden rule in C development is that you should ideally use the same compiler for your project as the one used to compile the provided library. </p>
+<p>This left me with a lot of questions: Is the provided library suitable? Which compiler should I use? How do I even import this library into Visual Studio Code?</p>
+<p>Let&#39;s figure this out together and break down the necessary steps.</p>
+<h2>Inspecting and Profiling Binaries (.dll and .h)</h2>
+<p>The first thing we need to verify is that the <code>.dll</code> is compiled for the same architecture as our development system and compiler. </p>
+<p>If we try to load a 32-bit <code>.dll</code> into a 64-bit executable, we will get an operating system level error (<code>Bad Image Format, 0xc000007b</code>). The same is true in reverse: loading a 64-bit <code>.dll</code> into a 32-bit executable will yield the same <code>Bad Image Format</code> error.</p>
+<h3>Determining the Library&#39;s Architecture</h3>
+<p>To find out which architecture the library was compiled for, we can open the <strong>Developer Command Prompt for VS22</strong> on Windows and navigate to the folder containing the <code>.dll</code> using the <code>cd</code> command. </p>
+<p>Once there, run the following command in the terminal:</p>
+<pre><code class="hljs language-cmd">dumpbin /headers your_library_name.dll</code></pre>
+<p>Look for the <code>FILE HEADER VALUES</code> section in the output. If you find:</p>
+<ul>
+<li><strong><code>14C machine (x86)</code></strong>: The library is 32-bit.</li>
+<li><strong><code>8664 machine (x64)</code></strong>: The library is 64-bit.</li>
+</ul>
+<p><img src="/architecture.png" alt="Architecture" loading="lazy"></p>
+<p><em>(In my case, the library I was trying to import turned out to be 32-bit.)</em></p>
+<h3>Identifying the Compiler Used</h3>
+<p>To figure out which compiler was used to build the library, we can run another command from the same terminal:</p>
+<pre><code class="hljs language-cmd">dumpbin /dependents your_library_name.dll</code></pre>
+<p>By analyzing the <code>Image has the following dependencies:</code> section, we can deduce the compiler:</p>
+<p><img src="/compiler.png" alt="Compiler" loading="lazy"></p>
+<p>If you see dependencies like:</p>
+<ul>
+<li><code>KERNEL32.dll</code></li>
+<li><code>msvcrt.dll</code></li>
+<li><code>libgcc_s_dw2-1.dll</code>
+...then the library was likely compiled with <strong>MinGW</strong>.</li>
+</ul>
+<p>If you see dependencies such as:</p>
+<ul>
+<li><code>MSVCRXX.dll</code> (where XX is a version number)</li>
+<li><code>VCRUNTIME140.dll</code></li>
+<li><code>ucrtbase.dll</code>
+...then it was compiled with <strong>Microsoft Visual C++ (MSVC)</strong>.</li>
+</ul>
+<h2>Summary &amp; General Rules</h2>
+<p>As a general rule of thumb when dealing with dynamic libraries on Windows:</p>
+<ul>
+<li><p><strong>If a library was compiled with MinGW</strong>, you usually only need two files:</p>
+<ul>
+<li>The header file (<code>.h</code>)</li>
+<li>The compiled library (<code>.dll</code>)</li>
+<li><em>Note: The MinGW linker (<code>ld</code>) can directly read the symbols inside the <code>.dll</code> file without needing an import file. However, for complex projects, an import file like <code>.dll.a</code> might still be necessary.</em></li>
+</ul>
+</li>
+<li><p><strong>If a library was compiled with MSVC</strong>, you typically need three files:</p>
+<ul>
+<li>The header file (<code>.h</code>)</li>
+<li>The compiled library (<code>.dll</code>)</li>
+<li>The import file (<code>.lib</code>)</li>
+</ul>
+</li>
+</ul>
+<p>Since we are talking about dynamically linked libraries, remember that all <code>.dll</code> files must be placed next to your executable in the installation folder. If you were compiling statically instead, the library code would be embedded directly into your executable file.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:minmax(200px,300px) 1fr;--post-nav-next-col:2;"><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/personal-expense-tracker-p1/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 1)</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

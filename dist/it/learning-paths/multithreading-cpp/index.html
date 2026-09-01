@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multithreading in C++: dalla teoria al motore a stati — Kinetic Code</title>
+  <meta name="description" content="Un percorso pragmatico per chi conosce già le basi del C++ ma non ha mai dovuto far girare più thread nello stesso processo senza spararsi in un piede. Si parte">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Multithreading in C++: dalla teoria al motore a stati — Kinetic Code">
+  <meta property="og:description" content="Un percorso pragmatico per chi conosce già le basi del C++ ma non ha mai dovuto far girare più thread nello stesso processo senza spararsi in un piede. Si parte">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (it)" href="/it/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/it/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/it/">Home</a>
+        <a href="/it/articles/">Articoli</a>
+        <a href="/it/learning-paths/" aria-current="page">Corsi</a>
+        <a href="/it/about/">About</a>
+        <a href="/it/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Lingua">
+            IT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/learning-paths/multithreading-cpp/" aria-current="true"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/learning-paths/multithreading-cpp/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/learning-paths/multithreading-cpp/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/learning-paths/multithreading-cpp/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/learning-paths/multithreading-cpp/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <section class="article-hero">
+    <div class="container">
+      <span class="eyebrow">Percorso di apprendimento</span>
+      <h1>Multithreading in C++: dalla teoria al motore a stati</h1>
+      <div class="course-hero__meta">
+        <span>Livello: intermedio (richiede basi di C++)</span>
+        <span>21 lezioni</span>
+        <span>22 lezioni</span>
+      </div>
+    </div>
+  </section>
+  <div class="container">
+    <div class="prose" style="margin-top:36px"><p>Un percorso pragmatico per chi conosce già le basi del C++ ma non ha mai dovuto far girare più thread nello stesso processo senza spararsi in un piede. Si parte dalla teoria minima indispensabile — cos'è davvero un thread, cosa può andare storto — per poi avanzare verso concetti più sofisticati. Ogni modulo termina con un progetto in cui verrà messo in pratica ciò che è stato appena presentato.</p><p>Le lezioni vanno lette in ordine: ogni progetto si appoggia sui concetti introdotti nella teoria immediatamente precedente.</p><p>Tutto il codice sorgente puoi trovarlo in questa <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath" target="_blank" rel="noopener noreferrer">repository</a>.</p></div>
+    <div style="margin-top:26px"><a class="btn btn-primary" href="/it/learning-paths/multithreading-cpp/modulo-00-articolo-1-cose-un-thread/">Inizia il percorso</a></div>
+    <h2 style="margin-top:52px">Cosa imparerai, modulo per modulo</h2>
+    <div class="course-modules">
+      <div class="course-module">
+      <h3 class="course-module__title">Modulo 0 — Fondamenta</h3>
+      <div class="course-module__list"><a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-00-articolo-1-cose-un-thread/">
+        <span class="lesson-row__index">01</span>
+        <span class="lesson-row__title">Cos'è davvero un thread (e perché all'improvviso ti serve saperlo)</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-00-articolo-2-race-condition-e-thread-unico-qt/">
+        <span class="lesson-row__index">02</span>
+        <span class="lesson-row__title">Quando la memoria condivisa morde: race condition, data race e il thread unico di Qt</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-00-articolo-3-progetti-race-condition-e-freeze/">
+        <span class="lesson-row__index">03</span>
+        <span class="lesson-row__title">Due dimostrazioni, non due racconti: la race condition e il freeze costruiti con le tue mani</span>
+        <span class="lesson-row__type lesson-row__type--project">Progetto</span>
+      </a></div>
+    </div>
+<div class="course-module">
+      <h3 class="course-module__title">Modulo 1 — QThread: i due modelli e l'architettura a event loop di Qt</h3>
+      <div class="course-module__list"><a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-01-articolo-1-qthread-non-e-il-thread/">
+        <span class="lesson-row__index">04</span>
+        <span class="lesson-row__title">QThread non è il thread: è un telecomando (e perché sottoclassarlo inganna)</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-01-articolo-2-event-loop-e-ciclo-di-vita/">
+        <span class="lesson-row__index">05</span>
+        <span class="lesson-row__title">Due event loop che si parlano in sicurezza: connessioni queued e il ciclo di vita di un worker thread</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-01-articolo-3-progetto-worker-thread/">
+        <span class="lesson-row__index">06</span>
+        <span class="lesson-row__title">Progetto: curare il freeze sul serio, spostando il calcolo su un worker thread</span>
+        <span class="lesson-row__type lesson-row__type--project">Progetto</span>
+      </a></div>
+    </div>
+<div class="course-module">
+      <h3 class="course-module__title">Modulo 2 — Sincronizzazione: mutex, wait condition, semafori e i classici problemi</h3>
+      <div class="course-module__list"><a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-02-articolo-1-qmutex-e-readwritelock/">
+        <span class="lesson-row__index">07</span>
+        <span class="lesson-row__title">La sezione critica formalizzata: QMutex, QMutexLocker e QReadWriteLock</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-02-articolo-2-waitcondition-deadlock-starvation/">
+        <span class="lesson-row__index">08</span>
+        <span class="lesson-row__title">Aspettare un evento, non un lock: QWaitCondition, QSemaphore, e come ci si spara nei piedi</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/approfondimento-mars-pathfinder-inversione-di-priorita/">
+        <span class="lesson-row__index">09</span>
+        <span class="lesson-row__title">Il giorno in cui Marte quasi vinse: Pathfinder e l'inversione di priorità</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-02-articolo-3-progetto-produttore-consumatore/">
+        <span class="lesson-row__index">10</span>
+        <span class="lesson-row__title">Progetto: produttore, consumatore, e il buffer che li tiene in equilibrio</span>
+        <span class="lesson-row__type lesson-row__type--project">Progetto</span>
+      </a></div>
+    </div>
+<div class="course-module">
+      <h3 class="course-module__title">Modulo 3 — QtConcurrent e il modello Future/Promise</h3>
+      <div class="course-module__list"><a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-03-articolo-1-qtconcurrent-run-mapped-threadpool/">
+        <span class="lesson-row__index">11</span>
+        <span class="lesson-row__title">QtConcurrent::run, mapped/filtered/reduced, e il QThreadPool dietro le quinte</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-03-articolo-2-qfuture-qfuturewatcher-quando-non-usarlo/">
+        <span class="lesson-row__index">12</span>
+        <span class="lesson-row__title">QFuture, QFutureWatcher e la domanda che il vibe coding salta sempre</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-03-articolo-3-progetto-batch-immagini/">
+        <span class="lesson-row__index">13</span>
+        <span class="lesson-row__title">Progetto: elaborazione batch di immagini con QtConcurrent::mapped e QFutureWatcher</span>
+        <span class="lesson-row__type lesson-row__type--project">Progetto</span>
+      </a></div>
+    </div>
+<div class="course-module">
+      <h3 class="course-module__title">Modulo 4 — Comunicazione sicura tra thread: connessioni Qt e cancellazione cooperativa</h3>
+      <div class="course-module__list"><a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-04-articolo-1-i-quattro-tipi-di-connessione-qt/">
+        <span class="lesson-row__index">14</span>
+        <span class="lesson-row__title">I quattro Qt::ConnectionType: cosa succede davvero quando scrivi connect()</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-04-articolo-2-invokemethod-e-cancellazione-cooperativa/">
+        <span class="lesson-row__index">15</span>
+        <span class="lesson-row__title">QMetaObject::invokeMethod e cancellazione cooperativa: chiamare e fermare un thread senza rischi</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-04-articolo-3-progetto-ciclo-vita-worker/">
+        <span class="lesson-row__index">16</span>
+        <span class="lesson-row__title">Progetto: ciclo di vita completo di un worker — avvia, pausa, riprendi, ferma</span>
+        <span class="lesson-row__type lesson-row__type--project">Progetto</span>
+      </a></div>
+    </div>
+<div class="course-module">
+      <h3 class="course-module__title">Modulo 5 — Pattern avanzati: thread pool custom, atomics e il costo nascosto della cache</h3>
+      <div class="course-module__list"><a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-05-articolo-1-qrunnable-qthreadpool/">
+        <span class="lesson-row__index">17</span>
+        <span class="lesson-row__title">QRunnable e QThreadPool: un pool di task, non un thread per compito</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-05-articolo-2-memory-model-e-false-sharing/">
+        <span class="lesson-row__index">18</span>
+        <span class="lesson-row__title">std::atomic, il modello di memoria C++, e il bug di prestazioni che non si vede nel codice</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-05-articolo-3-progetto-benchmark-mutex-atomic/">
+        <span class="lesson-row__index">19</span>
+        <span class="lesson-row__title">Progetto: benchmark mutex vs atomic, false sharing, e verifica con ThreadSanitizer</span>
+        <span class="lesson-row__type lesson-row__type--project">Progetto</span>
+      </a></div>
+    </div>
+<div class="course-module">
+      <h3 class="course-module__title">Modulo 6 — Progetto Capstone: pipeline di visione quasi in tempo reale</h3>
+      <div class="course-module__list"><a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-06-articolo-1-architettura-cattura-buffer-limitato/">
+        <span class="lesson-row__index">20</span>
+        <span class="lesson-row__title">Capstone: architettura di una pipeline di visione — cattura e buffer limitato</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-06-articolo-2-pool-elaborazione-cancellazione-completa/">
+        <span class="lesson-row__index">21</span>
+        <span class="lesson-row__title">Capstone: pool di elaborazione persistente e cancellazione cooperativa completa</span>
+        <span class="lesson-row__type lesson-row__type--theory">Teoria</span>
+      </a>
+<a class="lesson-row" href="/it/learning-paths/multithreading-cpp/modulo-06-articolo-3-progetto-pipeline-visione-capstone/">
+        <span class="lesson-row__index">22</span>
+        <span class="lesson-row__title">Progetto Capstone: pipeline di elaborazione frame in tempo quasi reale</span>
+        <span class="lesson-row__type lesson-row__type--project">Progetto</span>
+      </a></div>
+    </div>
+    </div>
+    <div class="article-footer">
+      <a class="btn btn-ghost" href="/it/learning-paths/">← Torna ai percorsi</a>
+    </div>
+  </div>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tutti i contenuti sono opera dell'autore, verificati sul campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Guarda il codice su GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Scrivimi una mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/it/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Torna su</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

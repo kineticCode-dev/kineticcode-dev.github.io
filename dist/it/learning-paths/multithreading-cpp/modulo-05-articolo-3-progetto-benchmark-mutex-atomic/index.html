@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Progetto: benchmark mutex vs atomic, false sharing, e verifica con ThreadSanitizer — Multithreading in C++: dalla teoria al motore a stati — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ con Qt — Modulo 5 — Progetto">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-05-articolo-3-progetto-benchmark-mutex-atomic/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-05-articolo-3-progetto-benchmark-mutex-atomic/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-05-articolo-3-progetto-benchmark-mutex-atomic/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Progetto: benchmark mutex vs atomic, false sharing, e verifica con ThreadSanitizer — Multithreading in C++: dalla teoria al motore a stati — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ con Qt — Modulo 5 — Progetto">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-05-articolo-3-progetto-benchmark-mutex-atomic/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (it)" href="/it/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/it/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/it/">Home</a>
+        <a href="/it/articles/">Articoli</a>
+        <a href="/it/learning-paths/" aria-current="page">Corsi</a>
+        <a href="/it/about/">About</a>
+        <a href="/it/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Lingua">
+            IT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/learning-paths/multithreading-cpp/modulo-05-articolo-3-progetto-benchmark-mutex-atomic/" aria-current="true"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/it/learning-paths/multithreading-cpp/">Multithreading in C++: dalla teoria al motore a stati</a> · Modulo 5 — Pattern avanzati: thread pool custom, atomics e il costo nascosto della cache
+        </div>
+        <span class="eyebrow">Progetto · Lezione 19 di 22</span>
+        <h1>Progetto: benchmark mutex vs atomic, false sharing, e verifica con ThreadSanitizer</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ con Qt — Modulo 5 — Progetto</p>
+        <div class="article-hero__meta"><span>12 min di lettura</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Tutto il codice sorgente lo puoi trovare <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">qui</a></p>
+<h1>Progetto: benchmark mutex vs atomic, false sharing, e verifica con ThreadSanitizer</h1>
+<p>A differenza dei progetti guidati dei moduli precedenti, oggi <strong>non costruiamo un&#39;applicazione Qt Widgets</strong>. È una scelta deliberata: il tema di questo modulo — atomici, memory model, cache — vive al livello della CPU e della libreria standard C++, sotto qualunque framework tu ci costruisca sopra. Costruire il progetto come un programma console con <code>std::thread</code>, <code>std::atomic</code> e <code>std::mutex</code> puri toglie di mezzo ogni distrazione legata a Qt e ti lascia guardare direttamente il meccanismo nudo — esattamente come nel Progetto A del Modulo 0, dove la scelta di partire da <code>std::thread</code> puro era motivata dalla stessa esigenza di chiarezza.</p>
+<p><strong>Requisiti</strong>: un compilatore C++20 (verificato con GCC 13.3.0), la libreria pthread collegata a runtime (<code>-pthread</code> su Linux/macOS), CMake ≥ 3.16 (opzionale ma comodo), nessuna dipendenza da Qt. Per la sezione ThreadSanitizer, un compilatore GCC o Clang con <code>-fsanitize=thread</code> disponibile.</p>
+<p>Una nota onesta sull&#39;ambiente in cui questo modulo è stato scritto e misurato: la macchina di sviluppo usata per compilare e cronometrare i numeri che leggerai tra poco espone <strong>2 core logici</strong> (<code>std::thread::hardware_concurrency()</code> restituisce <code>2</code>) — probabilmente meno dei core disponibili sulla tua macchina di lavoro reale. Non cambia nulla nella sostanza di ciò che stai per osservare, ma vedrai i numeri esatti oscillare più di quanto ti aspetteresti da una macchina fisica dedicata — un ambiente virtualizzato condivide i core fisici sottostanti con altri processi che non controlli. È di per sé una lezione pratica di benchmarking: <strong>misura sempre più di una volta</strong>, e diffida di un singolo numero isolato quanto diffideresti di un singolo campione statistico.</p>
+<h2>Passo 1 — Lo scheletro del progetto</h2>
+<p>Il progetto è composto da due programmi indipendenti, ciascuno concentrato su una sola dimostrazione, più un <code>CMakeLists.txt</code> comune:</p>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.16</span>)
+<span class="hljs-keyword">project</span>(project_g_benchmark LANGUAGES CXX)
+
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">20</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD_REQUIRED <span class="hljs-keyword">ON</span>)
+
+<span class="hljs-keyword">if</span>(<span class="hljs-keyword">NOT</span> CMAKE_BUILD_TYPE)
+    <span class="hljs-keyword">set</span>(CMAKE_BUILD_TYPE Release)
+<span class="hljs-keyword">endif</span>()
+<span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS_RELEASE <span class="hljs-string">&quot;-O2&quot;</span>)
+
+<span class="hljs-keyword">find_package</span>(Threads REQUIRED)
+
+<span class="hljs-comment"># Project G.1 -- mutex vs atomic under contention</span>
+<span class="hljs-keyword">add_executable</span>(counter_benchmark counter_benchmark.cpp)
+<span class="hljs-keyword">target_link_libraries</span>(counter_benchmark PRIVATE Threads::Threads)
+
+<span class="hljs-comment"># Project G.2 -- false sharing and the alignas(64) fix</span>
+<span class="hljs-keyword">add_executable</span>(false_sharing false_sharing.cpp)
+<span class="hljs-keyword">target_link_libraries</span>(false_sharing PRIVATE Threads::Threads)
+
+<span class="hljs-comment"># --------------------------------------------------------------------------</span>
+<span class="hljs-comment"># Optional target with ThreadSanitizer enabled (see this module&#x27;s articles).</span>
+<span class="hljs-comment"># Usage: cmake -S . -B build_tsan -DCMAKE_BUILD_TYPE=Debug -DENABLE_TSAN=ON</span>
+<span class="hljs-comment"># --------------------------------------------------------------------------</span>
+<span class="hljs-keyword">option</span>(ENABLE_TSAN <span class="hljs-string">&quot;Build with -fsanitize=thread&quot;</span> <span class="hljs-keyword">OFF</span>)
+<span class="hljs-keyword">if</span>(ENABLE_TSAN)
+    <span class="hljs-keyword">add_compile_options</span>(-fsanitize=thread -g -O1)
+    <span class="hljs-keyword">add_link_options</span>(-fsanitize=thread)
+<span class="hljs-keyword">endif</span>()</code></pre>
+<p>Nota <code>-O2</code> esplicito nel <code>CMAKE_CXX_FLAGS_RELEASE</code>: per un benchmark di prestazioni, compilare senza ottimizzazioni (<code>-O0</code>, il default se non specifichi nulla) produrrebbe numeri privi di significato — un incremento non ottimizzato include overhead che nessun programma reale, compilato per l&#39;uso normale, si porterebbe dietro. Misurare senza ottimizzazioni attive è un errore di metodo comune quanto insidioso in questo genere di confronti.</p>
+<h2>Passo 2 — Il primo benchmark: mutex contro atomic sotto contesa</h2>
+<p>Costruiamo <code>counter_benchmark.cpp</code> a pezzi, partendo dalla versione protetta da mutex — quella che già conosci dal Modulo 2, qui con <code>std::mutex</code> al posto di <code>QMutex</code> perché siamo in territorio C++ puro:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;atomic&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;chrono&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstdio&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;mutex&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;thread&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span>
+
+<span class="hljs-type">static</span> <span class="hljs-type">long</span> <span class="hljs-type">long</span> mutexCounter = <span class="hljs-number">0</span>;
+<span class="hljs-type">static</span> std::mutex counterMutex;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">incrementWithMutex</span><span class="hljs-params">(<span class="hljs-type">int</span> incrementsPerThread)</span> </span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; incrementsPerThread; ++i) {
+        <span class="hljs-function">std::lock_guard&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(counterMutex)</span></span>;
+        ++mutexCounter;
+    }
+}</code></pre>
+<p>Niente di nuovo qui rispetto a quanto già sai: <code>std::lock_guard</code> è l&#39;equivalente standard di <code>QMutexLocker</code>, RAII identico, stessa garanzia di sblocco automatico. Ora la versione atomica, deliberatamente scritta accanto per il confronto:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-type">static</span> std::atomic&lt;<span class="hljs-type">long</span> <span class="hljs-type">long</span>&gt; atomicCounter{<span class="hljs-number">0</span>};
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">incrementWithAtomic</span><span class="hljs-params">(<span class="hljs-type">int</span> incrementsPerThread)</span> </span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; incrementsPerThread; ++i) {
+        atomicCounter.<span class="hljs-built_in">fetch_add</span>(<span class="hljs-number">1</span>, std::memory_order_seq_cst);
+    }
+}</code></pre>
+<p>Uso deliberatamente <code>memory_order_seq_cst</code> esplicito (anche se è il default, e potrei ometterlo) per rendere immediatamente visibile, rileggendo il codice, quale garanzia di ordinamento stiamo scegliendo — coerente con la raccomandazione dell&#39;articolo precedente di non lasciare la scelta implicita in codice che altri (incluso te stesso, tra sei mesi) dovranno rileggere.</p>
+<p>Il motore del benchmark è un piccolo template che accetta la funzione da cronometrare:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> Function&gt;
+<span class="hljs-function"><span class="hljs-type">double</span> <span class="hljs-title">runBenchmark</span><span class="hljs-params">(Function work, <span class="hljs-type">int</span> numThreads, <span class="hljs-type">int</span> incrementsPerThread)</span> </span>{
+    std::vector&lt;std::thread&gt; threads;
+    threads.<span class="hljs-built_in">reserve</span>(numThreads);
+
+    <span class="hljs-keyword">auto</span> start = std::chrono::steady_clock::<span class="hljs-built_in">now</span>();
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> t = <span class="hljs-number">0</span>; t &lt; numThreads; ++t) {
+        threads.<span class="hljs-built_in">emplace_back</span>(work, incrementsPerThread);
+    }
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span> &amp;th : threads) {
+        th.<span class="hljs-built_in">join</span>();
+    }
+    <span class="hljs-keyword">auto</span> end = std::chrono::steady_clock::<span class="hljs-built_in">now</span>();
+
+    <span class="hljs-keyword">return</span> std::chrono::<span class="hljs-built_in">duration</span>&lt;<span class="hljs-type">double</span>, std::milli&gt;(end - start).<span class="hljs-built_in">count</span>();
+}</code></pre>
+<p>Nota <code>std::chrono::steady_clock</code>, non <code>system_clock</code>: per misurare un intervallo di tempo trascorso, <code>steady_clock</code> è la scelta corretta perché garantita monotona (non torna mai indietro, a differenza dell&#39;orologio di sistema, che può essere corretto da un servizio NTP proprio mentre stai misurando) — un dettaglio piccolo ma che, se sbagliato, può produrre benchmark con numeri negativi assurdi in rari casi sfortunati.</p>
+<p>Infine il <code>main()</code>, che dimensiona il numero di thread sulla macchina reale e verifica la correttezza del risultato, non solo il tempo:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> hw = std::thread::<span class="hljs-built_in">hardware_concurrency</span>();
+    <span class="hljs-type">int</span> numThreads = (hw &gt;= <span class="hljs-number">2</span>) ? <span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-type">int</span>&gt;(hw) : <span class="hljs-number">4</span>;
+    <span class="hljs-type">const</span> <span class="hljs-type">int</span> incrementsPerThread = <span class="hljs-number">5&#x27;000&#x27;000</span>;
+    <span class="hljs-type">const</span> <span class="hljs-type">long</span> <span class="hljs-type">long</span> expected =
+        <span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-type">long</span> <span class="hljs-type">long</span>&gt;(numThreads) * incrementsPerThread;
+
+    <span class="hljs-type">double</span> msMutex = <span class="hljs-built_in">runBenchmark</span>(incrementWithMutex, numThreads,
+                                   incrementsPerThread);
+    <span class="hljs-type">bool</span> okMutex = (mutexCounter == expected);
+    std::<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[mutex]  time: %8.2f ms   final counter: %lld   %s\n&quot;</span>,
+                msMutex, mutexCounter, okMutex ? <span class="hljs-string">&quot;(correct)&quot;</span> : <span class="hljs-string">&quot;(WRONG!)&quot;</span>);
+
+    <span class="hljs-type">double</span> msAtomic = <span class="hljs-built_in">runBenchmark</span>(incrementWithAtomic, numThreads,
+                                    incrementsPerThread);
+    <span class="hljs-type">bool</span> okAtomic = (atomicCounter.<span class="hljs-built_in">load</span>() == expected);
+    std::<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[atomic] time: %8.2f ms   final counter: %lld   %s\n&quot;</span>,
+                msAtomic, atomicCounter.<span class="hljs-built_in">load</span>(),
+                okAtomic ? <span class="hljs-string">&quot;(correct)&quot;</span> : <span class="hljs-string">&quot;(WRONG!)&quot;</span>);
+
+    <span class="hljs-keyword">if</span> (msAtomic &gt; <span class="hljs-number">0.0</span>) {
+        std::<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\nmutex/atomic ratio: %.2fx\n&quot;</span>, msMutex / msAtomic);
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+<p>Verificare <code>counter == expected</code> non è un dettaglio decorativo: è la controprova che entrambe le versioni sono davvero corrette (nessun aggiornamento perso), il che rende il confronto di tempo significativo — non avrebbe senso vantare la velocità di una versione che, di nascosto, sta anche perdendo incrementi.</p>
+<h2>Passo 3 — Compila ed esegui il primo benchmark</h2>
+<pre><code class="hljs language-bash">g++ -std=c++20 -O2 -pthread counter_benchmark.cpp -o counter_benchmark
+./counter_benchmark</code></pre>
+<p>Ecco l&#39;output reale, misurato in questo corso (macchina a 2 core logici, 5.000.000 di incrementi per thread, quindi 10.000.000 totali):</p>
+<pre><code class="hljs language-asciidoc"><span class="hljs-section">=== Project G.1 - Benchmark mutex vs atomic ===</span>
+hardware_concurrency() detected: 2 -&gt; using 2 threads
+Increments per thread: 5000000 (expected total: 10000000)
+
+[mutex]  time:   194.64 ms   final counter: 10000000   (correct)
+[atomic] time:    66.01 ms   final counter: 10000000   (correct)
+
+mutex/atomic ratio: 2.95x</code></pre>
+<p>Ripetendo l&#39;esecuzione altre due volte, per non fidarci di un singolo campione:</p>
+<pre><code class="hljs language-crmsh">[run <span class="hljs-number">2</span>] mutex: <span class="hljs-number">198.76</span> <span class="hljs-keyword">ms</span>   <span class="hljs-title">atomic</span>: <span class="hljs-number">66.57</span> <span class="hljs-keyword">ms</span>   <span class="hljs-title">ratio</span>: <span class="hljs-number">2.99</span>x
+[run <span class="hljs-number">3</span>] mutex: <span class="hljs-number">208.17</span> <span class="hljs-keyword">ms</span>   <span class="hljs-title">atomic</span>: <span class="hljs-number">68.35</span> <span class="hljs-keyword">ms</span>   <span class="hljs-title">ratio</span>: <span class="hljs-number">3.05</span>x</code></pre>
+<p>Il pattern è stabile: la versione atomica gira <strong>circa 3 volte più veloce</strong> della versione a mutex, su questa macchina, per questo carico di lavoro (un singolo incremento per operazione — il caso più favorevole possibile per un atomico, e non è un caso che il progetto lo isoli così). La spiegazione è esattamente quella dell&#39;articolo precedente: ogni <code>lock_guard</code> che entra in una sezione critica contesa da un altro thread rischia di richiedere l&#39;intervento dello scheduler del sistema operativo, mentre <code>fetch_add</code> resta un&#39;unica istruzione macchina bloccata dal bus di memoria per una manciata di cicli di clock — nessuno scheduler coinvolto, nessun thread messo in pausa. Entrambe le versioni, nota, risultano corrette: il vantaggio dell&#39;atomico qui è puramente di prestazioni, non di correttezza.</p>
+<h2>Passo 4 — Il secondo file: false sharing, prima senza cura</h2>
+<p>Passiamo a <code>false_sharing.cpp</code>. Prima il layout &quot;ingenuo&quot;, due contatori adiacenti nella stessa struct:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;atomic&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;chrono&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstdio&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;thread&gt;</span></span>
+
+<span class="hljs-keyword">constexpr</span> <span class="hljs-type">int</span> ITERATIONS = <span class="hljs-number">200&#x27;000&#x27;000</span>;
+<span class="hljs-keyword">constexpr</span> std::<span class="hljs-type">size_t</span> CACHE_LINE_SIZE = <span class="hljs-number">64</span>;
+
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">AdjacentCounters</span> {
+    std::atomic&lt;<span class="hljs-type">int</span>&gt; a{<span class="hljs-number">0</span>};
+    std::atomic&lt;<span class="hljs-type">int</span>&gt; b{<span class="hljs-number">0</span>};
+};</code></pre>
+<p><code>sizeof(AdjacentCounters)</code> è 8 byte — due <code>int</code> da 4 byte l&#39;uno accanto all&#39;altro, ben dentro un&#39;unica riga di cache da 64 byte, esattamente lo scenario patologico descritto nell&#39;articolo precedente.</p>
+<h2>Passo 5 — Il layout corretto, con alignas(64)</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">alignas</span>(CACHE_LINE_SIZE) PaddedCounter {
+    std::atomic&lt;<span class="hljs-type">int</span>&gt; value{<span class="hljs-number">0</span>};
+    <span class="hljs-type">char</span> padding[CACHE_LINE_SIZE - <span class="hljs-keyword">sizeof</span>(std::atomic&lt;<span class="hljs-type">int</span>&gt;)];
+};
+
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">PaddedCounters</span> {
+    PaddedCounter a;
+    PaddedCounter b;
+};</code></pre>
+<p><code>sizeof(PaddedCounter)</code> sale a 64 byte — un&#39;intera riga di cache per un singolo <code>int</code> utile, lo spreco esplicito già discusso — e <code>sizeof(PaddedCounters)</code> diventa quindi 128 byte: due righe di cache separate, garantite tali dall&#39;allineamento imposto da <code>alignas</code>.</p>
+<h2>Passo 6 — Il test: due thread, due contatori indipendenti, entrambi i layout</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> Layout&gt;
+<span class="hljs-function"><span class="hljs-type">double</span> <span class="hljs-title">runTest</span><span class="hljs-params">(Layout &amp;data)</span> </span>{
+    <span class="hljs-keyword">auto</span> start = std::chrono::steady_clock::<span class="hljs-built_in">now</span>();
+
+    <span class="hljs-function">std::thread <span class="hljs-title">t1</span><span class="hljs-params">([&amp;] {
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; ITERATIONS; ++i) {
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">constexpr</span> (std::is_same_v&lt;Layout, AdjacentCounters&gt;) {
+                data.a.fetch_add(<span class="hljs-number">1</span>, std::memory_order_relaxed);
+            } <span class="hljs-keyword">else</span> {
+                data.a.value.fetch_add(<span class="hljs-number">1</span>, std::memory_order_relaxed);
+            }
+        }
+    })</span></span>;
+    <span class="hljs-function">std::thread <span class="hljs-title">t2</span><span class="hljs-params">([&amp;] {
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; ITERATIONS; ++i) {
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">constexpr</span> (std::is_same_v&lt;Layout, AdjacentCounters&gt;) {
+                data.b.fetch_add(<span class="hljs-number">1</span>, std::memory_order_relaxed);
+            } <span class="hljs-keyword">else</span> {
+                data.b.value.fetch_add(<span class="hljs-number">1</span>, std::memory_order_relaxed);
+            }
+        }
+    })</span></span>;
+
+    t1.<span class="hljs-built_in">join</span>();
+    t2.<span class="hljs-built_in">join</span>();
+
+    <span class="hljs-keyword">auto</span> end = std::chrono::steady_clock::<span class="hljs-built_in">now</span>();
+    <span class="hljs-keyword">return</span> std::chrono::<span class="hljs-built_in">duration</span>&lt;<span class="hljs-type">double</span>, std::milli&gt;(end - start).<span class="hljs-built_in">count</span>();
+}</code></pre>
+<p>Qui uso deliberatamente <code>memory_order_relaxed</code>, a differenza del primo benchmark: ciascun thread aggiorna solo il proprio contatore, non deve mai osservare né sincronizzarsi con l&#39;altro, quindi non c&#39;è alcuna relazione happens-before da stabilire — è esattamente il caso d&#39;uso onesto di <code>relaxed</code> descritto nell&#39;articolo precedente, non una scorciatoia arbitraria. <code>if constexpr</code> (C++17) seleziona a tempo di compilazione quale campo toccare a seconda del tipo di <code>Layout</code>, così lo stesso template gestisce entrambi gli esperimenti senza duplicare la logica del ciclo.</p>
+<h2>Passo 7 — Compila, esegui, e guarda la cache mentirti</h2>
+<pre><code class="hljs language-bash">g++ -std=c++20 -O2 -pthread false_sharing.cpp -o false_sharing
+./false_sharing</code></pre>
+<p>Primo output reale misurato:</p>
+<pre><code class="hljs language-dart">=== <span class="hljs-title class_">Project</span> G.<span class="hljs-number">2</span> - <span class="hljs-title class_">False</span> sharing and the <span class="hljs-title function_">alignas</span>(<span class="hljs-number">64</span>) fix ===
+<span class="hljs-title class_">Iterations</span> per thread: <span class="hljs-number">200000000</span>
+<span class="hljs-title function_">sizeof</span>(<span class="hljs-title class_">AdjacentCounters</span>) = <span class="hljs-number">8</span> bytes
+<span class="hljs-title function_">sizeof</span>(<span class="hljs-title class_">PaddedCounter</span>)    = <span class="hljs-number">64</span> bytes
+<span class="hljs-title function_">sizeof</span>(<span class="hljs-title class_">PaddedCounters</span>)   = <span class="hljs-number">128</span> bytes
+
+[adjacent, same cache line]       time:  <span class="hljs-number">5703.52</span> ms
+[<span class="hljs-title function_">alignas</span>(<span class="hljs-number">64</span>), separate lines]     time:  <span class="hljs-number">1302.42</span> ms
+
+<span class="hljs-title class_">Speedup</span> from eliminating <span class="hljs-keyword">false</span> sharing: <span class="hljs-number">4</span>.38x</code></pre>
+<p>Ripetendo l&#39;esecuzione, per la ragione già discussa nel Setup:</p>
+<pre><code class="hljs language-crmsh">[run <span class="hljs-number">2</span>] adjacent: <span class="hljs-number">3667.79</span> <span class="hljs-keyword">ms</span>   <span class="hljs-title">padded</span>: <span class="hljs-number">2648.09</span> <span class="hljs-keyword">ms</span>   <span class="hljs-title">speedup</span>: <span class="hljs-number">1.39</span>x
+[run <span class="hljs-number">3</span>] adjacent: <span class="hljs-number">4523.37</span> <span class="hljs-keyword">ms</span>   <span class="hljs-title">padded</span>: <span class="hljs-number">1306.76</span> <span class="hljs-keyword">ms</span>   <span class="hljs-title">speedup</span>: <span class="hljs-number">3.46</span>x</code></pre>
+<p>Qui la variabilità tra le esecuzioni è più marcata di quella vista nel Passo 3 — di nuovo, la macchina virtualizzata a 2 core condivisi con altri carichi lascia il segno. Ma nota cosa <strong>non</strong> cambia mai, in nessuna delle tre esecuzioni: la direzione dell&#39;effetto. Il layout imbottito è sempre più veloce di quello adiacente, mai il contrario, con un guadagno che va da un +39% a più di 4 volte a seconda del rumore di fondo di quella particolare esecuzione. È esattamente il tipo di lettura onesta che un buon benchmark richiede: il numero esatto oscilla con l&#39;ambiente, ma il fenomeno fisico che stai osservando — l&#39;invalidazione incrociata della riga di cache condivisa — è reale e ripetibile, non un artefatto statistico isolato.</p>
+<h2>Passo 8 — ThreadSanitizer: verifica che nessuna delle due versioni nasconda una race</h2>
+<p>Perché &quot;ha funzionato nei miei test&quot; non basta mai, in concorrenza: un data race può restare invisibile per mesi di test su una macchina e comparire il primo giorno su un hardware diverso, con un numero di core diverso, o semplicemente con il sistema più carico del solito. <strong>ThreadSanitizer</strong> (TSan) è uno strumento di analisi dinamica integrato in GCC e Clang: istrumenta ogni accesso in memoria durante l&#39;esecuzione reale del programma, tenendo traccia di quale thread ha letto o scritto ciascuna locazione e con quale sincronizzazione. Se rileva due thread che accedono alla stessa locazione, almeno uno in scrittura, senza una relazione di sincronizzazione riconosciuta dallo standard C++ tra i due accessi, lo segnala immediatamente con lo stack trace di entrambi.</p>
+<p>Compiliamo entrambi i programmi con l&#39;istrumentazione attiva:</p>
+<pre><code class="hljs language-bash">g++ -std=c++20 -O1 -g -fsanitize=thread -pthread \
+    counter_benchmark.cpp -o counter_benchmark_tsan
+g++ -std=c++20 -O1 -g -fsanitize=thread -pthread \
+    false_sharing.cpp -o false_sharing_tsan
+./counter_benchmark_tsan
+./false_sharing_tsan</code></pre>
+<p>Nota <code>-O1</code> invece di <code>-O2</code>: è una raccomandazione pratica quando si usa TSan — con ottimizzazioni più aggressive alcuni riordini di istruzioni possono rendere gli stack trace del sanitizer meno leggibili, senza guadagno reale (a queste dimensioni di programma il rallentamento di TSan stesso domina comunque il tempo totale).</p>
+<p>Risultato reale, misurato in questo corso — <strong>nessun warning di data race, su nessuno dei due programmi</strong>:</p>
+<pre><code class="hljs language-asciidoc"><span class="hljs-section">=== Project G.1 - Benchmark mutex vs atomic ===</span>
+[mutex]  time:  2716.48 ms   final counter: 10000000   (correct)
+[atomic] time:  1131.94 ms   final counter: 10000000   (correct)
+mutex/atomic ratio: 2.40x</code></pre>
+<pre><code class="hljs language-asciidoc"><span class="hljs-section">=== Project G.2 - False sharing and the alignas(64) fix ===</span>
+[adjacent, same cache line]       time:  9321.87 ms
+[alignas(64), separate lines]     time:  4011.17 ms
+Speedup from eliminating false sharing: 2.32x</code></pre>
+<p>Due osservazioni valgono la pena. La prima: il rallentamento imposto da TSan è enorme e ben visibile confrontando questi tempi con quelli dei Passi 3 e 7 (il benchmark mutex/atomic passa da <del>200/</del>67 ms a <del>2716/</del>1132 ms, un fattore approssimativamente tra 14x e 17x) — ed è precisamente il motivo per cui TSan si usa in fase di verifica e non nel binario di produzione. La seconda, più importante: <strong>l&#39;assenza di qualunque report di race è essa stessa un risultato</strong>, non un &quot;non è successo nulla&quot; privo di significato. È la controprova sperimentale che sia <code>std::mutex</code> sia <code>std::atomic</code>, usati come li hai visti in questo progetto, proteggono davvero lo stato condiviso in ogni esecuzione osservata dal sanitizer.</p>
+<p>Per confronto, e per chiudere il cerchio con il Modulo 0: se in questo stesso progetto il contatore fosse stato incrementato senza alcuna sincronizzazione — <code>++counter</code> diretto, come nella versione &quot;pericolosa&quot; del Modulo 0 — TSan lo avrebbe segnalato immediatamente, con un report del tipo <code>WARNING: ThreadSanitizer: data race</code>, con la riga esatta e i due thread in conflitto. Non l&#39;abbiamo incluso in questo progetto proprio perché entrambi i programmi qui sono corretti per costruzione — ma tenerlo a mente resta la ragione pratica per compilare sempre, come prassi, una build con TSan attivo su qualunque codice concorrente nuovo che scrivi, invece di aspettare che un bug di questo tipo emerga da solo in un momento imprevedibile.</p>
+<h2>Cosa hai appena dimostrato a te stesso</h2>
+<p>Hai misurato — non ipotizzato, misurato con un cronometro reale — tre fatti che nella maggior parte dei corsi di concorrenza restano affermazioni astratte: che un atomico può essere sensibilmente più veloce di un mutex per un&#39;operazione semplice sotto contesa; che due variabili logicamente indipendenti possono rallentarsi a vicenda in modo drammatico solo per la loro posizione fisica in memoria, e che <code>alignas(64)</code> è una cura concreta e verificabile; e che ThreadSanitizer può confermare, con la stessa serietà con cui un test unitario conferma la correttezza logica, che il tuo codice concorrente è davvero privo delle race che teoricamente potrebbe nascondere. Sono tre strumenti che restano nella tua cassetta degli attrezzi ben oltre questo corso — il primo passo, ogni volta che ottimizzi codice concorrente, è sempre lo stesso: misura prima, misura dopo, e usa un sanitizer per verificare che la velocità guadagnata non sia arrivata al prezzo della correttezza.</p>
+<hr>
+<p><em>Il codice sorgente completo di questo progetto è disponibile nella repository che accompagna questo corso, nella cartella <code>project-G-benchmark-mutex-atomic</code>.</em></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/it/learning-paths/multithreading-cpp/modulo-05-articolo-2-memory-model-e-false-sharing/">
+        <span class="post-nav__label">← Lezione precedente</span>
+        <span class="post-nav__title">std::atomic, il modello di memoria C++, e il bug di prestazioni che non si vede nel codice</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ti va di offrirmi un caffè?</h3>
+          <p>Se questo contenuto ti è stato utile, puoi sostenere il progetto con una piccola donazione libera.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/it/learning-paths/multithreading-cpp/modulo-06-articolo-1-architettura-cattura-buffer-limitato/">
+        <span class="post-nav__label">Lezione successiva →</span>
+        <span class="post-nav__title">Capstone: architettura di una pipeline di visione — cattura e buffer limitato</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/it/learning-paths/multithreading-cpp/">← Torna al percorso</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tutti i contenuti sono opera dell'autore, verificati sul campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Guarda il codice su GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Scrivimi una mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/it/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Torna su</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

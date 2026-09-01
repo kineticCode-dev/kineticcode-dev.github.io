@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Day Mars Almost Won: Pathfinder and Priority Inversion — Multithreading in C++: from theory to a working state machine — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ with Qt — Deep Dive (Module 2)">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/deep-dive-mars-pathfinder-priority-inversion/">
+  <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/deep-dive-mars-pathfinder-priority-inversion/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/deep-dive-mars-pathfinder-priority-inversion/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="The Day Mars Almost Won: Pathfinder and Priority Inversion — Multithreading in C++: from theory to a working state machine — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ with Qt — Deep Dive (Module 2)">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/deep-dive-mars-pathfinder-priority-inversion/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/">Articles</a>
+        <a href="/en/learning-paths/" aria-current="page">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <a href="/en/learning-paths/multithreading-cpp/deep-dive-mars-pathfinder-priority-inversion/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/en/learning-paths/multithreading-cpp/">Multithreading in C++: from theory to a working state machine</a> · Module 2 — Synchronization: Mutexes, Wait Conditions, Semaphores, and Classic Problems
+        </div>
+        <span class="eyebrow">Theory · Lesson 9 of 22</span>
+        <h1>The Day Mars Almost Won: Pathfinder and Priority Inversion</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ with Qt — Deep Dive (Module 2)</p>
+        <div class="article-hero__meta"><span>16 min read</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h1>The Day Mars Almost Won: Pathfinder and Priority Inversion</h1>
+<p>In the article on wait conditions and the pitfalls of synchronization, we mentioned in passing NASA&#39;s Mars Pathfinder mission as a historical example of priority inversion — we used it as an anecdote to give some weight to an otherwise abstract concept, and then moved on. But an anecdote dismissed in three lines risks staying just that: a funny name to drop in meetings to sound clever. The Pathfinder case deserves to be told in full, because it is probably the best existing example of a lesson that applies to any concurrent system you will ever write: the bug was not in a single piece of wrong code, but in the <em>interaction</em> between pieces of code, each of which, taken in isolation, was correct. It&#39;s the kind of error that traditional tests — the ones that check &quot;does function X return the right value for input Y&quot; — have no hope of catching, because function X really did return the right value. The problem was <em>when</em> things happened, not <em>what</em> happened.</p>
+<p>This deep dive tells the story in order: what Pathfinder was and why it was such an important mission, what the engineers at the Jet Propulsion Laboratory began to observe a few days after landing, how they figured out what was going on — an investigative effort carried out entirely from a hundred and fifty million kilometers away, with no way to go and look for themselves — and how they fixed it with one of the most elegant, low-risk fixes in the history of software engineering.</p>
+<h2>A mission, a small robot, a big risk</h2>
+<p>On July 4, 1997, the Mars Pathfinder probe touched down on the Martian surface in Ares Vallis, cushioned by a system of airbags that literally bounced it across the surface of the planet before coming to rest — one of the boldest pieces of engineering ever attempted for a planetary landing, chosen because it was far lighter and cheaper than a full retrorocket system. Aboard the lander traveled Sojourner, a small six-wheeled rover about the size of a microwave oven, the first vehicle to move autonomously on the surface of another planet. Both the lander and the rover ran software built on top of VxWorks, a <em>real-time</em> operating system — that is, a system designed not so much to be &quot;fast&quot; in a generic sense, but to guarantee that certain tasks are executed within precise, predictable deadlines, a central requirement for any system that has to control physical hardware in an environment where a delay can mean a lost scientific measurement or, in the worst cases, physical damage to the vehicle.</p>
+<p>A real-time operating system like VxWorks organizes work into <em>tasks</em> (the conceptual equivalent of the threads you&#39;ve already encountered, though with its own historical terminology) and orders them according to a numeric priority assigned by whoever designs the software. The principle is the one you&#39;ve already seen: the scheduler, when several tasks are ready to run, always runs the one with the highest priority, and it does so preemptively — if a low-priority task is running and a higher-priority one becomes ready, the low-priority task is immediately interrupted to make way for the more urgent one.</p>
+<p>On the Pathfinder lander, three of these tasks shared a piece of software infrastructure commonly called the <strong>information bus</strong>: a data structure in shared memory through which the probe&#39;s various subsystems exchanged information — telemetry, commands, status data — a bit like an office where every desk faces a shared bulletin board on which everyone pins and reads messages. Like any shared data structure read and written by multiple concurrent threads, the information bus was protected by a mutex: before reading or writing its contents, a task had to acquire the lock, exactly as your code has learned to do with <code>QMutexLocker</code>. So far, nothing different from what you&#39;ve already seen: a critical section, a mutex, the discipline of acquiring and releasing correctly. The problem, as we&#39;ll see, was not the discipline around the mutex itself — it was a much subtler detail about <em>which</em> tasks could end up blocked waiting for that mutex, and for how long.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/mars-pathfinder/01-three-tasks-information-bus.png" alt="Pathfinder: three tasks, three priorities, one shared resource" loading="lazy"></p>
+<p>The task that managed traffic on the information bus ran at <strong>high priority</strong>, because it had to do so with great regularity to keep the state of the whole probe consistent. The task that collected data from the ASI/MET weather instrument (Atmospheric Structure Instrument/Meteorology Package, the instrument that measured temperature, pressure, and density of the Martian atmosphere) ran at <strong>low priority</strong>: it woke up rarely, did its work — which included a brief write to the information bus — and went back to sleep. In between, at <strong>intermediate priority</strong>, ran a communications task, responsible for sending telemetry back to Earth: a job that could take a relatively long time to run, but that — and this is the key point to keep in mind — never touched the information bus. It had no need whatsoever for that mutex. It was, by construction, completely independent of the synchronization problem between the other two tasks. And indeed, none of the engineers who wrote these three tasks, considering them two at a time or individually, would have found anything wrong. And yet, put together in execution, these three perfectly correct pieces of code produced a system that locked up.</p>
+<h2>The &quot;mysterious&quot; total resets</h2>
+<p>A few days after landing, the mission control team at JPL began observing something alarming: at irregular intervals, Pathfinder&#39;s onboard system carried out a <strong>total reset</strong> — a complete reboot of the flight software, with the loss of all work not yet saved at that moment and, more generally, with the enormous anxiety that accompanies any unexpected behavior on a vehicle that is tens of minutes of radio communication delay away and that no one will ever be able to approach with a screwdriver. Every reset meant hours of lost scientific data and telemetry, on top of the time needed to bring all the subsystems back up from scratch.</p>
+<p>The mechanism that triggered these resets was a <strong>watchdog timer</strong>: a device, part hardware and part software, whose only function is to check that certain critical tasks keep &quot;showing signs of life&quot; regularly. Conceptually it&#39;s a counter that the high-priority information-bus task had to reset periodically, at short intervals, like a mandatory check-in; if the counter reached a limit value without having been reset, the watchdog interpreted the situation as an irreversible failure and reacted in the only way such a simple safety device knows how to react: tearing everything down and restarting the system from a known, safe state.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/mars-pathfinder/02-watchdog-reset.png" alt="The watchdog: a safety net that doesn&amp;#39;t know the real cause" loading="lazy"></p>
+<p>It&#39;s worth pausing on this mechanism for a moment, because the watchdog&#39;s role here is important to understand precisely, and it&#39;s a design pattern you&#39;ll come across again in any critical embedded system you&#39;ll ever work on: the watchdog is deliberately &quot;dumb&quot;. It doesn&#39;t diagnose, doesn&#39;t log the cause, doesn&#39;t distinguish between an actual crash and a temporary delay caused by a scheduling problem. All it knows is that the periodic signal didn&#39;t arrive in time, and its only possible action is the most drastic one: reset everything and start over. This is the right design choice — in a system where the cost of staying stuck forever is immeasurably worse than the cost of an unnecessary reboot, a crude but reliable safety mechanism is preferable to a sophisticated but fragile one — but it has an uncomfortable consequence for whoever has to debug it: it erases every direct trace of what had actually prevented the high-priority task from finishing its work on time. The engineers on Earth had no error message saying &quot;the information-bus task was blocked by the weather task via the communications task.&quot; All they had was: the system reset, again, with no apparent cause.</p>
+<p>And the most frustrating part, the one that made the problem so hard to reproduce on demand, was the apparent randomness of the phenomenon: the resets didn&#39;t happen every time the weather task ran, nor every time the communications task ran. They only happened on those — relatively rare — occasions when the timing of the three tasks overlapped in a very specific way. An intermittent symptom, dependent on a particular temporal interleaving, is exactly the signature of a concurrency bug.</p>
+<h2>The diagnosis: reconstructing an accident from 150 million kilometers away</h2>
+<p>Unable to send a technician to check on Sojourner, the flight software engineering team — led by Glenn Reeves, whose detailed technical account of this affair later became a reference text, widely cited and reprinted, in the literature on real-time systems — had to approach the problem exactly like an investigator reconstructing a crime scene from indirect clues alone: unable to observe the failure as it happened on the actual probe, the team reconstructed it on a <strong>testbed</strong> on Earth, a test bench that faithfully replicated the flight hardware and software, normally used to validate every command before actually sending it to Mars.</p>
+<p>The diagnostic work consisted of turning on, on this laboratory twin, debugging and tracing instrumentation that normally stayed off during actual flight operation (so as not to consume precious computing resources): detailed logs of when each task got scheduled, of when it acquired and released locks, of how long it stayed waiting. With this instrumentation active, and running the system under a workload similar to what had been observed on the real probe, the team managed to make the problem show up on the testbed too — a fundamental step, because a bug you can&#39;t reproduce on demand is a bug you can&#39;t verify you&#39;ve actually fixed. And once reproduced under detailed observation, the mechanism became clearly visible.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/mars-pathfinder/03-inversion-timeline.png" alt="The sequence that locks up the system" loading="lazy"></p>
+<p>Follow the sequence exactly in the order in which it&#39;s told here, because it&#39;s the order in which the events actually unfolded: the low-priority weather task wakes up on its schedule, and in the course of its work acquires the information-bus mutex to write the data it has just collected. So far, all normal. While the weather task is still inside that critical section, holding the mutex, the intermediate-priority communications task becomes ready and runs, preemptively, exactly as the scheduler&#39;s rules require: a higher priority beats a lower one, full stop. The communications task runs for a non-trivial amount of time — it isn&#39;t doing anything wrong, it&#39;s simply carrying out its legitimate job of sending telemetry — and for that whole time the weather task remains suspended, frozen halfway through its critical section, still firmly holding the mutex because it never got the chance to reach the point in the code where it would have released it.</p>
+<p>And it&#39;s precisely in this window that the twist arrives: the information-bus task, the one at <strong>high</strong> priority — higher than both of the other two — wakes up and needs the mutex to do its work. The scheduler, correctly, grants it the CPU immediately, because it is the highest-priority task among those ready to run. But the information-bus task cannot proceed: the mutex it needs is held by the weather task, which in turn cannot release it because it doesn&#39;t have the CPU. And whoever does have the CPU — the communications task — has no need for that mutex at all, and therefore no intention — and no reason, from its own point of view — to step aside. The result is that the highest-priority task on the entire probe ends up, in effect, waiting on an intermediate-priority task that shares no resource with it whatsoever. This is exactly the definition of <strong>priority inversion</strong>: the order of importance that the engineer had established in the design is silently overturned by the interaction between the scheduling mechanism and the mutual-exclusion mechanism, without any single line of code being &quot;wrong&quot; when taken in isolation.</p>
+<p>Go back now and reread the third property that formalizes any correct synchronization mechanism — <strong>bounded waiting</strong>: a thread waiting to enter a critical section must, sooner or later, succeed, and there must be no scenario in which something bypasses it indefinitely because of a flaw in the mechanism itself. The Pathfinder case is a textbook example — literally, it ended up in countless textbooks — of this property being violated not by a gross error, but by the absence of one specific precaution, which we&#39;ll look at in the next section.</p>
+<h2>The fix: priority inheritance</h2>
+<p>The good news — and the part of this story that makes it such a celebrated case study — is that VxWorks already offered, built into its own mutex system, the solution to this exact problem: a protocol called <strong>priority inheritance</strong>, available as an option to turn on when creating the semaphore/mutex, but which had not been enabled in Pathfinder&#39;s flight code.</p>
+<p>The idea behind priority inheritance is elegant in its conceptual simplicity: when a low-priority task acquires a mutex, and a higher-priority task blocks waiting for that same mutex, the mutex temporarily &quot;lends&quot; its higher priority to the task holding it — effectively raising the holder&#39;s effective priority to the level of the most urgent task waiting for it, for exactly as long as the mutex stays held. This isn&#39;t an arbitrary trick: it&#39;s a way of guaranteeing that the low-priority task, precisely because it is now holding something an important task needs, cannot in turn be bypassed by a third, intermediate-priority task that has no interest whatsoever in that particular resource. The moment the holder releases the mutex, its priority goes back exactly to its original value — the loan is temporary and expires the moment it exits the critical section.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/mars-pathfinder/04-priority-inheritance-before-after.png" alt="Before and after priority inheritance" loading="lazy"></p>
+<p>Without inheritance, the low-priority task stays blocked behind the intermediate-priority one for however long the latter decides to keep running, and the high-priority task waits passively, with no guarantee at all on how long the wait will last. With inheritance active, the very moment the high-priority task blocks on the mutex, the low-priority task holding it gets temporarily promoted to that same priority — and this lets it, in turn, bypass the intermediate task, quickly finish its critical section (which, remember, was designed to be short in the first place: writing a bit of data to the bus, not running some heavy computation), release the mutex, and immediately hand control back to the high-priority task that had been waiting. The intermediate task, which never had anything to do with the mutex in the first place, simply waits its turn a little longer — a bounded, acceptable delay, very different from the potentially indefinite block suffered by the most critical task on the whole probe.</p>
+<p>Perhaps the most extraordinary part of the whole affair is <em>how</em> this fix was applied: it did not require any physical intervention, obviously, nor a resend of the entire flight software. The fix consisted of commanding, from Earth, through the normal radio communication channel used to send instructions to the probe, the activation of the priority-inheritance option on the information-bus mutex — a single configuration flag, already present and supported by the operating system, simply not enabled in that particular mutex&#39;s original configuration. A minimal, surgical, low-risk change, which permanently solved a problem that had caused several unexplained resets in the first days of the mission. From that point on, Pathfinder and Sojourner successfully completed their primary mission and well beyond it: seventy-seven Martian days of observations, against the thirty originally planned for the lander alone.</p>
+<h2>The lesson, brought home</h2>
+<p>Let&#39;s close by coming back to why this story matters to you, today, as you study mutexes and wait conditions in Qt on a project that will probably never go to Mars. There are at least three lessons here, and none of them requires an aerospace context to hold.</p>
+<p>The first is that <strong>the correctness of a concurrent component is not a property you can assess by looking at that component alone</strong>. The high-priority task was correct. The low-priority task was correct, and always released its mutex as soon as it finished. The communications task was correct and didn&#39;t even touch the shared resource. The bug lived in the interaction between the three, at a level of analysis that no code review focused on a single file could ever have caught. It&#39;s the same principle, in more dramatic form, that we encounter when talking about deadlock: the safety of a concurrent system is a <em>global</em> property of the whole set of interactions, not the sum of local correctness.</p>
+<p>The second lesson concerns the tools you have available today, which the Pathfinder engineers only partly had. Qt doesn&#39;t directly expose a &quot;priority inheritance&quot; flag on <code>QMutex</code> — it&#39;s a lower-level detail, typically handled by the underlying operating system rather than by the application library — but the conceptual lesson still holds fully: when you design a system with tasks of different priorities (in Qt, typically via <code>QThread::setPriority()</code>) sharing a resource protected by a mutex, you have to explicitly ask yourself what happens if a low-priority task gets blocked in the middle of its critical section while an intermediate-priority task, which has nothing to do with that resource, is hogging the CPU. In the vast majority of desktop applications, and even in many modern embedded systems, this scenario is less critical than it is on a space probe with tight real-time constraints — but in the world of vision systems, where a delayed frame can mean a lost measurement or a quality check that skips a defective part, the principle applies with the same urgency: keeping critical sections as short as possible drastically shrinks the time window in which a priority inversion like this could even have a chance of showing up.</p>
+<p>The third lesson is perhaps the most practical one: <strong>an intermittent, seemingly random symptom in a concurrent system is almost always a timing problem, not a logic problem</strong>. When your code works in a thousand runs out of a thousand and fails on the thousand-and-first, without you being able to figure out why, the right question to ask yourself is not &quot;which value is wrong&quot; but &quot;what sequence of events, in which threads, with what relative timing, could produce this result&quot; — and it&#39;s exactly this kind of reasoning, applied with rigor by a team that couldn&#39;t even see the machine on which the bug was happening, that made it possible to solve what the newspapers of the time reported, oversimplifying quite a bit, as &quot;a rover computer on Mars mysteriously resetting itself.&quot; It wasn&#39;t mysterious at all. It was, quite simply, a textbook case — your textbook, now — of priority inversion.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/learning-paths/multithreading-cpp/module-02-article-2-waitcondition-deadlock-starvation/">
+        <span class="post-nav__label">← Previous lesson</span>
+        <span class="post-nav__title">Waiting for an event, not a lock: QWaitCondition, QSemaphore, and how to shoot yourself in the foot</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/learning-paths/multithreading-cpp/module-02-article-3-project-producer-consumer/">
+        <span class="post-nav__label">Next lesson →</span>
+        <span class="post-nav__title">Project: producer, consumer, and the buffer that keeps them in balance</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/learning-paths/multithreading-cpp/">← Back to the course</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

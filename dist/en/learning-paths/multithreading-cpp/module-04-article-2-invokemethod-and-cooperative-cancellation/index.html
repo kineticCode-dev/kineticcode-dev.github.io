@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QMetaObject::invokeMethod and cooperative cancellation: calling and stopping a thread without risk — Multithreading in C++: from theory to a working state machine — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ with Qt — Module 4">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-and-cooperative-cancellation/">
+  <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-and-cooperative-cancellation/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-and-cooperative-cancellation/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="QMetaObject::invokeMethod and cooperative cancellation: calling and stopping a thread without risk — Multithreading in C++: from theory to a working state machine — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ with Qt — Module 4">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-and-cooperative-cancellation/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/">Articles</a>
+        <a href="/en/learning-paths/" aria-current="page">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <a href="/en/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-and-cooperative-cancellation/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/en/learning-paths/multithreading-cpp/">Multithreading in C++: from theory to a working state machine</a> · Module 4 — Safe Communication Between Threads: Qt Connections and Cooperative Cancellation
+        </div>
+        <span class="eyebrow">Theory · Lesson 15 of 22</span>
+        <h1>QMetaObject::invokeMethod and cooperative cancellation: calling and stopping a thread without risk</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ with Qt — Module 4</p>
+        <div class="article-hero__meta"><span>8 min read</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>All source code available <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">here</a></p>
+<h1>QMetaObject::invokeMethod and cooperative cancellation: calling and stopping a thread without risk</h1>
+<p>In the previous article you took apart the four <code>Qt::ConnectionType</code> values. Everything you&#39;ve done so far to communicate across threads, though, went through a signal-slot pair declared in advance: you define a signal in the sending class, a slot in the receiving one, connect them with <code>connect()</code>, and from that moment on every <code>emit</code> marshals the call according to those rules. It works beautifully for <strong>recurring</strong> communication — a worker that repeatedly emits progress, a window that sends commands every time the user clicks a button. But what do you do when you need <strong>a single occasional call</strong>, maybe with different arguments each time, to a method you don&#39;t want to promote to a dedicated signal/slot pair just for that one use?</p>
+<h2>QMetaObject::invokeMethod: calling a method without a dedicated connect()</h2>
+<p><code>QMetaObject::invokeMethod()</code> solves exactly this case. It&#39;s a static function that takes a pointer to a <code>QObject</code>, the name of a method (as a string, or — in the more modern Qt 6 overloads — a function pointer or a lambda), an explicit <code>Qt::ConnectionType</code>, and the arguments to pass, packaged with the <code>Q_ARG(Type, value)</code> macro. The delivery mechanism is <strong>identical</strong> to that of an ordinary queued connection — the call gets marshalled through the receiving thread&#39;s event queue — but without you having to declare a signal in advance and connect it with <code>connect()</code>. The only requirement on the target method is that it be marked <code>Q_INVOKABLE</code> (if it&#39;s an ordinary public method) or that it already be an existing slot: in either case, Qt&#39;s meta-object system knows how to find it and invoke it by name at runtime.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-04/18-invokemethod-safe-call.png" alt="QMetaObject::invokeMethod delivering a call safely without a dedicated connect()" loading="lazy"></p>
+<p>As with an ordinary <code>connect()</code>, you can choose the connection type: <code>Qt::QueuedConnection</code> for a <em>fire-and-forget</em> command, where the caller doesn&#39;t wait for anything and moves on right away, or <code>Qt::BlockingQueuedConnection</code> when you need <strong>the return value</strong> of the invoked method. With the latter, you additionally use the <code>Q_RETURN_ARG(Type, destinationVariable)</code> macro: the calling thread blocks until the method has really executed on the receiving thread and has written its return value into the variable you passed it. It&#39;s the one clean way to synchronously read a value computed on another thread without having to invent your own waiting mechanism with a mutex and a wait condition just for that single purpose.</p>
+<p>It&#39;s worth noting something you may not have connected yet: you&#39;ve already <em>used</em> <code>QMetaObject::invokeMethod</code> indirectly, even if you never wrote it by hand. It&#39;s precisely the mechanism Qt uses internally when you call <code>deleteLater()</code> from another thread (Module 1), and it&#39;s conceptually related to how <code>QTimer::singleShot</code> with a receiver on another thread marshals its own call. It&#39;s not some exotic function on the fringes of Qt: it&#39;s a fundamental building block that usually stays hidden behind more convenient APIs, and today you learn to use it directly.</p>
+<p>One clarification that will save you an afternoon of debugging: the deadlock rule for <code>BlockingQueuedConnection</code> seen in the previous article applies here identically. If you call <code>QMetaObject::invokeMethod(object, &quot;method&quot;, Qt::BlockingQueuedConnection, ...)</code> and <code>object</code> lives on exactly the thread you&#39;re calling from, you block forever, for the very same reason.</p>
+<h2>Cooperative cancellation: stopping a worker without shutting it down by force</h2>
+<p>In Modules 1 and 2, your worker had a simple life cycle: it started, did its work through to the end, and the window waited with <code>quit()</code> + <code>wait()</code>. You never really had to face the problem of <strong>interrupting</strong> a job midway, on the user&#39;s explicit request, while it&#39;s still in progress. The standard solution has a name: <strong>cooperative cancellation</strong>.</p>
+<p>The underlying idea is simple: the worker, within its own loop, periodically checks a shared boolean flag — &quot;should I stop?&quot; — and when it finds it <code>true</code>, it exits the loop on its own, at a point it chose itself, where it knows it&#39;s not leaving anything half-done. Nobody &quot;shuts down&quot; the worker from the outside: it&#39;s the worker itself, cooperating, that decides when it&#39;s safe to stop. Hence the name.</p>
+<h3>Why std::atomic<bool>, not just bool</h3>
+<p>The flag we&#39;ll use is a <code>std::atomic&lt;bool&gt;</code>, not a plain <code>bool</code>. What would change with an ordinary <code>bool</code>? It&#39;s not about data corruption as such — a <code>bool</code> is so small that almost no real architecture produces a &quot;half&quot; write to it. The real problem is subtler, and it&#39;s exactly what Module 5 covers in full depth when it reaches the C++ memory model: <strong>cross-core visibility</strong>. Modern CPUs don&#39;t write a value directly to RAM every time and don&#39;t reread it from there every time: each core has its own caches, and without an explicit synchronization mechanism, a thread running on one core can go on seeing, for an indefinite time, the old value of a variable that another thread, on another core, has already modified — not because the data is corrupted, but because that write hasn&#39;t &quot;arrived&quot; at the first core&#39;s cache yet. The compiler itself, absent different guarantees, is free to optimize away the very act of repeatedly rechecking the flag inside the loop, keeping it in a register instead of rereading it from memory every iteration.</p>
+<p><code>std::atomic&lt;bool&gt;</code> solves both problems with a single guarantee from the language: every <code>load()</code> and every <code>store()</code> on an atomic variable has a well-defined synchronization relationship with the other atomic operations on that same variable, the compiler cannot optimize away the rereads, and — with the default ordering (<em>sequentially consistent</em>, what you get without specifying anything else) — a write made by one thread is guaranteed to be visible to another thread that performs a subsequent read on the same atomic variable. You don&#39;t need to understand the full taxonomy of the memory model today (relaxed, acquire/release, sequentially consistent: it comes with all the rigor it deserves in Module 5) — for now, the practical principle is enough: <strong>a cancellation flag shared between threads must be atomic, not simply boolean</strong>, because the guarantee you need isn&#39;t &quot;no corrupted bits&quot;, it&#39;s &quot;the other thread will really see the new value within a reasonable time, not a value frozen in cache&quot;.</p>
+<p>The complete pattern is a <code>while (!m_stop.load())</code> wrapping a single step of work, with the flag being written (<code>m_stop.store(true)</code>) by the GUI thread in response to a click. Every iteration of the loop is a natural checkpoint: if the flag is true, the worker exits, and no resource is left half-done — the mutexes acquired within that step have already been released before the next check, the C++ destructors of objects local to that step have already run, the shared state is in a coherent state.</p>
+<h2>QThread::terminate(): why it exists, and why it should (almost) always be avoided</h2>
+<p>If cooperative cancellation feels like a long detour for a problem that would seemingly be solved with a single call, you&#39;re right to ask yourself: why not just use <code>thread-&gt;terminate()</code>? The method really does exist in <code>QThread</code>&#39;s API, and it does exactly what the name promises — it <strong>terminates the operating-system thread immediately</strong>, at the exact point its execution happens to be, without warning it, without giving it any chance to react.</p>
+<p>The problem is precisely in that brutality. The worker gets interrupted at an arbitrary point — potentially <strong>inside</strong> a critical section protected by a mutex it had just acquired and not yet released. The operating system does nothing to unlock it: that mutex stays locked forever, and every other thread that in the future tries to acquire it will wait indefinitely — a deadlock nobody &quot;programmed&quot; but that the forced shutdown created as a side effect. Worse still: <code>terminate()</code> runs <strong>no C++ destructor at all</strong> for objects that lived on that thread&#39;s stack at the moment of interruption — no <code>QMutexLocker</code> unlocks automatically via RAII (the RAII mechanism itself presupposes that control flow passes through the destructor, something an operating-system-level shutdown bypasses entirely), no file gets closed cleanly, no allocated resource gets released. The result is a program state that&#39;s potentially <strong>inconsistent midway through</strong>: a data structure that was about to be updated in two steps and only received one, a buffer with an advanced index but its content not yet written.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-04/19-cooperative-cancellation-vs-terminate.png" alt="Cooperative cancellation compared with QThread::terminate()" loading="lazy"></p>
+<p>To be fully honest: <code>terminate()</code> is <em>never</em> completely forbidden by Qt&#39;s official documentation, and in extreme cases — a third-party thread that you know for certain never touches shared state, that you must stop at any cost because it&#39;s entered an unrecoverable infinite loop, in a context where losing that process messily is acceptable — it can be the last resort available. But in 99% of the cases you&#39;ll run into writing application-level Qt code, &quot;the thread stopped responding and I want to kill it&quot; is the symptom of a design problem in the worker (a loop that never checks any flag, a wait that nobody ever wakes), not a justification for <code>terminate()</code> — the correct cure is almost always to make that worker cooperatively cancellable with the pattern just shown, not to force its death from the outside.</p>
+<p>With <code>invokeMethod</code> and cooperative cancellation in your toolkit, you&#39;re ready for this module&#39;s guided project: a worker with a complete life cycle — start, pause, resume, stop — that puts exactly these ideas into practice, including a real deadlock that was made, and then fixed, while preparing this very course.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/learning-paths/multithreading-cpp/module-04-article-1-the-four-qt-connection-types/">
+        <span class="post-nav__label">← Previous lesson</span>
+        <span class="post-nav__title">The four Qt::ConnectionType values: what really happens when you write connect()</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/learning-paths/multithreading-cpp/module-04-article-3-project-worker-lifecycle/">
+        <span class="post-nav__label">Next lesson →</span>
+        <span class="post-nav__title">Project: a worker's complete life cycle — start, pause, resume, stop</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/learning-paths/multithreading-cpp/">← Back to the course</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

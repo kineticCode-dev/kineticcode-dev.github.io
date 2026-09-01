@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deux démonstrations, pas deux récits : la race condition et le gel construits de tes propres mains — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code</title>
+  <meta name="description" content="Multithreading en C++ avec Qt — Module 0 — Projet">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-00-article-3-projets-race-condition-et-gel-de-linterface/">
+  <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-00-article-3-projets-race-condition-et-gel-de-linterface/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-00-article-3-projets-race-condition-et-gel-de-linterface/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Deux démonstrations, pas deux récits : la race condition et le gel construits de tes propres mains — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code">
+  <meta property="og:description" content="Multithreading en C++ avec Qt — Module 0 — Projet">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-00-article-3-projets-race-condition-et-gel-de-linterface/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/">Articles</a>
+        <a href="/fr/learning-paths/" aria-current="page">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <a href="/fr/learning-paths/multithreading-cpp/module-00-article-3-projets-race-condition-et-gel-de-linterface/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/fr/learning-paths/multithreading-cpp/">Multithreading en C++ : de la théorie à une machine à états fonctionnelle</a> · Module 0 — Les fondamentaux
+        </div>
+        <span class="eyebrow">Projet · Leçon 3 sur 22</span>
+        <h1>Deux démonstrations, pas deux récits : la race condition et le gel construits de tes propres mains</h1>
+        <p class="article-hero__excerpt">Multithreading en C++ avec Qt — Module 0 — Projet</p>
+        <div class="article-hero__meta"><span>10 min de lecture</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Tu peux trouver tout le code source <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">ici</a></p>
+<h1>Deux démonstrations, pas deux récits : la race condition et le gel construits de tes propres mains</h1>
+<p>Les deux articles précédents ont construit le vocabulaire : thread, concurrence, race condition, data race, la contrainte du thread unique de Qt. Maintenant, place aux mains. Construisons ensemble deux petits projets : le premier isole la race condition en C++ standard pur, sans une seule ligne de Qt ; le second recrée en direct le gel de l&#39;UI dont nous avons déjà parlé, et ne le guérit qu&#39;à moitié — la vraie guérison arrive dans le prochain module, quand nous déplacerons le calcul sur un thread séparé avec <code>QThread</code>.</p>
+<h2>Projet A — La race condition, isolée et en direct</h2>
+<p>Nous voulons voir le phénomène pur, sans aucun framework par-dessus. Crée un dossier de travail et, dedans, un fichier <code>CMakeLists.txt</code> :</p>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.16</span>)
+<span class="hljs-keyword">project</span>(race_condition_demo LANGUAGES CXX)
+
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">17</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD_REQUIRED <span class="hljs-keyword">ON</span>)
+
+<span class="hljs-keyword">find_package</span>(Threads REQUIRED)
+
+<span class="hljs-keyword">add_executable</span>(race_condition_demo main.cpp)
+<span class="hljs-keyword">target_link_libraries</span>(race_condition_demo PRIVATE Threads::Threads)</code></pre>
+<p><code>find_package(Threads REQUIRED)</code> cherche sur le système la bibliothèque de threading native (sur Linux c&#39;est <code>pthread</code> ; sur Windows c&#39;est le runtime lui-même qui s&#39;en charge), et <code>Threads::Threads</code> est la cible que nous lions à l&#39;exécutable : sans ce lien explicite, certains systèmes donneraient des erreurs de linkage dès qu&#39;on utiliserait <code>std::thread</code>.</p>
+<p>Crée <code>main.cpp</code> et commence par les includes et les constantes :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;thread&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;mutex&gt;</span></span>
+
+<span class="hljs-keyword">constexpr</span> <span class="hljs-type">int</span> THREAD_COUNT = <span class="hljs-number">8</span>;
+<span class="hljs-keyword">constexpr</span> <span class="hljs-type">int</span> INCREMENTS_PER_THREAD = <span class="hljs-number">1&#x27;000&#x27;000</span>;</code></pre>
+<p>Huit threads, un million d&#39;incréments chacun : suffisant pour rendre la race condition presque certaine à observer (avec de petits nombres, par pure chance statistique, tu pourrais ne jamais la voir se manifester — et c&#39;est déjà une bonne leçon : &quot;je ne l&#39;ai pas vue donc elle n&#39;existe pas&quot; est un raisonnement dangereux en matière de concurrence).</p>
+<p>Maintenant la version dangereuse :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-type">long</span> <span class="hljs-type">long</span> unprotectedCounter = <span class="hljs-number">0</span>;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">incrementUnprotected</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; INCREMENTS_PER_THREAD; ++i) {
+        unprotectedCounter++;   <span class="hljs-comment">// &lt;-- race condition qui</span>
+    }
+}</code></pre>
+<p>Aucune ruse : c&#39;est le code le plus évident possible, et c&#39;est exactement pour ça que le bug est insidieux. Il ne saute pas aux yeux à l&#39;écriture, il ne saute aux yeux qu&#39;à l&#39;exécution, et seulement si tu l&#39;observes de la bonne façon.</p>
+<p>Juste en dessous, la version correcte :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-type">long</span> <span class="hljs-type">long</span> protectedCounter = <span class="hljs-number">0</span>;
+std::mutex counterMutex;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">incrementWithMutex</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; INCREMENTS_PER_THREAD; ++i) {
+        <span class="hljs-function">std::lock_guard&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(counterMutex)</span></span>;
+        protectedCounter++;
+    }
+}</code></pre>
+<p><code>std::lock_guard</code> est un wrapper <strong>RAII</strong> : il acquiert le verrou sur le mutex dans le constructeur et le libère automatiquement dans le destructeur, c&#39;est-à-dire quand <code>lock</code> sort de son scope à la fin de chaque itération. Ça garantit que le mutex est libéré même si une exception était levée entre-temps — oublier de le faire avec un <code>lock()</code>/<code>unlock()</code> manuels est une façon classique de s&#39;introduire soi-même un deadlock.</p>
+<p>Dans <code>main</code>, lance d&#39;abord la version sans protection :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-type">const</span> <span class="hljs-type">long</span> <span class="hljs-type">long</span> expected = <span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-type">long</span> <span class="hljs-type">long</span>&gt;(THREAD_COUNT) * INCREMENTS_PER_THREAD;
+
+    std::cout &lt;&lt; <span class="hljs-string">&quot;Expected final value in both cases: &quot;</span> &lt;&lt; expected &lt;&lt; <span class="hljs-string">&quot;\n\n&quot;</span>;
+
+    {
+        std::vector&lt;std::thread&gt; threads;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; THREAD_COUNT; ++i)
+            threads.<span class="hljs-built_in">emplace_back</span>(incrementUnprotected);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span>&amp; t : threads)
+            t.<span class="hljs-built_in">join</span>();
+
+        std::cout &lt;&lt; <span class="hljs-string">&quot;[WITHOUT mutex]  final counter = &quot;</span> &lt;&lt; unprotectedCounter &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span>;
+    }</code></pre>
+<p><code>t.join()</code> bloque le thread appelant jusqu&#39;à ce que le thread <code>t</code> ait complètement terminé. Il est essentiel de l&#39;appeler sur chaque thread créé avant de lire le résultat final : lire <code>unprotectedCounter</code> avant que tous les threads aient fini introduirait une autre race condition, cette fois entre le thread principal qui lit et les autres qui écrivent encore.</p>
+<p>Ajoute le même bloc pour la version protégée, en rappelant <code>incrementWithMutex</code> à la place d&#39;<code>incrementUnprotected</code>, puis termine par <code>return 0;</code>.</p>
+<p>Compile et exécute, d&#39;abord en Release :</p>
+<pre><code class="hljs language-bash">cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+./build/race_condition_demo</code></pre>
+<p>Il y a une possibilité concrète que le compteur &quot;sans mutex&quot; s&#39;avère correct même dans cette exécution. Ça ne veut pas dire que le code est sûr : ça veut dire que le compilateur — ayant le droit de supposer qu&#39;aucune data race ne se produit — a probablement gardé <code>unprotectedCounter</code> dans un registre pendant toute la durée de la boucle de chaque thread, masquant le problème au lieu de le résoudre.</p>
+<p>Maintenant recompile en Debug :</p>
+<pre><code class="hljs language-bash"><span class="hljs-built_in">rm</span> -rf build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
+./build/race_condition_demo</code></pre>
+<p>Avec les optimisations désactivées, chaque incrément passe vraiment par une lecture et une écriture en mémoire à chaque itération, et il est bien plus probable que deux threads s&#39;entrelacent de la mauvaise façon. Sur une machine de vérification à deux cœurs, le compteur &quot;sans mutex&quot; a fini par perdre plus de cinq millions d&#39;incréments sur huit millions attendus — une erreur de 60 %, pas un arrondi négligeable. Essaie plusieurs fois : le nombre exact d&#39;incréments perdus changera à chaque fois, parce qu&#39;il dépend de la façon dont l&#39;ordonnanceur a entrelacé les threads lors de cette exécution précise. Non déterministe, par définition — c&#39;est de nouveau le point central de l&#39;article précédent.</p>
+<p>Tu viens de te démontrer à toi-même qu&#39;une instruction apparemment atomique (<code>counter++</code>) ne l&#39;est absolument pas au niveau de l&#39;exécution machine, que le compilateur peut cacher le problème au lieu de le résoudre si tu ne synchronises pas explicitement, et qu&#39;un simple <code>std::mutex</code> avec <code>std::lock_guard</code> suffit à ramener le résultat à l&#39;exactitude mathématique attendue, à chaque fois, sans exception.</p>
+<h2>Projet B — Le gel de l&#39;UI, en direct</h2>
+<p>C&#39;est le projet qui vaut plus que tout paragraphe de théorie pour comprendre pourquoi ce cours entier existe. Construisons une petite fenêtre Qt Widgets avec un &quot;battement de cœur&quot; visuel — un nombre qui monte tous les dixièmes de seconde, la preuve que la fenêtre est vivante — puis bloquons-la exprès, sur commande, en appuyant sur un bouton.</p>
+<p>Crée un nouveau dossier de travail et un <code>CMakeLists.txt</code> :</p>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.16</span>)
+<span class="hljs-keyword">project</span>(ui_freeze_demo LANGUAGES CXX)
+
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">17</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD_REQUIRED <span class="hljs-keyword">ON</span>)
+<span class="hljs-keyword">set</span>(CMAKE_AUTOMOC <span class="hljs-keyword">ON</span>)
+
+<span class="hljs-keyword">find_package</span>(Qt6 REQUIRED COMPONENTS Widgets)
+
+<span class="hljs-keyword">add_executable</span>(ui_freeze_demo
+    main.cpp
+    mainwindow.h
+    mainwindow.cpp
+)
+
+<span class="hljs-keyword">target_link_libraries</span>(ui_freeze_demo PRIVATE Qt6::Widgets)</code></pre>
+<p><code>CMAKE_AUTOMOC ON</code> invoque automatiquement, en coulisses, le Meta-Object Compiler de Qt sur chaque classe qui utilise la macro <code>Q_OBJECT</code> — le moc génère du code supplémentaire qui rend possible le mécanisme de signaux et slots. Tu n&#39;auras jamais besoin de l&#39;invoquer à la main.</p>
+<p>Crée <code>mainwindow.h</code> :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QMainWindow&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QLabel&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QPushButton&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QTimer&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QElapsedTimer&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QStatusBar&gt;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MainWindow</span> : <span class="hljs-keyword">public</span> QMainWindow {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">MainWindow</span><span class="hljs-params">(QWidget *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+
+<span class="hljs-keyword">private</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updateHeartbeat</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">runHeavyComputation</span><span class="hljs-params">()</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    QLabel *m_labelHeartbeat;
+    QLabel *m_labelInstructions;
+    QPushButton *m_blockButton;
+    QTimer *m_heartbeatTimer;
+    <span class="hljs-type">int</span> m_heartbeatCount = <span class="hljs-number">0</span>;
+
+    <span class="hljs-function"><span class="hljs-type">long</span> <span class="hljs-type">long</span> <span class="hljs-title">countPrimes</span><span class="hljs-params">(<span class="hljs-type">long</span> <span class="hljs-type">long</span> limit)</span></span>;
+};</code></pre>
+<p>La macro <code>Q_OBJECT</code> est celle qui rend cette classe compatible avec le système de signaux et slots de Qt : n&#39;importe quelle classe qui veut utiliser <code>connect()</code> doit l&#39;avoir.</p>
+<p>Crée <code>mainwindow.cpp</code> et commence par le constructeur :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mainwindow.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QWidget&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QVBoxLayout&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QFont&gt;</span></span>
+
+MainWindow::<span class="hljs-built_in">MainWindow</span>(QWidget *parent) : <span class="hljs-built_in">QMainWindow</span>(parent) {
+    <span class="hljs-built_in">setWindowTitle</span>(<span class="hljs-string">&quot;Project B - UI Freeze Demonstration&quot;</span>);
+    <span class="hljs-built_in">resize</span>(<span class="hljs-number">480</span>, <span class="hljs-number">220</span>);
+
+    <span class="hljs-keyword">auto</span> *centralWidget = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QWidget</span>(<span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">auto</span> *layout = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QVBoxLayout</span>(centralWidget);
+
+    m_labelInstructions = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QLabel</span>(
+        <span class="hljs-string">&quot;Watch the counter below: it updates every 100 ms.\n&quot;</span>
+        <span class="hljs-string">&quot;Then press the button and see what happens.&quot;</span>, centralWidget);
+    m_labelInstructions-&gt;<span class="hljs-built_in">setWordWrap</span>(<span class="hljs-literal">true</span>);
+
+    m_labelHeartbeat = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QLabel</span>(<span class="hljs-string">&quot;Heartbeat: 0&quot;</span>, centralWidget);
+    QFont heartbeatFont = m_labelHeartbeat-&gt;<span class="hljs-built_in">font</span>();
+    heartbeatFont.<span class="hljs-built_in">setPointSize</span>(<span class="hljs-number">18</span>);
+    heartbeatFont.<span class="hljs-built_in">setBold</span>(<span class="hljs-literal">true</span>);
+    m_labelHeartbeat-&gt;<span class="hljs-built_in">setFont</span>(heartbeatFont);
+
+    m_blockButton = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QPushButton</span>(<span class="hljs-string">&quot;Run heavy computation (BLOCKING)&quot;</span>, centralWidget);
+
+    layout-&gt;<span class="hljs-built_in">addWidget</span>(m_labelInstructions);
+    layout-&gt;<span class="hljs-built_in">addWidget</span>(m_labelHeartbeat);
+    layout-&gt;<span class="hljs-built_in">addWidget</span>(m_blockButton);
+    centralWidget-&gt;<span class="hljs-built_in">setLayout</span>(layout);
+    <span class="hljs-built_in">setCentralWidget</span>(centralWidget);
+    <span class="hljs-built_in">statusBar</span>()-&gt;<span class="hljs-built_in">showMessage</span>(<span class="hljs-string">&quot;Ready.&quot;</span>);
+
+    m_heartbeatTimer = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QTimer</span>(<span class="hljs-keyword">this</span>);
+    <span class="hljs-built_in">connect</span>(m_heartbeatTimer, &amp;QTimer::timeout, <span class="hljs-keyword">this</span>, &amp;MainWindow::updateHeartbeat);
+    m_heartbeatTimer-&gt;<span class="hljs-built_in">start</span>(<span class="hljs-number">100</span>);
+
+    <span class="hljs-built_in">connect</span>(m_blockButton, &amp;QPushButton::clicked,
+            <span class="hljs-keyword">this</span>, &amp;MainWindow::runHeavyComputation);
+}</code></pre>
+<p>Remarque <code>new QWidget(this)</code> : passer <code>this</code> comme parent dit à Qt &quot;cet objet vit tant que vit la fenêtre, et quand la fenêtre est détruite, détruis-le aussi&quot; — c&#39;est le système de gestion de mémoire en arbre de parenté de Qt, qui évite presque toujours des <code>delete</code> manuels sur les widgets. <code>connect()</code> relie un <strong>signal</strong> (<code>QTimer::timeout</code>, émis chaque fois que le timer expire ; <code>QPushButton::clicked</code>, émis au clic) à un <strong>slot</strong> (une fonction membre qui réagit) — c&#39;est le mécanisme par lequel, dans Qt, un événement communique avec le code qui doit y réagir, et sur lequel nous construirons la communication sûre entre threads dans les modules suivants.</p>
+<p>Le slot inoffensif, le battement :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::updateHeartbeat</span><span class="hljs-params">()</span> </span>{
+    m_heartbeatCount++;
+    m_labelHeartbeat-&gt;<span class="hljs-built_in">setText</span>(<span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Heartbeat: %1&quot;</span>).<span class="hljs-built_in">arg</span>(m_heartbeatCount));
+}</code></pre>
+<p>Rien de spécial : toutes les 100 ms le nombre monte de un et l&#39;étiquette se met à jour. C&#39;est ton capteur visuel pour savoir si le thread de la GUI respire encore.</p>
+<p>Le travail lourd, délibérément naïf :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">long</span> <span class="hljs-type">long</span> <span class="hljs-title">MainWindow::countPrimes</span><span class="hljs-params">(<span class="hljs-type">long</span> <span class="hljs-type">long</span> limit)</span> </span>{
+    <span class="hljs-type">long</span> <span class="hljs-type">long</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">long</span> <span class="hljs-type">long</span> n = <span class="hljs-number">2</span>; n &lt; limit; ++n) {
+        <span class="hljs-type">bool</span> isPrime = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">long</span> <span class="hljs-type">long</span> d = <span class="hljs-number">2</span>; d * d &lt;= n; ++d) {
+            <span class="hljs-keyword">if</span> (n % d == <span class="hljs-number">0</span>) { isPrime = <span class="hljs-literal">false</span>; <span class="hljs-keyword">break</span>; }
+        }
+        <span class="hljs-keyword">if</span> (isPrime) ++count;
+    }
+    <span class="hljs-keyword">return</span> count;
+}</code></pre>
+<p>Peu importe qu&#39;il soit efficace, on veut seulement qu&#39;il occupe le processeur pendant quelques secondes de façon reproductible.</p>
+<p>Le slot qui bloque tout :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::runHeavyComputation</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-built_in">statusBar</span>()-&gt;<span class="hljs-built_in">showMessage</span>(<span class="hljs-string">&quot;Computing... (the UI is blocked, on purpose)&quot;</span>);
+
+    QElapsedTimer stopwatch;
+    stopwatch.<span class="hljs-built_in">start</span>();
+
+    <span class="hljs-type">long</span> <span class="hljs-type">long</span> result = <span class="hljs-built_in">countPrimes</span>(<span class="hljs-number">30&#x27;000&#x27;000</span>);
+
+    qint64 elapsedMs = stopwatch.<span class="hljs-built_in">elapsed</span>();
+    <span class="hljs-built_in">statusBar</span>()-&gt;<span class="hljs-built_in">showMessage</span>(
+        <span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Done: %1 primes found in %2 ms. The heartbeat above did not move.&quot;</span>)
+            .<span class="hljs-built_in">arg</span>(result).<span class="hljs-built_in">arg</span>(elapsedMs));
+}</code></pre>
+<p>Ce slot est connecté au <code>clicked()</code> d&#39;un <code>QPushButton</code>, donc il s&#39;exécute sur le thread qui possède ce bouton — le thread principal, le même qui fait tourner la boucle d&#39;événements et qui met à jour <code>m_labelHeartbeat</code>. Tant que <code>countPrimes</code> n&#39;est pas revenue, ce thread ne peut rien faire d&#39;<strong>autre</strong> : ne pas redessiner la fenêtre, ne pas traiter le timer du battement, ne pas répondre au système d&#39;exploitation. Augmente ou diminue <code>30&#39;000&#39;000</code> selon la rapidité de ta machine, jusqu&#39;à ce que le calcul dure au moins 3-4 secondes.</p>
+<p>Enfin <code>main.cpp</code> :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QApplication&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mainwindow.h&quot;</span></span>
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span> </span>{
+    <span class="hljs-function">QApplication <span class="hljs-title">app</span><span class="hljs-params">(argc, argv)</span></span>;
+
+    MainWindow window;
+    window.<span class="hljs-built_in">show</span>();
+
+    <span class="hljs-keyword">return</span> app.<span class="hljs-built_in">exec</span>();
+}</code></pre>
+<p><code>app.exec()</code> est, littéralement, la boucle d&#39;événements dont nous avons parlé dans l&#39;article précédent : à partir d&#39;ici, jusqu&#39;à ce que l&#39;application se ferme, c&#39;est cette boucle — pas ton code — qui décide quand chaque slot est appelé.</p>
+<p>Compile et exécute :</p>
+<pre><code class="hljs language-bash">cmake -S . -B build
+cmake --build build
+./build/ui_freeze_demo</code></pre>
+<p>Laisse la fenêtre ouverte quelques secondes et observe le nombre monter régulièrement. Puis appuie sur le bouton &quot;Run heavy computation&quot; : le nombre s&#39;arrête <strong>exactement</strong> à l&#39;instant du clic, la fenêtre grisonne probablement (surtout si tu essaies de la déplacer ou de la redimensionner pendant que le calcul est en cours — essaie, c&#39;est instructif), et ce n&#39;est que quand le calcul se termine que tu vois le nombre reprendre sa montée là où il s&#39;était arrêté, tout d&#39;un coup, comme si le temps écoulé entre-temps n&#39;avait jamais existé pour le thread de la GUI.</p>
+<p>Pas un concept abstrait : tu as vu de tes propres yeux qu&#39;&quot;un thread unique&quot; n&#39;est pas une limite théorique de Qt, mais un comportement physique observable de ton programme. Dans le prochain module, nous reprenons ce même fichier <code>mainwindow.cpp</code> et le modifions pour déplacer <code>countPrimes</code> sur un <code>QThread</code> séparé, en utilisant le pattern du worker object avec <code>moveToThread()</code> : tu verras le battement continuer à monter, imperturbable, pendant que le calcul tourne en arrière-plan — le remède à la maladie que tu viens de diagnostiquer de tes propres mains.</p>
+<hr>
+<p><em>Le code source complet des deux projets est disponible dans le dépôt qui accompagne ce cours, dans les dossiers <code>project-A-race-condition</code> et <code>project-B-ui-freeze</code>.</em></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/learning-paths/multithreading-cpp/module-00-article-2-race-conditions-et-le-thread-unique-de-qt/">
+        <span class="post-nav__label">← Leçon précédente</span>
+        <span class="post-nav__title">Quand la mémoire partagée mord : race condition, data race et le thread unique de Qt</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/learning-paths/multithreading-cpp/module-01-article-1-qthread-nest-pas-le-thread/">
+        <span class="post-nav__label">Leçon suivante →</span>
+        <span class="post-nav__title">QThread n'est pas le thread : c'est une télécommande (et pourquoi le sous-classer trompe)</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/learning-paths/multithreading-cpp/">← Retour au parcours</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

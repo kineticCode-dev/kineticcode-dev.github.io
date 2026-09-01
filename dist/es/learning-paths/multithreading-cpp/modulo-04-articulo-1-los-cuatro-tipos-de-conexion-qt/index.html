@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Los cuatro Qt::ConnectionType: qué sucede realmente cuando escribes connect() — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code</title>
+  <meta name="description" content="Multithreading en C++ con Qt — Módulo 4">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-04-articulo-1-los-cuatro-tipos-de-conexion-qt/">
+  <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-04-articulo-1-los-cuatro-tipos-de-conexion-qt/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-04-articulo-1-los-cuatro-tipos-de-conexion-qt/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Los cuatro Qt::ConnectionType: qué sucede realmente cuando escribes connect() — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code">
+  <meta property="og:description" content="Multithreading en C++ con Qt — Módulo 4">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-04-articulo-1-los-cuatro-tipos-de-conexion-qt/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/">Artículos</a>
+        <a href="/es/learning-paths/" aria-current="page">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <a href="/es/learning-paths/multithreading-cpp/modulo-04-articulo-1-los-cuatro-tipos-de-conexion-qt/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/es/learning-paths/multithreading-cpp/">Multithreading en C++: de la teoría a una máquina de estados funcional</a> · Módulo 4 — Comunicación segura entre hilos: conexiones de Qt y cancelación cooperativa
+        </div>
+        <span class="eyebrow">Teoría · Lección 14 de 22</span>
+        <h1>Los cuatro Qt::ConnectionType: qué sucede realmente cuando escribes connect()</h1>
+        <p class="article-hero__excerpt">Multithreading en C++ con Qt — Módulo 4</p>
+        <div class="article-hero__meta"><span>8 min de lectura</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Puedes encontrar todo el código fuente <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">aquì</a></p>
+<h1>Los cuatro Qt::ConnectionType: qué sucede realmente cuando escribes connect()</h1>
+<p>En los tres módulos anteriores escribiste decenas de <code>connect()</code> entre objetos que vivían en hilos distintos, y cada vez dejaste que Qt decidiera por su cuenta cómo entregar esa llamada. Siempre funcionó, y está bien que así sea — es el comportamiento por defecto, pensado precisamente para que no tengas que pensarlo en la mayoría de los casos. Pero detrás de ese default silencioso hay un mecanismo preciso, con cuatro modalidades explícitas, y hoy lo desmontamos hasta el fondo: no para complicarte la vida, sino porque el día en que algo se comporte de una manera que no esperabas — un valor que llega tarde, una aplicación que se bloquea sin motivo aparente — la primera pregunta que debes hacerte será precisamente &quot;¿qué tipo de conexión era, en realidad?&quot;.</p>
+<p>Cada vez que llamas a <code>connect()</code>, el último parámetro — casi siempre omitido — es un valor de la enumeración <code>Qt::ConnectionType</code>. Al omitirlo obtienes <code>Qt::AutoConnection</code>, el default. Pero detrás de ese default se esconden otros tres comportamientos explícitos, y entender los cuatro es la única forma de saber realmente qué sucede cuando escribes <code>emit</code>.</p>
+<h2>DirectConnection: una llamada de función, nada más</h2>
+<p><code>Qt::DirectConnection</code> es el caso conceptualmente más simple, aunque es con el que se cometen más errores cuando se elige sin fundamento. Con esta modalidad, <code>emit signal(...)</code> se traduce, literalmente, en una llamada síncrona al slot — como si hubieras escrito <code>object-&gt;slot(...)</code> a mano. No hay cola, no hay evento, no hay ningún event loop de por medio: el hilo que ejecuta <code>emit</code> es el mismo hilo que ejecuta el cuerpo del slot, de principio a fin, antes de que <code>emit</code> retorne.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-04/17-connection-types-qt.png" alt="The four Qt::ConnectionType modes compared" loading="lazy"></p>
+<p>Cuando emisor y receptor viven en el <strong>mismo</strong> hilo — el caso más común para <code>DirectConnection</code>, y es exactamente lo que elegiría <code>AutoConnection</code> en esa situación — este comportamiento no solo es seguro sino también el más eficiente posible: ningún costo de marshalling, ninguna asignación de evento, ningún paso por la cola. El problema surge cuando fuerzas <code>DirectConnection</code> <strong>entre hilos distintos</strong>: en ese momento el slot se ejecuta realmente en el hilo del <em>emisor</em>, no en aquel al que el receptor &quot;pertenece&quot; — y si ese slot toca variables miembro del receptor sin una protección propia interna (un <code>QMutex</code>, por ejemplo), has recreado desde cero exactamente la data race que el Módulo 0 te enseñó a reconocer. <code>DirectConnection</code> forzada entre hilos es segura solo cuando el código del slot es genuinamente <em>reentrant-safe</em> — no toca ningún estado compartido no protegido, o lo protege él mismo con sus propias herramientas — y es una situación lo bastante rara como para tratarla como excepción, nunca como costumbre.</p>
+<h2>QueuedConnection: el default para hilos distintos, y por qué es segura por construcción</h2>
+<p><code>Qt::QueuedConnection</code> es el comportamiento que ya has aprovechado, sin especificarlo nunca explícitamente, desde el Módulo 1: el <code>emit</code> <strong>no</strong> llama al slot en el lugar. Empaqueta la llamada — qué slot, con qué argumentos, copiados y no pasados por referencia — en un objeto evento, y lo deposita en la cola de eventos del hilo al que pertenece el receptor. El hilo emisor, justo después del <code>emit</code>, sigue su camino: no espera a que el slot se ejecute, ni siquiera sabe cuándo sucederá exactamente. El hilo receptor, cuando llega a su turno en el ciclo de su event loop — el mismo mecanismo de <code>exec()</code> visto en el Módulo 1 — extrae el evento de la cola y solo entonces ejecuta realmente el slot, con sus argumentos, en su propio hilo.</p>
+<p>Es precisamente esta la razón por la que una conexión queued es thread-safe por construcción, sin necesidad de ningún mutex de tu parte. Nunca hay un instante en el que dos hilos ejecuten simultáneamente código que toque el mismo objeto a través de esa conexión — la emisión y la ejecución están separadas en el tiempo, y esa separación está garantizada por la cola. El precio que pagas es que los argumentos de la señal deben ser <strong>copiables</strong> (Qt los copia dentro del evento) y que los tipos personalizados pasados como argumento deben registrarse con <code>qRegisterMetaType&lt;T&gt;()</code> si no son ya conocidos por el sistema de meta-tipos de Qt — un detalle que rara vez notas con <code>int</code>, <code>QString</code> o <code>long long</code>, pero que se vuelve relevante el día en que quieras hacer viajar tu propia struct personalizada a través de una señal cross-thread.</p>
+<h2>BlockingQueuedConnection: como Queued, pero el emisor espera</h2>
+<p><code>Qt::BlockingQueuedConnection</code> toma exactamente el mecanismo de <code>QueuedConnection</code> — el evento se sigue publicando en la cola del receptor — y añade una restricción: el hilo emisor se bloquea después del <code>emit</code>, y no reanuda hasta que el slot no haya terminado de ejecutarse en el hilo receptor. Es una especie de confirmación de finalización que desbloquea a quien emitió.</p>
+<p>¿Para qué sirve, si <code>QueuedConnection</code> ya es segura y no bloquea a nadie? Sirve en todos los casos en que el emisor realmente necesita <strong>saber que el slot se ha ejecutado</strong> antes de continuar — no solo que se ha puesto en cola. El caso más directo es cuando quieres leer un valor de retorno del slot (volveremos a esto en el próximo artículo, a propósito de <code>QMetaObject::invokeMethod</code>): con una <code>QueuedConnection</code> ordinaria no tendrías forma de esperar el resultado, porque el <code>emit</code> retorna inmediatamente, mucho antes de que el slot siquiera haya comenzado. Otro caso legítimo es cuando el orden relativo entre dos operaciones cross-thread importa de verdad y no puedes permitirte la incertidumbre temporal de una cola asíncrona.</p>
+<p>El precio, sin embargo, es alto: <strong>si emisor y receptor son el mismo hilo, <code>BlockingQueuedConnection</code> produce un deadlock garantizado</strong>. El emisor se bloquea esperando a que el evento sea procesado por el event loop del receptor — pero si receptor y emisor son el mismo hilo, ese event loop es exactamente el hilo que acaba de bloquearse en espera. Nunca volverá a girar para procesar el evento que él mismo publicó, porque está detenido esperando a que alguien lo procese. Es una espera circular con un solo participante, conceptualmente idéntica al deadlock entre dos hilos visto en el Módulo 2, solo que comprimida en un único actor. Qt, en builds de debug, a menudo detecta esta situación y muestra una advertencia explícita en tiempo de ejecución — pero no cuentes con ello: es una red de seguridad diagnóstica, no una protección estructural. La regla práctica no tiene excepciones: <strong>nunca uses <code>BlockingQueuedConnection</code> si no estás seguro, por construcción de tu programa, de que emisor y receptor viven en hilos distintos</strong>.</p>
+<h2>AutoConnection: la decisión tomada en el momento de la emisión, no al hacer connect()</h2>
+<p>Llegamos al comportamiento por defecto, el que siempre has usado implícitamente, y a su sutileza más importante. <code>Qt::AutoConnection</code> no es una quinta modalidad independiente: es una elección <em>aplazada</em>, que Qt resuelve como <code>DirectConnection</code> o <code>QueuedConnection</code> mirando la thread affinity de emisor y receptor — pero mirada <strong>cuándo</strong>? La respuesta es: en el momento en que la señal se emite efectivamente, no en el instante en que escribiste la línea <code>connect()</code>.</p>
+<p>¿Por qué importa tanto esta distinción? Porque la thread affinity de un <code>QObject</code> <strong>no es inmutable</strong>: puedes cambiarla en cualquier momento con <code>moveToThread()</code>, como hiciste en cada proyecto guiado de este curso. Imagina un <code>connect()</code> escrito cuando emisor y receptor viven en el mismo hilo — en ese instante, si la señal se emitiera, la conexión resolvería a <code>DirectConnection</code>. Pero si, antes de la próxima emisión, mueves al receptor a otro hilo con <code>moveToThread()</code>, la <strong>misma conexión idéntica</strong>, sin que la toques de nuevo, resolverá esa vez a <code>QueuedConnection</code> — porque Qt vuelve a comprobar las dos thread affinities cada vez que la señal se emite, no una sola vez cuando escribiste <code>connect()</code>. Es un detalle que rara vez cambia el comportamiento de tu programa en la práctica (normalmente mueves un objeto a un hilo una sola vez, al inicio, y no lo vuelves a tocar), pero entenderlo te evita toda una clase de bugs fantasma: si observas que una misma conexión se comporta de forma distinta en distintos puntos de la ejecución, la primera pregunta que debes hacerte es si la thread affinity de uno de los dos objetos cambió mientras tanto — no si <code>connect()</code> está &quot;funcionando de forma incoherente&quot;, cosa que nunca hace.</p>
+<p>En el productor-consumidor del Módulo 2 ya viste un caso concreto de este comportamiento, aunque entonces no se subrayó explícitamente: el objeto del buffer compartido mantenía su thread affinity en el hilo GUI, pero su señal de ocupación se emitía desde dentro de los métodos de producción/consumo, llamados directamente por el hilo del Productor o del Consumidor — de modo que la emisión ocurría en un hilo distinto de aquel al que el propio <em>emisor</em> formalmente pertenecía. ¿Qué cuenta, en ese caso, para decidir <code>AutoConnection</code>? Siempre la thread affinity de los <strong>objetos</strong> involucrados en el <code>connect()</code>, comparada con el hilo <strong>que está ejecutando el emit en ese momento</strong> para el emisor y con la del receptor — no &quot;dónde vive&quot; el objeto emisor sobre el papel, sino desde qué hilo está partiendo realmente la llamada <code>emit</code>. La pregunta que Qt se hace siempre es &quot;¿el hilo ACTUAL, en este instante, es el mismo que el del receptor?&quot; — no &quot;¿dónde fue creado el objeto que tiene la señal?&quot;.</p>
+<p>Con estos cuatro comportamientos ya distinguidos, estás listo para el siguiente paso: una forma de llamar métodos entre hilos sin siquiera pasar por un par señal-slot declarado de antemano, y un patrón para detener un worker sin apagarlo nunca a la fuerza.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/learning-paths/multithreading-cpp/modulo-03-articulo-3-proyecto-lote-imagenes/">
+        <span class="post-nav__label">← Lección anterior</span>
+        <span class="post-nav__title">Proyecto: procesamiento por lotes de imágenes con QtConcurrent::mapped y QFutureWatcher</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/learning-paths/multithreading-cpp/modulo-04-articulo-2-invokemethod-y-cancelacion-cooperativa/">
+        <span class="post-nav__label">Lección siguiente →</span>
+        <span class="post-nav__title">QMetaObject::invokeMethod y cancelación cooperativa: llamar y detener un hilo sin riesgos</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/learning-paths/multithreading-cpp/">← Volver a la ruta</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

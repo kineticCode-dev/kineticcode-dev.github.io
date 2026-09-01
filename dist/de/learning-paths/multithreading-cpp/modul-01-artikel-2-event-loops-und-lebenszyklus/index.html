@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zwei Event-Loops, die sicher miteinander sprechen: Queued-Verbindungen und der Lebenszyklus eines Worker-Threads — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ mit Qt — Modul 1">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-01-artikel-2-event-loops-und-lebenszyklus/">
+  <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-01-artikel-2-event-loops-und-lebenszyklus/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-01-artikel-2-event-loops-und-lebenszyklus/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Zwei Event-Loops, die sicher miteinander sprechen: Queued-Verbindungen und der Lebenszyklus eines Worker-Threads — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ mit Qt — Modul 1">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-01-artikel-2-event-loops-und-lebenszyklus/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/">Artikel</a>
+        <a href="/de/learning-paths/" aria-current="page">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <a href="/de/learning-paths/multithreading-cpp/modul-01-artikel-2-event-loops-und-lebenszyklus/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/de/learning-paths/multithreading-cpp/">Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine</a> · Modul 1 — QThread: Die beiden Modelle und die Event-Loop-Architektur von Qt
+        </div>
+        <span class="eyebrow">Theorie · Lektion 5 von 22</span>
+        <h1>Zwei Event-Loops, die sicher miteinander sprechen: Queued-Verbindungen und der Lebenszyklus eines Worker-Threads</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ mit Qt — Modul 1</p>
+        <div class="article-hero__meta"><span>7 Min. Lesezeit</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Den gesamten Quellcode findest du <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">hier</a></p>
+<h1>Zwei Event-Loops, die sicher miteinander sprechen: Queued-Verbindungen und der Lebenszyklus eines Worker-Threads</h1>
+<p>Im vorherigen Artikel haben wir den Ansatz zu <code>QThread</code> umgekehrt: Man unterklassen es nicht, man benutzt es so, wie es ist, und die Logik kommt in einen separaten Worker, der mit <code>moveToThread()</code> verschoben wird. Es bleibt eine offensichtliche praktische Frage: Wenn der Worker jetzt auf einem anderen Thread als dem der GUI lebt, wie kommuniziert man in beide Richtungen, ohne die Race Conditions wieder einzuführen, die wir bereits gelernt haben zu fürchten?</p>
+<h2>Zwei Event-Loops, und wie sie ohne Risiko miteinander sprechen</h2>
+<p>Die Antwort ist, dass du es nicht manuell machst: Qt macht es, automatisch, über denselben Signal-Slot-Mechanismus, den du bereits kennst, mit einem zusätzlichen Verhalten, das still einsetzt, wenn Sender und Empfänger auf unterschiedlichen Threads leben. Jeder Thread, der eine Event-Loop ausführt — sei es der GUI-Thread, sei es ein von einem <code>QThread</code> verwalteter Thread, der <code>run()</code> nicht überschrieben hat — hat eine eigene <strong>Ereigniswarteschlange</strong>, unabhängig von der jedes anderen Threads. Wenn du <code>connect()</code> zwischen einem Objekt, das auf Thread A lebt, und einem, das auf Thread B lebt, aufrufst, vergleicht Qt die beiden Thread-Affinitäten im Moment der Signal-Emission und, wenn sie unterschiedlich sind, <strong>ruft es den Slot nicht direkt auf</strong>: Es verpackt den Aufruf (den Methodennamen, die Argumente, alles) in ein Ereignis und legt es in der Warteschlange des Threads ab, dem der Empfänger gehört. Dieser Thread, wenn er in seiner Event-Loop an der Reihe ist, entnimmt das Ereignis aus der Warteschlange und führt <strong>erst dann</strong> den Slot wirklich aus — auf seinem eigenen Thread, mit seinen eigenen Daten, ohne dass irgendein anderer Thread im selben Moment diesen Speicher berührt.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-01/06-two-event-loops-queued-connection.png" alt="Two event loops connected by a queued connection" loading="lazy"></p>
+<p>Diese Art von Verbindung hat einen genauen Namen, den wir mit allen technischen Details später im Kurs wiedersehen werden: Sie heißt <strong>QueuedConnection</strong> und ist eine der vier Verbindungsarten, die Qt anbietet (die anderen sind <code>DirectConnection</code>, <code>BlockingQueuedConnection</code> und <code>AutoConnection</code> — letztere ist das Standardverhalten, das automatisch Direct wählt, wenn Sender und Empfänger denselben Thread teilen, sonst Queued — genau das Verhalten, das wir heute nutzen, ohne es jemals explizit angeben zu müssen). Der konzeptionelle Punkt, den du heute mitnehmen solltest, ist dieser: <strong>Eine normale Signal-Slot-Verbindung zwischen Objekten auf unterschiedlichen Threads ist bereits von sich aus thread-safe</strong>, weil das Signal niemals Code des Empfängers &quot;an Ort und Stelle&quot; ausführt — es hinterlässt lediglich eine Nachricht in dessen Briefkasten, und der Empfänger selbst ist es, der sie liest und ausführt, wenn es ihm passt. Du brauchst keinen <code>QMutex</code>, um diesen Austausch abzusichern: Qt hat ihn bereits für dich sicher gemacht, vorausgesetzt, du kommunizierst immer über Signale und Slots und nicht etwa, indem du direkt eine öffentliche Methode des Workers von außen aufrufst oder seine Member-Variablen von einem anderen Thread aus berührst — das wäre wieder, ganz einfach, eine Data Race.</p>
+<h2>Der Lebenszyklus eines Worker-Threads, und die Falle von deleteLater()</h2>
+<p>Einen Worker-Thread aufzustellen ist nur die halbe Arbeit: Die andere Hälfte, die robusten Code von Code trennt, der Speicher verliert oder beim Beenden der Anwendung abstürzt, ist es, seine Entstehung und vor allem sein Ende korrekt zu verwalten.</p>
+<p>Ein sehr verbreitetes Pattern, und genau das, das wir im praktischen Projekt verwenden werden, ist es, das Signal <code>QThread::started</code> — das automatisch ausgelöst wird, sobald der verwaltete Thread seine eigene Event-Loop tatsächlich gestartet hat — mit dem Slot des Workers zu verbinden, der die Arbeit beginnt:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-built_in">connect</span>(thread, &amp;QThread::started, worker, &amp;Worker::start);</code></pre>
+<p>Beachte, dass diese Verbindung wiederum zwischen Objekten auf unterschiedlichen Threads besteht (das Signal wird <em>vom</em> verwalteten Thread emittiert, sobald er startet, aber du schreibst die connect-Anweisung selbst vom GUI-Thread aus, und der Worker lebt ohnehin auf dem verwalteten Thread) — also automatisch queued, und die Ausführung von <code>start()</code> erfolgt sicher auf dem richtigen Thread.</p>
+<p>Um einen verwalteten Thread sauber zu stoppen, ist die richtige Methode <code>QThread::quit()</code> (ein Pseudo-Synonym für <code>exit(0)</code>): Sie legt eine Beendigungsanfrage in der Ereigniswarteschlange dieses Threads ab, die die Event-Loop verarbeitet, sobald sie an der Reihe ist, indem sie <code>exec()</code> verlässt — an diesem Punkt kehrt <code>run()</code> zurück, und der Betriebssystem-Thread endet auf natürliche Weise. Das unterscheidet sich grundlegend von <code>QThread::terminate()</code>, einer Methode, die existiert, aber fast immer vermieden werden sollte: Sie erzwingt das sofortige Anhalten des Threads genau an der Stelle, an der er sich gerade befindet, ohne ihm die Möglichkeit zu geben, Ressourcen freizugeben, Mutexe zu entsperren, die er möglicherweise hält, oder einen halb geschriebenen Dateizugriff abzuschließen — es ist im Thread-Kontext das Äquivalent dazu, einem Computer den Stecker zu ziehen, statt ihn über das Betriebssystem herunterzufahren, und die möglichen Kollateralschäden sind von derselben Art.</p>
+<p>Nach <code>quit()</code>, wenn du sicher sein willst, dass der Thread <strong>wirklich</strong> beendet ist, bevor du fortfährst (zum Beispiel, bevor du den Worker zerstörst), rufst du <code>wait()</code> auf, was den aufrufenden Thread blockiert, bis der verwaltete Thread wirklich fertig ist. Das ist genau die Sequenz, die wir gleich im Destruktor unseres Fensters verwenden werden: <code>thread-&gt;quit(); thread-&gt;wait();</code> — zuerst bitte ich höflich um Beendigung, dann warte ich, bis das wirklich geschehen ist, und erst dann ist es sicher, den Zustand des Workers wieder vom GUI-Thread aus zu berühren.</p>
+<p>Ein Pattern, das du sehr häufig in der offiziellen Dokumentation und in Qt-Beispielen findest, um einen Worker sicher zu zerstören, wenn sein Thread endet, ist dieses:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-built_in">connect</span>(thread, &amp;QThread::finished, worker, &amp;QObject::deleteLater);</code></pre>
+<p><code>deleteLater()</code> zerstört das Objekt nicht sofort: Es legt ein verzögertes Lösch-Ereignis in der Ereigniswarteschlange <strong>des Threads, dem das Objekt in diesem Moment gehört</strong>, ab — nicht des aufrufenden Threads —, das bei der ersten sich bietenden Gelegenheit von dieser Event-Loop verarbeitet und ausgeführt wird. Es ist ein Mechanismus, der eigens dafür gedacht ist, auch von einem anderen Thread aus sicher aufgerufen werden zu können, und deshalb taucht er so häufig in nebenläufigem Qt-Code auf.</p>
+<p>Aber hier verbirgt sich eine konkrete Falle: <strong>Wenn der Thread, dem das Objekt gehört, bereits aufgehört hat, seine Event-Loop auszuführen, wird jenes Lösch-Ereignis niemals verarbeitet</strong>, und das Objekt wird niemals zerstört — ein stiller Leak, kein Absturz, keine Warnung, nur Speicher, der nie zurückkommt. Es ist eine überraschend leicht zu erreichende Situation: Wenn du versehentlich <code>quit()</code> auf dem Thread aufrufst, <em>bevor</em> das <code>deleteLater()</code>-Ereignis verarbeitet wurde, oder wenn du die Reihenfolge deiner Verbindungen so strukturierst, dass das Lösch-Ereignis eintrifft, nachdem der Thread bereits begonnen hat sich zu beenden, findest du dich mit einem Phantomobjekt wieder, das niemand jemals zerstören wird.</p>
+<p>Im heutigen praktischen Projekt <strong>vermeiden wir diese Komplikation bewusst</strong>: Unser Worker-Thread bleibt für die gesamte Lebensdauer der Anwendung am Leben (er ist ein &quot;persistenter&quot; Worker, kein &quot;Einweg&quot;-Worker — dazu gleich mehr), und wenn das Fenster geschlossen wird, stoppen wir den Thread mit <code>quit()</code> + <code>wait()</code> und zerstören den Worker mit einem direkten, gewöhnlichen <code>delete</code>, was in genau diesem Moment vollkommen sicher ist, weil du, nachdem <code>wait()</code> zurückgekehrt ist, mathematisch sicher sein kannst, dass kein anderer Thread mehr Code ausführt, der dieses Objekt berührt. Das vollständige Pattern mit <code>deleteLater()</code> für &quot;Einweg&quot;-Worker — solche, die entstehen, eine Arbeit erledigen und danach automatisch entsorgt werden müssen — sehen wir mit der Aufmerksamkeit, die es verdient, später im Kurs, wenn wir über kooperative Cancellation und komplexere Lebenszyklen sprechen.</p>
+<h2>Persistenter Worker gegen Einweg-Worker</h2>
+<p>Eine letzte konzeptionelle Unterscheidung vor dem praktischen Projekt, weil du ihr im Kursverlauf wieder begegnen wirst: Ein <strong>persistenter</strong> Worker wird einmal erzeugt, einmal mit <code>moveToThread()</code> auf seinen Thread verschoben, und erhält von dort im Laufe der Lebensdauer der Anwendung so viele Arbeitsanfragen wie nötig, über wiederholte Signale — das ist das Pattern, das wir heute verwenden, geeignet, wenn du weißt, dass der Benutzer diesen Button innerhalb derselben Sitzung immer wieder drücken wird. Ein <strong>Einweg</strong>-Worker hingegen entsteht, um eine einzelne Arbeit zu erledigen, schaltet sich am Ende ab (mit der Sequenz <code>quit()</code> + <code>deleteLater()</code> von vorhin), und wenn eine weitere Berechnung nötig ist, wird ein neuer von Grund auf erzeugt. Keiner der beiden ist im absoluten Sinn &quot;der Richtige&quot;: Die Wahl hängt davon ab, wie oft du erwartest, dass sich diese Arbeit wiederholen muss, und wie teuer es in Bezug auf Ressourcen ist, einen inaktiven Thread wartend zu halten, statt ihn jedes Mal neu zu erzeugen — dasselbe Granularitätsprinzip, dem wir bereits zuvor begegnet sind, hier angewandt auf die Skala eines ganzen Threads statt einer einzelnen Anweisung.</p>
+<h2>Von der Theorie zu den Händen auf der Tastatur</h2>
+<p>Du hast jetzt das gesamte Vokabular, um einen robusten Worker-Thread aufzubauen: den Unterschied zwischen <code>QThread</code> und dem verwalteten Thread, das Pattern Worker + <code>moveToThread()</code>, die Queued-Verbindungen, die die Kommunikation zwischen Threads automatisch sicher machen, und die richtige Sequenz von Start und Abschaltung. Im nächsten Artikel setzen wir alles zusammen und greifen genau das Fenster mit dem Freeze aus dem vorherigen Modul wieder auf, um es diesmal wirklich zu heilen.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/de/learning-paths/multithreading-cpp/modul-01-artikel-1-qthread-ist-nicht-der-thread/">
+        <span class="post-nav__label">← Vorherige Lektion</span>
+        <span class="post-nav__title">QThread ist nicht der Thread: er ist eine Fernbedienung (und warum ihn zu unterklassen täuscht)</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/de/learning-paths/multithreading-cpp/modul-01-artikel-3-projekt-worker-thread/">
+        <span class="post-nav__label">Nächste Lektion →</span>
+        <span class="post-nav__title">Projekt: den Freeze wirklich heilen, indem man die Berechnung auf einen Worker-Thread verlagert</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/learning-paths/multithreading-cpp/">← Zurück zum Lernpfad</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

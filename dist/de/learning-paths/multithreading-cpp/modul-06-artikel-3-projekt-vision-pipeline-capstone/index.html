@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Capstone-Projekt: Frame-Verarbeitungspipeline in Quasi-Echtzeit — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ mit Qt — Modul 6 — Abschlussprojekt">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-06-artikel-3-projekt-vision-pipeline-capstone/">
+  <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-06-artikel-3-projekt-vision-pipeline-capstone/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-06-artikel-3-projekt-vision-pipeline-capstone/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Capstone-Projekt: Frame-Verarbeitungspipeline in Quasi-Echtzeit — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ mit Qt — Modul 6 — Abschlussprojekt">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-06-artikel-3-projekt-vision-pipeline-capstone/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/">Artikel</a>
+        <a href="/de/learning-paths/" aria-current="page">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <a href="/de/learning-paths/multithreading-cpp/modul-06-artikel-3-projekt-vision-pipeline-capstone/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/de/learning-paths/multithreading-cpp/">Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine</a> · Modul 6 — Abschlussprojekt: Echtzeitnahe Bildverarbeitungspipeline
+        </div>
+        <span class="eyebrow">Projekt · Lektion 22 von 22</span>
+        <h1>Capstone-Projekt: Frame-Verarbeitungspipeline in Quasi-Echtzeit</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ mit Qt — Modul 6 — Abschlussprojekt</p>
+        <div class="article-hero__meta"><span>9 Min. Lesezeit</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Den gesamten Quellcode findest du <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">hier</a></p>
+<h1>Capstone-Projekt: Frame-Verarbeitungspipeline in Quasi-Echtzeit</h1>
+<p>In den vorigen Artikeln hast du die vier „unsichtbaren&quot; Stufen der Capstone-Pipeline gesehen: Erfassung (Modul 1), begrenzter Puffer mit Backpressure (Modul 2), persistenter Verarbeitungspool (Modul 5, verglichen mit <code>QtConcurrent</code> aus Modul 3), und die vollständige Sequenz der kooperativen Abbruchbehandlung (Modul 4). Dieser Artikel schließt den Kreis mit der fünften Stufe — der GUI-Integration — und führt durch das vollständige geführte Projekt: wie es aufgebaut ist, wie man es kompiliert, und was zu beobachten ist, wenn man es tatsächlich ausführt.</p>
+<h2>Stufe 5: die GUI, der Fortschritt, und Fehler, die nichts zu Fall bringen</h2>
+<p><strong>Ziel.</strong> Ein Fenster, das in Echtzeit und ohne je zu blockieren die Auslastung des Puffers zeigt (die Backpressure sichtbar gemacht), die Anzahl erfasster/verarbeiteter Frames, und ein Log, das normale Ereignisse von Fehlern unterscheidet — dabei stets reaktionsfähig, selbst unter der stärksten Last, die die Pipeline erzeugen kann.</p>
+<p>Jeder <code>FrameWorkerTask</code> sendet für jeden von ihm behandelten Frame genau eines von zwei Signalen, nie beide:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-keyword">try</span> {
+    QImage result = <span class="hljs-built_in">processFrame</span>(frame, frameNumber);
+    <span class="hljs-function">emit <span class="hljs-title">frameProcessed</span><span class="hljs-params">(m_workerId, frameNumber, timer.elapsed())</span></span>;
+} <span class="hljs-keyword">catch</span> (<span class="hljs-type">const</span> std::exception &amp;e) {
+    <span class="hljs-function">emit <span class="hljs-title">frameError</span><span class="hljs-params">(m_workerId, frameNumber, QString::fromStdString(e.what()))</span></span>;
+}</code></pre>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-06/28-error-handling-progress-signals.png" alt="Per-frame errors and progress, without ever bringing the pipeline down" loading="lazy"></p>
+<p>Projekt H simuliert bewusst alle dreizehn Frames eine „beschädigte Nutzlast&quot; — man denke an einen durch einen Übertragungsfehler auf einem echten Bus tatsächlich beschädigten Frame, ein alles andere als hypothetisches Szenario in einem industriellen Erfassungssystem —, indem innerhalb von <code>processFrame()</code> eine Ausnahme geworfen wird. Das umgebende <code>try</code>/<code>catch</code> stellt sicher, dass <strong>nur dieser eine Frame</strong> fehlschlägt, ohne dass der Worker, der Pool oder die Pipeline als Ganzes darunter leiden: Die Schleife in <code>run()</code> fährt sofort mit dem nächsten Frame fort. Es ist dieselbe Robustheitsphilosophie, die du in jede Produktionspipeline mitnehmen solltest: Ein verlorener Frame darf niemals ein Grund sein, die gesamte Linie anzuhalten — er sollte ein zusätzlicher Datenpunkt sein, den man protokolliert und, wenn nötig, später untersucht.</p>
+<p><strong>Falle — wohin die Fehlerzählung geht.</strong> In der GUI erhöht <code>onFrameError()</code> einen sichtbaren Zähler, der von dem der erfolgreich verarbeiteten Frames getrennt ist, und schreibt einen rot markierten Eintrag ins Log — niemals still ignoriert, niemals mit dem Erfolgszähler zu einer einzigen Zahl vermischt, die das Problem verbergen würde. Das ist eine im Code winzige, im Design aber keineswegs kleine Entscheidung: Ein System, das „24 Frames verarbeitet&quot; meldet, während in Wahrheit 3 still fehlgeschlagen sind, ist ein System, das lügt — auf eine besonders gefährliche Weise, weil der Bediener keinen Anlass hat, daran zu zweifeln.</p>
+<p><strong>Warum alles sicher ist, ohne einen einzigen Mutex in der GUI.</strong> Jedes Signal, das von einem <code>CaptureWorker</code> oder einem <code>FrameWorkerTask</code> gesendet wird — die jeweils auf dem Erfassungs-Thread bzw. auf einem Thread des Pools leben —, erreicht einen Slot von <code>MainWindow</code>, das auf dem GUI-Thread lebt. Qt vergleicht die Thread-Zugehörigkeit von Sender und Empfänger im Moment der Emission und wählt automatisch eine queued Verbindung (Modul 4): Das Ereignis wird in die Event-Loop des GUI-Threads eingereiht und dort nacheinander verarbeitet, ohne je einen gleichzeitigen Schreibzugriff auf die Widgets. Es ist dasselbe Prinzip, das dir Modul 1 mit nur einem Worker gezeigt hat, hier verifiziert mit vier oder mehr Quell-Threads, die alle auf denselben Ziel-Thread zulaufen, ohne dass du auch nur eine einzige Zeile manuellen Synchronisationscode geschrieben hast — vorausgesetzt, du erzwingst nie eine <code>Direct</code>-Verbindung zwischen unterschiedlichen Threads.</p>
+<h2>Einrichtung &amp; Voraussetzungen</h2>
+<ul>
+<li>C++17-Compiler (getestet mit GCC 13.3 unter Linux).</li>
+<li>CMake ≥ 3.16.</li>
+<li>Qt 6, Komponenten <strong>Widgets</strong> und <strong>Concurrent</strong> (letztere wird nur für <code>QtConcurrent::run()</code> in der asynchronen Abschaltsequenz benötigt — nicht für die Frame-Verarbeitung, die auf reinem <code>QThreadPool</code> bleibt).</li>
+<li>Keine externe Vision-Bibliothek: Der Kantendetektionsfilter ist von Grund auf auf den Rohdaten eines <code>QImage</code> in Graustufen implementiert.</li>
+</ul>
+<pre><code class="hljs language-bash"><span class="hljs-built_in">cd</span> project-H-vision-pipeline-capstone
+cmake -S . -B build
+cmake --build build
+./build/vision_pipeline_capstone</code></pre>
+<h2>Die Dateistruktur</h2>
+<p>Sechs Quelldateien plus der geteilte Header für das Abbruch-Flag:</p>
+<ul>
+<li><code>pipelinestate.h</code> — <code>CancellationFlag</code>, ein schlanker Wrapper um <code>std::atomic&lt;bool&gt;</code> mit <code>requestStop()</code>/<code>requested()</code>/<code>reset()</code>.</li>
+<li><code>framebuffer.h/.cpp</code> — Stufe 2: die begrenzte Warteschlange von <code>QImage</code>.</li>
+<li><code>captureworker.h/.cpp</code> — Stufe 1: Erzeugung der synthetischen Frames.</li>
+<li><code>frameworkertask.h/.cpp</code> — Stufe 3: der Sobel-Filter und die persistente Schleife auf dem Pool.</li>
+<li><code>mainwindow.h/.cpp</code> — Stufen 4 und 5: Orchestrierung, Abschaltsequenz, Widgets.</li>
+<li><code>main.cpp</code> — elf Zeilen, keine Überraschungen: erzeugt <code>QApplication</code>, erzeugt <code>MainWindow</code>, ruft <code>exec()</code> auf.</li>
+</ul>
+<p>Im Interface findest du zwei numerische Steuerelemente — Anzahl der zu erfassenden Frames und Anzahl paralleler Worker —, die eigens dafür gedacht sind, dass du das Backpressure-Experiment selbst nachvollziehen kannst: Senke die Worker-Anzahl auf 1 und beobachte, wie sich der Puffer schneller füllt und länger voll bleibt; erhöhe sie auf 4 und beobachte, wie die Backpressure fast verschwindet.</p>
+<h2>Empirische Kalibrierung: messen, nicht schätzen</h2>
+<p>Der Kurs hat dir in jedem Modul dieselbe Disziplin eingebläut — messen, bevor man eine Konstante festlegt, nicht nach Gefühl kalibrieren —, und dieses Projekt macht keine Ausnahme. Bevor die endgültigen Zahlen festgelegt wurden, wurden die realen Kosten eines einzelnen Durchlaufs des Sobel-Filters auf einem synthetischen Frame isoliert gemessen:</p>
+<table>
+<thead>
+<tr>
+<th>Frame-Größe</th>
+<th>1 Durchlauf</th>
+<th>3 Durchläufe</th>
+<th>5 Durchläufe</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>128×96</td>
+<td>0,05 ms</td>
+<td>0,15 ms</td>
+<td>0,25 ms</td>
+</tr>
+<tr>
+<td>256×192</td>
+<td>0,20 ms</td>
+<td>0,65 ms</td>
+<td>1,25 ms</td>
+</tr>
+<tr>
+<td>1536×1152</td>
+<td>—</td>
+<td>28,8 ms</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>Bemerkenswert ist, wie <em>schnell</em> ein direkt implementierter Sobel-Filter bei für einen preisgünstigen Sensor realistischen Frame-Größen ist: Selbst bei 1536×1152 (über 1,7 Megapixel) kosten drei Durchläufe weniger als 30 Millisekunden. Ein echtes Vision-System bleibt jedoch selten bei der reinen Kantendetektion stehen: Feature-Extraktion, Klassifikation, Tracking haben Kosten, die hier nicht implementiert werden (das würde über den Rahmen eines Kurses zur Nebenläufigkeit hinausgehen), die aber ehrlicherweise explizit simuliert werden sollten — im selben Geist, in dem der Verbraucher aus Modul 2 <code>QThread::msleep()</code> nutzte, um eine realistische Verarbeitungszeit darzustellen. Projekt H verwendet Frames mit 256×192, drei echte Sobel-Durchläufe (~0,65 ms, authentische und gemessene CPU-lastige Arbeit) plus eine explizite Wartezeit von 350–450 ms, um die nicht implementierten nachfolgenden Stufen darzustellen.</p>
+<p>Mit diesen Werten und einem Erfassungsintervall von 90 ms/Frame übersteigt die Produktion (≈11 Frames/s) stabil die aggregierte Verarbeitungskapazität von zwei Workern (≈2 Frames alle ~400 ms ≈ 5 Frames/s): Die von der Theorie vorhergesagte Backpressure zeigt sich pünktlich, experimentell verifiziert, nicht nur auf dem Papier.</p>
+<h2>Ausführungsverifikation</h2>
+<p>Kompiliert mit g++ 13.3 unter Qt 6.4.2, headless ausgeführt (<code>QT_QPA_PLATFORM=offscreen</code>) mit einer temporären instrumentierten Kopie, um die GUI ohne echtes Display zu steuern:</p>
+<ul>
+<li><strong>Natürlicher Abschluss</strong> (Ziel: 24 Frames, 2 Worker): 24 erfasst, 23 erfolgreich verarbeitet, 1 fehlgeschlagen (der simulierte beschädigte Frame #13, wie erwartet — ein Fehler alle 13 Frames). Maximal beobachtete Pufferauslastung: 5/5 — Backpressure visuell bestätigt. Kein Frame verloren: <code>23 + 1 = 24</code>. Vollständiges Herunterfahren in etwa 5 Sekunden ab Start, kein Blockieren, kein Absturz, Exit-Code 0.</li>
+<li><strong>Vorzeitiger Stopp</strong> (Stop gedrückt 900 ms nach dem Start, Puffer bereits gesättigt): 9 Frames erfasst, 5 verarbeitet vor dem Abbruch — der Rest bewusst design-bedingt verworfen (reaktionsfähiger Abbruch). Kein Blockieren, kein Absturz, Puffer nie über der konfigurierten Kapazität beobachtet.</li>
+<li><strong>Doppelter Zyklus</strong> (Start → natürlicher Abschluss → Neustart → natürlicher Abschluss): identisches, deterministisches Verhalten in beiden Zyklen, kein beobachtbarer Ressourcenverlust, kein Restzustand zwischen den Zyklen — die Pipeline lässt sich aus demselben Fenster heraus sicher neu starten.</li>
+</ul>
+<p>In keinem der Durchläufe traten Qt-Laufzeitwarnungen auf.</p>
+<h2>Wohin von hier aus</h2>
+<p>Projekt H ist bewusst ein Spielzeugsystem, das sich wie ein echtes verhält — und der Abstand zwischen beiden ist kürzer, als er scheint. Einige konkrete Richtungen, um es weiterzuführen:</p>
+<p><strong>Die simulierte Erfassung durch eine reale Quelle ersetzen.</strong> <code>CaptureWorker::generateSyntheticFrame()</code> ist die einzige Stelle im Programm, die „so tut als ob&quot;: Ersetze sie durch einen Aufruf an eine echte Erfassungsbibliothek — einen industriellen Framegrabber, eine GenICam-Schnittstelle, oder auch nur eine Webcam über <code>QCamera</code> — und der Rest der Pipeline, Puffer, Pool, Abbruchbehandlung, GUI, benötigt keine einzige Änderung. Das ist der praktische Beweis dafür, dass sich das Entkoppeln der Stufen über eine klare Schnittstelle genau in diesem Moment auszahlt.</p>
+<p><strong>OpenCV anstelle des handgeschriebenen Sobel integrieren.</strong> Der in diesem Modul von Grund auf geschriebene Filter dient didaktischen Zwecken, aber in der Produktion würdest du fast sicher <code>cv::Sobel</code> oder Äquivalente verwenden, die oft intern vektorisiert und mehrthreadig sind. Achtung bei einem in diesem Fall nicht trivialen Detail: Wenn die verwendete Vision-Bibliothek bereits eine eigene interne Parallelität besitzt, kann das naive Aufaddieren zur Parallelität deines eigenen <code>QThreadPool</code> mehr Threads erzeugen, als du Kerne hast — ein konkreter Fall der Lektion über die Kosten von Kontextwechseln aus Modul 0, hier auf Systemebene angewendet.</p>
+<p><strong>Die Poolgröße auf die reale Hardware neu kalibrieren.</strong> In der Produktion würdest du vermutlich bei <code>QThread::idealThreadCount()</code> beginnen und dann messen — dieselbe Disziplin der empirischen Kalibrierung aus diesem Kapitel, angewendet auf die Anzahl der Worker statt auf die Verarbeitungszeit, vielleicht mit einem kleinen Benchmark im Geist von Projekt G aus Modul 5.</p>
+<p><strong>Unter anhaltender Last profilieren, nicht nur in einer wenige Sekunden dauernden Demo.</strong> Ein Test mit 24 Frames in fünf Sekunden zeigt die Korrektheit des Designs, nicht seine Belastbarkeit über Stunden kontinuierlichen Betriebs. Insbesondere ThreadSanitizer sollte auf diesem erweiterten Projekt erneut laufen gelassen werden, und ein Langzeit-Profiling ist die einzige ehrliche Methode, um zu wissen, ob Pufferkapazität und Poolgröße der realen Last wirklich standhalten.</p>
+<h2>Fazit des Moduls — und des Kurses</h2>
+<p>Sechs Module zuvor bestand das Problem aus einem Button, der ein Fenster blockierte. Heute hast du, mit echten Messungen und nicht nur mit Intuition verifiziert, ein fünfstufiges System mit drei gleichzeitig aktiven Thread-Kategorien gebaut — ein persistenter Worker, ein dynamischer Pool, der GUI-Thread —, koordiniert durch einen begrenzten Puffer und eine Abschaltsequenz, die nie etwas hängen lässt, selbst im heikelsten Fall, in dem eine Stufe genau in dem Moment, in dem man sie zum Anhalten auffordert, in einer Wait-Condition schläft. Das ist keine Lehrbuchübung: Es ist, in seiner architektonischen Substanz, dieselbe Art von System, der du in der Arbeit an industriellen Vision-Systemen begegnen wirst.</p>
+<p>Was man von diesem Weg mitnimmt, ist nicht die Syntax von <code>QThread</code> oder <code>QMutex</code> — die findet man in jeder Dokumentation in dreißig Sekunden wieder. Es ist das mentale Modell, mit dem man einem neuen nebenläufigen System gegenübertritt und weiß, die richtigen Fragen in der richtigen Reihenfolge zu stellen: welche Daten wirklich geteilt sind, und von wem; welche Abschaltreihenfolge niemanden für immer schlafen lässt; wo die GUI zu blockieren droht, und wie man dieses Risiko auf einen Thread verlagert, der es nicht bezahlt. Der Rest — die konkrete Klasse, der genaue Methodenname — ist Detail, das man nachschlägt, wenn man es braucht, keine Theorie, die man auswendig lernen muss.</p>
+<hr>
+<p><em>Der vollständige Quellcode dieses Projekts ist im Repository verfügbar, das diesen Kurs begleitet, im Ordner <code>project-H-vision-pipeline-capstone</code>.</em></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px);"><a class="post-nav__link post-nav__link--prev" href="/de/learning-paths/multithreading-cpp/modul-06-artikel-2-verarbeitungspool-vollstaendige-abbruchbehandlung/">
+        <span class="post-nav__label">← Vorherige Lektion</span>
+        <span class="post-nav__title">Capstone: persistenter Verarbeitungspool und vollständige kooperative Abbruchbehandlung</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/learning-paths/multithreading-cpp/">← Zurück zum Lernpfad</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

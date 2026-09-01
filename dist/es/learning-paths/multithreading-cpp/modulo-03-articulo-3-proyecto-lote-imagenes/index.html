@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proyecto: procesamiento por lotes de imágenes con QtConcurrent::mapped y QFutureWatcher — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code</title>
+  <meta name="description" content="Multithreading en C++ con Qt — Módulo 3 — Proyecto">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-03-articulo-3-proyecto-lote-imagenes/">
+  <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-03-articulo-3-proyecto-lote-imagenes/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-03-articulo-3-proyecto-lote-imagenes/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Proyecto: procesamiento por lotes de imágenes con QtConcurrent::mapped y QFutureWatcher — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code">
+  <meta property="og:description" content="Multithreading en C++ con Qt — Módulo 3 — Proyecto">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-03-articulo-3-proyecto-lote-imagenes/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/">Artículos</a>
+        <a href="/es/learning-paths/" aria-current="page">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <a href="/es/learning-paths/multithreading-cpp/modulo-03-articulo-3-proyecto-lote-imagenes/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/es/learning-paths/multithreading-cpp/">Multithreading en C++: de la teoría a una máquina de estados funcional</a> · Módulo 3 — QtConcurrent y el modelo Future/Promise
+        </div>
+        <span class="eyebrow">Proyecto · Lección 13 de 22</span>
+        <h1>Proyecto: procesamiento por lotes de imágenes con QtConcurrent::mapped y QFutureWatcher</h1>
+        <p class="article-hero__excerpt">Multithreading en C++ con Qt — Módulo 3 — Proyecto</p>
+        <div class="article-hero__meta"><span>12 min de lectura</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Puedes encontrar todo el código fuente <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">aquì</a></p>
+<h1>Proyecto: procesamiento por lotes de imágenes con QtConcurrent::mapped y QFutureWatcher</h1>
+<p>Construyamos una aplicación Qt Widgets que genera cierto número de imágenes sintéticas con ruido, las difumina todas en paralelo con <code>QtConcurrent::mapped()</code>, y muestra el progreso mediante <code>QFutureWatcher&lt;QImage&gt;</code> —con un botón Cancelar que funciona de verdad, y una ventana que <strong>permanece siempre reactiva</strong>.</p>
+<p><strong>Requisitos adicionales respecto a los proyectos anteriores</strong>: Qt 6 con los módulos <strong>Widgets</strong> <em>y</em> <strong>Concurrent</strong> —el módulo <code>Concurrent</code> debe declararse explícitamente tanto en <code>find_package</code> como en <code>target_link_libraries</code>.</p>
+<h2>Paso 1 — El esqueleto del proyecto</h2>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.16</span>)
+<span class="hljs-keyword">project</span>(image_batch_demo LANGUAGES CXX)
+
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">17</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD_REQUIRED <span class="hljs-keyword">ON</span>)
+<span class="hljs-keyword">set</span>(CMAKE_AUTOMOC <span class="hljs-keyword">ON</span>)
+
+<span class="hljs-keyword">find_package</span>(Qt6 REQUIRED COMPONENTS Widgets Concurrent)
+
+<span class="hljs-keyword">add_executable</span>(image_batch_demo
+    main.cpp
+    mainwindow.h
+    mainwindow.cpp
+    imageprocessing.h
+    imageprocessing.cpp
+)
+
+<span class="hljs-keyword">target_link_libraries</span>(image_batch_demo PRIVATE Qt6::Widgets Qt6::Concurrent)</code></pre>
+<p>Respecto a los proyectos anteriores, la única diferencia estructural en este archivo es <code>Concurrent</code> añadido tanto en <code>find_package</code> como en <code>target_link_libraries</code> —es todo lo que hace falta para tener acceso a <code>QtConcurrent::mapped()</code> y a <code>QFuture</code>/<code>QFutureWatcher</code>.</p>
+<h2>Paso 2 — Las funciones puras: generación de imágenes y blur naive</h2>
+<p>Crea <code>imageprocessing.h</code>:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QImage&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QList&gt;</span></span>
+
+<span class="hljs-function">QList&lt;QImage&gt; <span class="hljs-title">generateNoisyImages</span><span class="hljs-params">(<span class="hljs-type">int</span> count, <span class="hljs-type">int</span> side, quint32 seed)</span></span>;
+<span class="hljs-function">QImage <span class="hljs-title">blurImageNaive</span><span class="hljs-params">(<span class="hljs-type">const</span> QImage &amp;source)</span></span>;</code></pre>
+<p>Detente en esta declaración incluso antes de mirar la implementación: son dos <strong>funciones libres</strong>, no métodos de una clase, y no tocan ningún estado compartido —ni miembros de clase, ni variables globales mutables. Es deliberado, y es precisamente el requisito visto en el artículo anterior para un trabajo apto para <code>QtConcurrent::mapped()</code>: si <code>blurImageNaive()</code> escribiera en una variable global o en un miembro compartido, dos llamadas en paralelo en hilos distintos se pisarían los pies exactamente como en el módulo sobre mutex y wait conditions sin mutex —solo que aquí <strong>no necesitamos ningún mutex</strong>, porque la función es pura por construcción: cada llamada lee solo su propio parámetro y escribe solo en su propio valor de retorno.</p>
+<p><code>imageprocessing.cpp</code>:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;imageprocessing.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QRandomGenerator&gt;</span></span>
+
+<span class="hljs-keyword">namespace</span> {
+<span class="hljs-keyword">constexpr</span> <span class="hljs-type">int</span> BLUR_RADIUS = <span class="hljs-number">3</span>;   <span class="hljs-comment">// window (2*BLUR_RADIUS+1) x (2*BLUR_RADIUS+1) = 7x7</span>
+}
+
+<span class="hljs-function">QList&lt;QImage&gt; <span class="hljs-title">generateNoisyImages</span><span class="hljs-params">(<span class="hljs-type">int</span> count, <span class="hljs-type">int</span> side, quint32 seed)</span> </span>{
+    QList&lt;QImage&gt; images;
+    images.<span class="hljs-built_in">reserve</span>(count);
+    <span class="hljs-function">QRandomGenerator <span class="hljs-title">rng</span><span class="hljs-params">(seed)</span></span>;
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; count; ++i) {
+        <span class="hljs-function">QImage <span class="hljs-title">img</span><span class="hljs-params">(side, side, QImage::Format_RGB32)</span></span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> y = <span class="hljs-number">0</span>; y &lt; side; ++y) {
+            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x = <span class="hljs-number">0</span>; x &lt; side; ++x) {
+                img.<span class="hljs-built_in">setPixel</span>(x, y, <span class="hljs-built_in">qRgb</span>(rng.<span class="hljs-built_in">bounded</span>(<span class="hljs-number">256</span>), rng.<span class="hljs-built_in">bounded</span>(<span class="hljs-number">256</span>), rng.<span class="hljs-built_in">bounded</span>(<span class="hljs-number">256</span>)));
+            }
+        }
+        images.<span class="hljs-built_in">append</span>(img);
+    }
+    <span class="hljs-keyword">return</span> images;
+}
+
+<span class="hljs-function">QImage <span class="hljs-title">blurImageNaive</span><span class="hljs-params">(<span class="hljs-type">const</span> QImage &amp;source)</span> </span>{
+    <span class="hljs-type">const</span> <span class="hljs-type">int</span> width = source.<span class="hljs-built_in">width</span>();
+    <span class="hljs-type">const</span> <span class="hljs-type">int</span> height = source.<span class="hljs-built_in">height</span>();
+    <span class="hljs-function">QImage <span class="hljs-title">result</span><span class="hljs-params">(width, height, source.format())</span></span>;
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> y = <span class="hljs-number">0</span>; y &lt; height; ++y) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x = <span class="hljs-number">0</span>; x &lt; width; ++x) {
+            <span class="hljs-type">long</span> sumR = <span class="hljs-number">0</span>, sumG = <span class="hljs-number">0</span>, sumB = <span class="hljs-number">0</span>;
+            <span class="hljs-type">int</span> samples = <span class="hljs-number">0</span>;
+
+            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> dy = -BLUR_RADIUS; dy &lt;= BLUR_RADIUS; ++dy) {
+                <span class="hljs-type">const</span> <span class="hljs-type">int</span> yy = y + dy;
+                <span class="hljs-keyword">if</span> (yy &lt; <span class="hljs-number">0</span> || yy &gt;= height) <span class="hljs-keyword">continue</span>;
+                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> dx = -BLUR_RADIUS; dx &lt;= BLUR_RADIUS; ++dx) {
+                    <span class="hljs-type">const</span> <span class="hljs-type">int</span> xx = x + dx;
+                    <span class="hljs-keyword">if</span> (xx &lt; <span class="hljs-number">0</span> || xx &gt;= width) <span class="hljs-keyword">continue</span>;
+                    <span class="hljs-type">const</span> QRgb pixel = source.<span class="hljs-built_in">pixel</span>(xx, yy);
+                    sumR += <span class="hljs-built_in">qRed</span>(pixel); sumG += <span class="hljs-built_in">qGreen</span>(pixel); sumB += <span class="hljs-built_in">qBlue</span>(pixel);
+                    ++samples;
+                }
+            }
+            result.<span class="hljs-built_in">setPixel</span>(x, y, <span class="hljs-built_in">qRgb</span>(sumR / samples, sumG / samples, sumB / samples));
+        }
+    }
+    <span class="hljs-keyword">return</span> result;
+}</code></pre>
+<p>El blur es deliberadamente <strong>no optimizado</strong>: por cada píxel de salida vuelve a leer desde cero toda la ventana 7×7 a su alrededor directamente de la fuente mediante <code>pixel()</code> (sin punteros crudos, sin suma incremental por desplazamiento, sin caché de fila), con un costo de <code>O(ancho × alto × 49)</code>. No es un defecto —es <strong>intencional</strong>: necesitamos una carga de trabajo genuinamente CPU-bound y sustanciosa, tanto para ver el paralelismo del <code>QThreadPool</code> en acción de forma visible, como para la lección de calibración empírica del próximo paso.</p>
+<h2>Paso 3 — Calibración empírica: mide, no adivines</h2>
+<p>Antes de elegir cuántas imágenes generar y de qué tamaño, seguimos la misma disciplina ya vista en los módulos anteriores: <strong>medimos</strong>, no adivinamos. Un pequeño programa de prueba, aislado, que cronometra un único <code>blurImageNaive()</code> a distintos tamaños:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> side : {<span class="hljs-number">128</span>, <span class="hljs-number">192</span>, <span class="hljs-number">256</span>, <span class="hljs-number">320</span>, <span class="hljs-number">384</span>, <span class="hljs-number">448</span>, <span class="hljs-number">512</span>}) {
+    <span class="hljs-keyword">auto</span> imgs = <span class="hljs-built_in">generateNoisyImages</span>(<span class="hljs-number">1</span>, side, <span class="hljs-number">42</span>);
+    QElapsedTimer t; t.<span class="hljs-built_in">start</span>();
+    QImage r = <span class="hljs-built_in">blurImageNaive</span>(imgs[<span class="hljs-number">0</span>]);
+    <span class="hljs-built_in">qDebug</span>() &lt;&lt; <span class="hljs-string">&quot;side&quot;</span> &lt;&lt; side &lt;&lt; <span class="hljs-string">&quot;-&gt;&quot;</span> &lt;&lt; t.<span class="hljs-built_in">elapsed</span>() &lt;&lt; <span class="hljs-string">&quot;ms&quot;</span>;
+}</code></pre>
+<p>En la máquina de desarrollo de este curso, el resultado (compilación sin optimizaciones explícitas, el mismo esquema de build que usaremos para el proyecto final) fue:</p>
+<table>
+<thead>
+<tr>
+<th>Lado de la imagen</th>
+<th>Tiempo de un solo blur</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>128×128</td>
+<td>~9 ms</td>
+</tr>
+<tr>
+<td>256×256</td>
+<td>~31 ms</td>
+</tr>
+<tr>
+<td>384×384</td>
+<td>~69 ms</td>
+</tr>
+<tr>
+<td>512×512</td>
+<td>~122 ms</td>
+</tr>
+</tbody></table>
+<p>A 384×384, un solo blur cuesta entonces cerca de 60-90 ms (el valor oscila ligeramente de una ejecución a otra, como siempre que se mide tiempo real en una máquina compartida). Con <code>QThread::idealThreadCount()</code> medido en <strong>2</strong> en esta máquina, y queriendo un lote que dure unos pocos segundos —comparable a las demos de los proyectos anteriores, ni instantáneo ni interminable—, la elección fue: <strong>200 imágenes de 384×384 píxeles</strong>. El cálculo de estimación es directo: 200 blurs de ~70 ms, distribuidos en 2 hilos, deberían necesitar aproximadamente (200 × 70) / 2, es decir, unos 7000 milisegundos.</p>
+<p>La verificación con el lote real, mediante <code>QtConcurrent::mapped()</code> cronometrado en varias ejecuciones, confirmó la estimación: <strong>entre 7.3 y 7.6 segundos</strong> para el lote de procesamiento propiamente dicho (la generación de las 200 imágenes con ruido, que es un paso separado y secuencial, añade otros 1.6-2.2 segundos antes de que el lote empiece). El número no está adivinado —está medido, repetido, y coherente con la estimación teórica basada en los hilos disponibles: exactamente el tipo de verificación empírica que este curso te pide hacer cada vez que eliges parámetros de carga para una demo o, más seriamente, para un sistema en producción.</p>
+<h2>Paso 4 — La interfaz: mainwindow.h</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QMainWindow&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QProgressBar&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QListWidget&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QLabel&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QPushButton&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QFutureWatcher&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QImage&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QElapsedTimer&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;imageprocessing.h&quot;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MainWindow</span> : <span class="hljs-keyword">public</span> QMainWindow {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">MainWindow</span><span class="hljs-params">(QWidget *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+
+<span class="hljs-keyword">private</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">startProcessing</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">cancelProcessing</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">batchStarted</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">resultReady</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">batchCanceled</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">batchFinished</span><span class="hljs-params">()</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    QList&lt;QImage&gt; m_sourceImages;
+
+    QLabel *m_labelStatus;
+    QProgressBar *m_progressBar;
+    QListWidget *m_log;
+    QPushButton *m_startButton;
+    QPushButton *m_cancelButton;
+
+    QFutureWatcher&lt;QImage&gt; m_watcher;
+    QElapsedTimer m_stopwatch;
+    <span class="hljs-type">int</span> m_resultsArrived = <span class="hljs-number">0</span>;
+};</code></pre>
+<p>La forma general —un botón Iniciar, un botón Cancelar, una barra de progreso, una lista de log— reproduce deliberadamente el estilo de las interfaces de los proyectos anteriores: queremos que la comparación visual con el productor-consumidor sea inmediata. <code>m_watcher</code> es un miembro directo de la ventana, no un puntero gestionado a mano: al ser un objeto ligero que vive durante toda la duración de la ventana, no hay motivo para complicar la gestión de memoria.</p>
+<h2>Paso 5 — El constructor: interfaz y generación de imágenes</h2>
+<p>En la parte superior de <code>mainwindow.cpp</code>, los parámetros surgidos de la calibración del Paso 3:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-keyword">namespace</span> {
+<span class="hljs-keyword">constexpr</span> <span class="hljs-type">int</span> IMAGE_COUNT = <span class="hljs-number">200</span>;
+<span class="hljs-keyword">constexpr</span> <span class="hljs-type">int</span> IMAGE_SIDE = <span class="hljs-number">384</span>;
+<span class="hljs-keyword">constexpr</span> quint32 GENERATION_SEED = <span class="hljs-number">42</span>;
+<span class="hljs-keyword">constexpr</span> <span class="hljs-type">int</span> LOG_EVERY_N = <span class="hljs-number">10</span>;   <span class="hljs-comment">// see the cadence note at Step 6</span>
+}</code></pre>
+<pre><code class="hljs language-cpp">MainWindow::<span class="hljs-built_in">MainWindow</span>(QWidget *parent) : <span class="hljs-built_in">QMainWindow</span>(parent) {
+    <span class="hljs-built_in">setWindowTitle</span>(<span class="hljs-string">&quot;Project E - Image Batch with QtConcurrent::mapped&quot;</span>);
+    <span class="hljs-built_in">resize</span>(<span class="hljs-number">560</span>, <span class="hljs-number">460</span>);
+
+    <span class="hljs-keyword">auto</span> *centralWidget = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QWidget</span>(<span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">auto</span> *layout = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QVBoxLayout</span>(centralWidget);
+
+    m_labelStatus = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QLabel</span>(centralWidget);
+    m_progressBar = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QProgressBar</span>(centralWidget);
+    m_progressBar-&gt;<span class="hljs-built_in">setRange</span>(<span class="hljs-number">0</span>, IMAGE_COUNT);
+    m_progressBar-&gt;<span class="hljs-built_in">setValue</span>(<span class="hljs-number">0</span>);
+
+    <span class="hljs-keyword">auto</span> *buttonLayout = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QHBoxLayout</span>();
+    m_startButton = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QPushButton</span>(<span class="hljs-string">&quot;Start batch processing&quot;</span>, centralWidget);
+    m_cancelButton = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QPushButton</span>(<span class="hljs-string">&quot;Cancel&quot;</span>, centralWidget);
+    m_cancelButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    buttonLayout-&gt;<span class="hljs-built_in">addWidget</span>(m_startButton);
+    buttonLayout-&gt;<span class="hljs-built_in">addWidget</span>(m_cancelButton);
+
+    m_log = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QListWidget</span>(centralWidget);
+
+    layout-&gt;<span class="hljs-built_in">addWidget</span>(m_labelStatus);
+    layout-&gt;<span class="hljs-built_in">addWidget</span>(m_progressBar);
+    layout-&gt;<span class="hljs-built_in">addLayout</span>(buttonLayout);
+    layout-&gt;<span class="hljs-built_in">addWidget</span>(m_log);
+    centralWidget-&gt;<span class="hljs-built_in">setLayout</span>(layout);
+    <span class="hljs-built_in">setCentralWidget</span>(centralWidget);
+
+    <span class="hljs-comment">// Generating the synthetic images: fast (1.6-2.2s even at 200 images,</span>
+    <span class="hljs-comment">// measured at Step 3) compared to the blur that follows. We do it here,</span>
+    <span class="hljs-comment">// on the GUI thread, once at startup -- it&#x27;s not the CPU-bound work</span>
+    <span class="hljs-comment">// this project wants to demonstrate.</span>
+    m_sourceImages = <span class="hljs-built_in">generateNoisyImages</span>(IMAGE_COUNT, IMAGE_SIDE, GENERATION_SEED);
+
+    m_labelStatus-&gt;<span class="hljs-built_in">setText</span>(<span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;%1 images %2x%3 ready in memory. Press Start.&quot;</span>)
+                               .<span class="hljs-built_in">arg</span>(IMAGE_COUNT).<span class="hljs-built_in">arg</span>(IMAGE_SIDE).<span class="hljs-built_in">arg</span>(IMAGE_SIDE));
+    <span class="hljs-built_in">statusBar</span>()-&gt;<span class="hljs-built_in">showMessage</span>(<span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Ideal threads on this machine: %1&quot;</span>)
+                                  .<span class="hljs-built_in">arg</span>(QThread::<span class="hljs-built_in">idealThreadCount</span>()));
+
+    <span class="hljs-comment">// ... QFutureWatcher wiring: Step 6 ...</span>
+}</code></pre>
+<h2>Paso 6 — La conexión del QFutureWatcher, y una lección de medición real</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-built_in">connect</span>(&amp;m_watcher, &amp;QFutureWatcher&lt;QImage&gt;::started, <span class="hljs-keyword">this</span>, &amp;MainWindow::batchStarted);
+<span class="hljs-built_in">connect</span>(&amp;m_watcher, &amp;QFutureWatcher&lt;QImage&gt;::resultReadyAt, <span class="hljs-keyword">this</span>, &amp;MainWindow::resultReady);
+<span class="hljs-built_in">connect</span>(&amp;m_watcher, &amp;QFutureWatcher&lt;QImage&gt;::canceled, <span class="hljs-keyword">this</span>, &amp;MainWindow::batchCanceled);
+<span class="hljs-built_in">connect</span>(&amp;m_watcher, &amp;QFutureWatcher&lt;QImage&gt;::finished, <span class="hljs-keyword">this</span>, &amp;MainWindow::batchFinished);
+
+<span class="hljs-built_in">connect</span>(m_startButton, &amp;QPushButton::clicked, <span class="hljs-keyword">this</span>, &amp;MainWindow::startProcessing);
+<span class="hljs-built_in">connect</span>(m_cancelButton, &amp;QPushButton::clicked, <span class="hljs-keyword">this</span>, &amp;MainWindow::cancelProcessing);</code></pre>
+<p>Fíjate en lo que <strong>falta</strong> respecto a la lista completa de señales del artículo anterior: <code>progressRangeChanged</code> y <code>progressValueChanged</code> no están conectadas a nada. No es un olvido —es el resultado directo de una medición hecha durante el desarrollo de este mismo proyecto, y es demasiado instructiva como para no contarla entera, porque es la misma disciplina de &quot;mide, no adivines&quot; del Paso 3 aplicada esta vez a la interfaz en vez de al cálculo.</p>
+<p>El primer intento, el &quot;obvio&quot;, conectaba <code>progressValueChanged</code> directamente a <code>m_progressBar-&gt;setValue()</code>, actualizando la barra en cada resultado individual. El código compilaba, corría, y <strong>la interfaz se bloqueaba durante toda la duración del lote</strong>: ningún redibujado, ninguna respuesta a eventos, un auténtico congelamiento de 7-9 segundos seguido de una actualización de golpe al final —con medición directa incluida, mediante un temporizador de &quot;latido&quot; a 300ms conectado al event loop, que confirmó cero procesamiento de eventos durante toda la duración del lote.</p>
+<p>Aislando el problema pieza por pieza, resultó que el culpable no era <code>QtConcurrent::mapped()</code> en sí (una prueba del mismo future exacto, sin <code>QProgressBar</code> conectada, se mantenía fluida y reactiva durante toda la duración) sino específicamente la actualización <strong>frecuente</strong> de una <code>QProgressBar</code> durante la ejecución activa del lote: bastaban pocas llamadas a <code>setValue()</code> en medio del trabajo, no necesariamente cientos, para reintroducir el bloqueo. Actualizar en cambio la barra <strong>solo en los extremos</strong> —en cero cuando arranca, en el valor final cuando <code>finished()</code> se dispara, cuando el pool de hilos ya agotó el trabajo y ya no hay ninguna competencia por el tiempo de CPU de la GUI— resultó, verificado varias veces, perfectamente fluido: el event loop sigue latiendo puntualmente cada 300 milisegundos durante toda la duración del lote.</p>
+<p>La lección no tiene que ver con un bug específico de este entorno sino con un principio general, válido en todas partes: <strong>una API que promete &quot;no bloquear nunca&quot; a nivel de contrato (y <code>QtConcurrent</code>/<code>QFuture</code> lo cumplen) no garantiza automáticamente una interfaz fluida en cualquier combinación de widgets y frecuencia de actualización</strong> —el costo real de un redibujado, multiplicado por cientos de llamadas seguidas, siempre hay que <strong>medirlo</strong>, no asumirlo.</p>
+<h2>Paso 7 — startProcessing(): la línea que sustituye archivos enteros de worker</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::startProcessing</span><span class="hljs-params">()</span> </span>{
+    m_log-&gt;<span class="hljs-built_in">clear</span>();
+    m_progressBar-&gt;<span class="hljs-built_in">setValue</span>(<span class="hljs-number">0</span>);
+    m_resultsArrived = <span class="hljs-number">0</span>;
+    m_startButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    m_cancelButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">true</span>);
+    m_stopwatch.<span class="hljs-built_in">start</span>();
+
+    QFuture&lt;QImage&gt; resultFuture = QtConcurrent::<span class="hljs-built_in">mapped</span>(m_sourceImages, blurImageNaive);
+    m_watcher.<span class="hljs-built_in">setFuture</span>(resultFuture);
+}</code></pre>
+<p>Compara esta función con todo el archivo <code>producer.cpp</code> del módulo anterior, o con la construcción de un <code>QThread</code> + worker: aquí no hay ningún <code>QThread</code>, ninguna <code>moveToThread()</code>, ningún <code>connect(started, ...)</code>. La línea <code>QtConcurrent::mapped(...)</code> arranca de inmediato el trabajo en el <code>QThreadPool</code> global y devuelve un <code>QFuture&lt;QImage&gt;</code> sin esperar nada; <code>setFuture()</code> conecta nuestro <code>QFutureWatcher</code> ya listo a ese future, y desde ese momento todas las señales del artículo anterior empiezan a llegar, en el hilo de la GUI, a medida que el trabajo avanza.</p>
+<h2>Paso 8 — cancelProcessing(): cancelación cooperativa en la práctica</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::cancelProcessing</span><span class="hljs-params">()</span> </span>{
+    m_watcher.<span class="hljs-built_in">cancel</span>();
+    m_cancelButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    m_labelStatus-&gt;<span class="hljs-built_in">setText</span>(<span class="hljs-string">&quot;Cancellation requested: finishing items already in progress...&quot;</span>);
+}</code></pre>
+<p>Como se anticipó, <code>cancel()</code> es cooperativo: no interrumpe a mitad de camino un blur ya iniciado en un worker, simplemente impide que se inicien otros nuevos. En una verificación medida durante el desarrollo —cancelación solicitada aproximadamente 1.8 segundos después de arrancar un lote de 200 imágenes—, el resultado observado fue <strong>46 imágenes procesadas y recogidas</strong> antes de la detención completa (frente a las cerca de 25-26 que se esperarían de una tasa de finalización lineal en 1.8 segundos sobre un lote de 7.3s totales): la diferencia se explica exactamente por el comportamiento cooperativo recién descrito —los elementos ya asignados a los dos workers en el momento de la solicitud siguieron hasta su propio término natural, antes de que el pool dejara de tomar otros nuevos.</p>
+<h2>Paso 9 — Los slots de notificación</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::batchStarted</span><span class="hljs-params">()</span> </span>{
+    m_labelStatus-&gt;<span class="hljs-built_in">setText</span>(<span class="hljs-string">&quot;Batch started: processing on the global QThreadPool...&quot;</span>);
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::resultReady</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span> </span>{
+    ++m_resultsArrived;
+    <span class="hljs-keyword">if</span> (m_resultsArrived % LOG_EVERY_N == <span class="hljs-number">0</span>) {
+        m_log-&gt;<span class="hljs-built_in">addItem</span>(<span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Image %1 processed (%2/%3 results collected so far)&quot;</span>)
+                            .<span class="hljs-built_in">arg</span>(index).<span class="hljs-built_in">arg</span>(m_resultsArrived).<span class="hljs-built_in">arg</span>(m_sourceImages.<span class="hljs-built_in">size</span>()));
+        m_log-&gt;<span class="hljs-built_in">scrollToBottom</span>();
+    }
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::batchCanceled</span><span class="hljs-params">()</span> </span>{
+    m_log-&gt;<span class="hljs-built_in">addItem</span>(<span class="hljs-string">&quot;--- Batch canceled by user ---&quot;</span>);
+    m_log-&gt;<span class="hljs-built_in">scrollToBottom</span>();
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::batchFinished</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-type">const</span> qint64 msElapsed = m_stopwatch.<span class="hljs-built_in">elapsed</span>();
+    <span class="hljs-type">const</span> <span class="hljs-type">bool</span> canceled = m_watcher.<span class="hljs-built_in">isCanceled</span>();
+    <span class="hljs-type">const</span> <span class="hljs-type">int</span> resultsCollected = m_watcher.<span class="hljs-built_in">future</span>().<span class="hljs-built_in">resultCount</span>();
+
+    <span class="hljs-comment">// Only touch on the progress bar during the whole batch lifecycle (see</span>
+    <span class="hljs-comment">// the Step 6 note): the pool has already exhausted the work here, so</span>
+    <span class="hljs-comment">// there&#x27;s no more contention with the workers for GUI CPU time.</span>
+    m_progressBar-&gt;<span class="hljs-built_in">setValue</span>(resultsCollected);
+
+    m_log-&gt;<span class="hljs-built_in">addItem</span>(<span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;--- Batch %1 in %2 ms (%3 results collected) ---&quot;</span>)
+                        .<span class="hljs-built_in">arg</span>(canceled ? <span class="hljs-string">&quot;terminated (canceled)&quot;</span> : <span class="hljs-string">&quot;completed&quot;</span>)
+                        .<span class="hljs-built_in">arg</span>(msElapsed).<span class="hljs-built_in">arg</span>(resultsCollected));
+    m_log-&gt;<span class="hljs-built_in">scrollToBottom</span>();
+
+    m_labelStatus-&gt;<span class="hljs-built_in">setText</span>(canceled
+                               ? <span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Canceled after %1 ms.&quot;</span>).<span class="hljs-built_in">arg</span>(msElapsed)
+                               : <span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Completed in %1 ms.&quot;</span>).<span class="hljs-built_in">arg</span>(msElapsed));
+
+    m_startButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">true</span>);
+    m_cancelButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+}</code></pre>
+<p><code>resultReady()</code> registra un resultado de cada diez (<code>LOG_EVERY_N = 10</code>), no cada uno —la misma cautela de cadencia comentada en el Paso 6, aplicada aquí al log en vez de a la barra. <code>batchFinished()</code> distingue correctamente entre finalización natural y cancelación mediante <code>m_watcher.isCanceled()</code>, y en ambos casos rehabilita el botón Iniciar: puedes lanzar varios lotes en secuencia sin nunca reiniciar la aplicación.</p>
+<h2>Paso 10 — Compila, ejecuta, observa los números</h2>
+<pre><code class="hljs language-bash">cmake -S . -B build
+cmake --build build
+./build/image_batch_demo</code></pre>
+<p>Pulsa &quot;Start batch processing&quot;: la barra se queda en cero, el log empieza a llenarse a tirones de diez resultados a la vez, y —punto crucial, compruébalo tú mismo moviendo la ventana o redimensionándola mientras el lote corre— <strong>la interfaz permanece completamente reactiva</strong> durante toda la duración, sin bloqueos, sin &quot;no responde&quot;. Cuando el lote termina (medido, como se dijo, entre 7.3 y 7.6 segundos en esta máquina), la barra salta de golpe al valor final y la última línea de log reporta el tiempo exacto transcurrido y el número de resultados recogidos —siempre 200, si no pulsaste Cancelar.</p>
+<h2>Lo que acabas de demostrarte a ti mismo</h2>
+<p>Has construido un lote de procesamiento paralelo real, con <code>QtConcurrent::mapped()</code> distribuyendo 200 procesamientos CPU-bound entre los hilos del pool global, un <code>QFutureWatcher</code> que te mantiene informado sin bloquear nunca el hilo de la GUI, y una cancelación cooperativa que funciona —todo esto sin escribir un solo <code>QThread</code>, una sola <code>moveToThread()</code>, un solo mutex. Y has visto, con números medidos y no adivinados, tanto cuánto tiempo tarda realmente el trabajo (calibración del Paso 3) como de qué manera una elección aparentemente inocua al conectar una señal a un widget puede producir una interfaz que se bloquea (Paso 6).</p>
+<p>Has cerrado el círculo con el que empezó este módulo: <code>QtConcurrent</code>, la herramienta con la que quizás habías empezado &quot;a ojo&quot;, ahora la conoces hasta el <code>QThreadPool</code> que hay detrás, sabes leer la diferencia entre un <code>QFuture</code> bloqueante y uno observado mediante <code>QFutureWatcher</code>, y sobre todo sabes <strong>cuándo</strong> usarlo y cuándo no.</p>
+<hr>
+<p><em>El código fuente completo de este proyecto está disponible en el repositorio que acompaña este curso, en la carpeta <code>project-E-image-batch</code>.</em></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/learning-paths/multithreading-cpp/modulo-03-articulo-2-qfuture-qfuturewatcher-cuando-no-usarlo/">
+        <span class="post-nav__label">← Lección anterior</span>
+        <span class="post-nav__title">QFuture, QFutureWatcher y la pregunta que el vibe coding siempre se salta</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/learning-paths/multithreading-cpp/modulo-04-articulo-1-los-cuatro-tipos-de-conexion-qt/">
+        <span class="post-nav__label">Lección siguiente →</span>
+        <span class="post-nav__title">Los cuatro Qt::ConnectionType: qué sucede realmente cuando escribes connect()</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/learning-paths/multithreading-cpp/">← Volver a la ruta</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

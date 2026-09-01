@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QFuture, QFutureWatcher y la pregunta que el vibe coding siempre se salta — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code</title>
+  <meta name="description" content="Multithreading en C++ con Qt — Módulo 3">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-03-articulo-2-qfuture-qfuturewatcher-cuando-no-usarlo/">
+  <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-03-articulo-2-qfuture-qfuturewatcher-cuando-no-usarlo/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-03-articulo-2-qfuture-qfuturewatcher-cuando-no-usarlo/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="QFuture, QFutureWatcher y la pregunta que el vibe coding siempre se salta — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code">
+  <meta property="og:description" content="Multithreading en C++ con Qt — Módulo 3">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-03-articulo-2-qfuture-qfuturewatcher-cuando-no-usarlo/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/">Artículos</a>
+        <a href="/es/learning-paths/" aria-current="page">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <a href="/es/learning-paths/multithreading-cpp/modulo-03-articulo-2-qfuture-qfuturewatcher-cuando-no-usarlo/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/es/learning-paths/multithreading-cpp/">Multithreading en C++: de la teoría a una máquina de estados funcional</a> · Módulo 3 — QtConcurrent y el modelo Future/Promise
+        </div>
+        <span class="eyebrow">Teoría · Lección 12 de 22</span>
+        <h1>QFuture, QFutureWatcher y la pregunta que el vibe coding siempre se salta</h1>
+        <p class="article-hero__excerpt">Multithreading en C++ con Qt — Módulo 3</p>
+        <div class="article-hero__meta"><span>10 min de lectura</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Puedes encontrar todo el código fuente <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">aquì</a></p>
+<h1>QFuture, QFutureWatcher y la pregunta que el vibe coding siempre se salta</h1>
+<p>En el artículo anterior viste cómo lanzar trabajo paralelo con <code>QtConcurrent::run()</code> y la familia <code>mapped</code>/<code>filtered</code>/<code>reduced()</code>, y cómo el <code>QThreadPool</code> global gestiona los hilos detrás de escena. Cada función de <code>QtConcurrent</code> que has visto hasta ahora (en su forma no bloqueante) devuelve un <code>QFuture&lt;T&gt;</code>. Vale la pena detenerse a entender bien qué es, porque es un concepto distinto de todo lo visto en los módulos anteriores.</p>
+<h2>QFuture: un handle al resultado, no el resultado</h2>
+<p>Un <code>QFuture&lt;T&gt;</code> <strong>no es</strong> el resultado —es un objeto ligero y copiable que representa la <em>promesa</em> de un resultado que puede no estar listo todavía. Puedes consultarlo en cualquier momento:</p>
+<pre><code class="hljs language-cpp">QFuture&lt;QImage&gt; future = QtConcurrent::<span class="hljs-built_in">mapped</span>(images, blurImage);
+
+future.<span class="hljs-built_in">isRunning</span>();      <span class="hljs-comment">// is the work still running?</span>
+future.<span class="hljs-built_in">isFinished</span>();     <span class="hljs-comment">// has it finished (successfully or canceled)?</span>
+future.<span class="hljs-built_in">isCanceled</span>();     <span class="hljs-comment">// was it canceled?</span>
+future.<span class="hljs-built_in">resultCount</span>();    <span class="hljs-comment">// how many results are ready right now?</span></code></pre>
+<p>Y puedes, si quieres, <strong>esperar</strong> a que termine, con <code>waitForFinished()</code>:</p>
+<pre><code class="hljs language-cpp">future.<span class="hljs-built_in">waitForFinished</span>();
+QList&lt;QImage&gt; results = future.<span class="hljs-built_in">results</span>();</code></pre>
+<p>Detente en esta línea, porque es exactamente el tipo de error que este curso empezó a desmontar desde el primer proyecto práctico. ¿Recuerdas la ventana que se congelaba porque un cálculo largo corría directamente en el slot de un botón, en el hilo de la GUI? <code>future.waitForFinished()</code> llamado en el hilo de la GUI produce <strong>exactamente el mismo síntoma</strong>, por la misma razón exacta: estás bloqueando el hilo que debería quedar libre para procesar eventos (redibujados, clics, todo lo demás) hasta que el trabajo en el otro hilo termine.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-03/14-qfuture-qfuturewatcher-bridge.png" alt="Diagram of QFutureWatcher bridging QFuture signals to the GUI thread" loading="lazy"></p>
+<p><code>waitForFinished()</code> tiene su lugar legítimo: en un hilo que <strong>no</strong> es el de la GUI (por ejemplo dentro de otro trabajo ya ejecutado con <code>QtConcurrent::run()</code>, o en un script de línea de comandos sin interfaz), o cuando sabes con certeza que el trabajo ya terminó o terminará en un tiempo despreciable. En el hilo de la GUI, para un trabajo que dure más de unos milisegundos, nunca debe usarse de esta forma directa. La solución —la que usarás en todo el proyecto práctico de este módulo— es <strong>no esperar nunca</strong>, y dejar que sea Qt quien &quot;toque a la puerta&quot; cuando el resultado esté listo. La herramienta que hace exactamente esto es <code>QFutureWatcher&lt;T&gt;</code>.</p>
+<h2>QFutureWatcher: el future traducido a señales de Qt</h2>
+<p><code>QFutureWatcher&lt;T&gt;</code> hace de puente entre el mundo de los <code>QFuture</code> (que por sí mismos no emiten señales) y el mundo de señales y slots que ya conoces bien. Un <code>QFutureWatcher</code> &quot;observa&quot; un <code>QFuture</code> mediante <code>setFuture()</code>, y traduce cada evento interno del future en una señal Qt normal, entregada —mediante conexión en cola, exactamente igual que las señales del worker thread— en el hilo al que pertenece el propio watcher (casi siempre el hilo de la GUI, si el watcher se creó allí).</p>
+<pre><code class="hljs language-cpp">QFutureWatcher&lt;QImage&gt; *watcher = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QFutureWatcher</span>&lt;QImage&gt;(<span class="hljs-keyword">this</span>);
+
+<span class="hljs-built_in">connect</span>(watcher, &amp;QFutureWatcher&lt;QImage&gt;::finished, <span class="hljs-keyword">this</span>, [<span class="hljs-keyword">this</span>, watcher]() {
+    QList&lt;QImage&gt; results = watcher-&gt;<span class="hljs-built_in">future</span>().<span class="hljs-built_in">results</span>();
+    <span class="hljs-comment">// ... use the results, safely, on the GUI thread ...</span>
+});
+
+QFuture&lt;QImage&gt; future = QtConcurrent::<span class="hljs-built_in">mapped</span>(images, blurImage);
+watcher-&gt;<span class="hljs-built_in">setFuture</span>(future);   <span class="hljs-comment">// the work has ALREADY started: setFuture() just observes it</span></code></pre>
+<p>Ningún <code>QThread</code>, ninguna <code>moveToThread()</code>, ningún mutex: el worker en sí corre en el <code>QThreadPool</code> global, el <code>QFutureWatcher</code> vive tranquilamente en el hilo de la GUI, y la conexión entre ambos pasa enteramente por señales que Qt entrega en cola —la misma infraestructura de entrega de eventos en la que ya has aprendido a confiar.</p>
+<p><code>QFutureWatcher&lt;T&gt;</code> expone un conjunto de señales que reproduce, una a una, el tipo de notificaciones que en el módulo sobre <code>QThread</code> tenías que construirte a mano dentro de tu worker:</p>
+<ul>
+<li><strong><code>started()</code></strong> — emitida cuando el future conectado empieza efectivamente su ejecución.</li>
+<li><strong><code>finished()</code></strong> — emitida cuando todo el trabajo ha concluido, ya sea que haya llegado a su término natural o que haya sido cancelado. Es el punto en el que es seguro llamar a <code>watcher-&gt;future().results()</code> para leer todos los resultados.</li>
+<li><strong><code>canceled()</code></strong> — emitida (además de <code>finished()</code>, no en su lugar) cuando el future ha sido cancelado explícitamente mediante <code>watcher-&gt;cancel()</code>.</li>
+<li><strong><code>progressRangeChanged(int minimum, int maximum)</code></strong> y <strong><code>progressValueChanged(int value)</code></strong> — informan el avance global del trabajo.</li>
+<li><strong><code>resultReadyAt(int index)</code></strong> (y la variante <code>resultsReadyAt(int beginIndex, int endIndex)</code> para un intervalo) — emitida cada vez que un nuevo resultado está disponible, indicando <strong>qué</strong> índice de la colección original está listo.</li>
+</ul>
+<p>Hay un detalle que el artículo anterior ya adelantó para los resultados finales, y que vale la pena repetir aquí para las <em>notificaciones</em>: <code>resultReadyAt(index)</code> te dice qué elemento acaba de estar disponible, pero <strong>no garantiza que los índices lleguen en orden creciente</strong> —si dos workers están trabajando en paralelo sobre elementos distintos, el que termina primero notifica primero, sin importar cuál de los dos tenía el índice más bajo. Lo que sigue siendo siempre cierto es que el <code>QFuture</code> subyacente conserva los resultados en la posición correcta —<code>resultAt(i)</code> (o <code>results()</code> en conjunto) está siempre en el orden original, aunque las <em>notificaciones</em> de &quot;listo&quot; hayan llegado en un orden distinto.</p>
+<p><code>watcher-&gt;cancel()</code> (equivalente a <code>watcher-&gt;future().cancel()</code>) solicita la anulación del trabajo restante —pero, exactamente igual que la bandera cooperativa que verás formalizada en el próximo módulo, <strong>no interrumpe a mitad de camino</strong> un elemento cuyo cálculo ya arrancó en un worker: ese elemento termina de todas formas su paso individual, simplemente no se inician nuevos después de la solicitud de cancelación. <code>finished()</code> se dispara igualmente al final (junto con <code>canceled()</code>), y <code>watcher-&gt;future().resultCount()</code> te dice cuántos resultados se recogieron efectivamente antes de la interrupción.</p>
+<h2>QPromise: cuando quieres ser tú quien produce el future</h2>
+<p>Todo lo que has visto hasta ahora parte de un <code>QFuture</code> que <code>QtConcurrent</code> construye por ti. Hay un caso, más avanzado y menos frecuente en el trabajo cotidiano, en el que quieres la relación inversa: escribir tú mismo una función asíncrona personalizada que se comporte como las de <code>QtConcurrent</code> —devuelve un <code>QFuture</code>, soporta cancelación y progreso— sin pasar por <code>mapped</code>/<code>filtered</code>/<code>reduced</code>. La herramienta, introducida en Qt 6, es <code>QPromise&lt;T&gt;</code>.</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function">QFuture&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">processWithProgress</span><span class="hljs-params">(<span class="hljs-type">const</span> QList&lt;<span class="hljs-type">int</span>&gt; &amp;data)</span> </span>{
+    <span class="hljs-keyword">return</span> QtConcurrent::<span class="hljs-built_in">run</span>([data](QPromise&lt;<span class="hljs-type">int</span>&gt; &amp;promise) {
+        promise.<span class="hljs-built_in">setProgressRange</span>(<span class="hljs-number">0</span>, data.<span class="hljs-built_in">size</span>());
+        <span class="hljs-type">int</span> accumulator = <span class="hljs-number">0</span>;
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; data.<span class="hljs-built_in">size</span>(); ++i) {
+            <span class="hljs-keyword">if</span> (promise.<span class="hljs-built_in">isCanceled</span>()) <span class="hljs-keyword">break</span>;   <span class="hljs-comment">// cooperative cancellation, as always</span>
+
+            accumulator += <span class="hljs-built_in">processSingleItem</span>(data[i]);
+            promise.<span class="hljs-built_in">setProgressValue</span>(i + <span class="hljs-number">1</span>);
+        }
+
+        promise.<span class="hljs-built_in">addResult</span>(accumulator);
+    });
+}</code></pre>
+<p><code>QtConcurrent::run()</code> reconoce que la lambda acepta un <code>QPromise&lt;int&gt;&amp;</code> como primer parámetro, y te pasa un objeto ya conectado al <code>QFuture&lt;int&gt;</code> que la función devuelve: dentro de la lambda controlas tú mismo el progreso (<code>setProgressValue</code>), la cancelación cooperativa (<code>isCanceled()</code>, verificada en cada iteración —el mismo patrón del <code>while</code> visto para las wait conditions, aplicado aquí a un bucle), y el resultado final (<code>addResult</code>). Desde fuera, quien llama a <code>processWithProgress()</code> recibe un <code>QFuture&lt;int&gt;</code> completamente indistinguible del de un <code>QtConcurrent::mapped()</code> —puede conectarle un <code>QFutureWatcher</code> exactamente como acabas de aprender.</p>
+<p>No usaremos <code>QPromise</code> en el proyecto práctico de hoy —nuestro caso de uso (blur de imágenes) encaja perfectamente en el patrón <code>mapped()</code> ya disponible— pero es una herramienta que vale la pena conocer por su nombre: el día que tengas que envolver una librería de terceros bloqueante (un SDK de una cámara, por ejemplo, con su API síncrona) en algo que se integre limpiamente en el ecosistema <code>QFuture</code>/<code>QFutureWatcher</code>, <code>QPromise</code> es el camino correcto.</p>
+<h2>Excepciones a través de QFuture</h2>
+<p>Una última cosa que hay que saber antes del proyecto práctico, porque es fácil olvidarla y descubrirla de la peor manera en producción: ¿qué pasa si la función que le pasas a <code>QtConcurrent::run()</code> o <code>mapped()</code> lanza una excepción de C++? No desaparece silenciosamente, y no hace que el programa crashee de inmediato desde un hilo arbitrario del pool —Qt la <strong>captura</strong> en el hilo worker y la <strong>relanza</strong> cuando alguien consulta el future para obtener el resultado:</p>
+<pre><code class="hljs language-cpp">QFuture&lt;<span class="hljs-type">int</span>&gt; future = QtConcurrent::<span class="hljs-built_in">run</span>([]() -&gt; <span class="hljs-type">int</span> {
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">errorCondition</span>()) <span class="hljs-keyword">throw</span> std::<span class="hljs-built_in">runtime_error</span>(<span class="hljs-string">&quot;invalid data&quot;</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">42</span>;
+});
+
+<span class="hljs-keyword">try</span> {
+    <span class="hljs-type">int</span> value = future.<span class="hljs-built_in">result</span>();   <span class="hljs-comment">// or after waitForFinished()</span>
+} <span class="hljs-keyword">catch</span> (<span class="hljs-type">const</span> std::exception &amp;e) {
+    <span class="hljs-built_in">qWarning</span>() &lt;&lt; <span class="hljs-string">&quot;Exception from worker:&quot;</span> &lt;&lt; e.<span class="hljs-built_in">what</span>();
+}</code></pre>
+<p>La excepción se relanza en el punto en que <strong>lees</strong> el resultado (<code>result()</code>, <code>results()</code>, o el acceso correspondiente tras <code>waitForFinished()</code>) —no en el punto en que fue lanzada originalmente. Si en cambio estás usando el patrón <code>QFutureWatcher</code> (el del proyecto práctico de hoy), el lugar natural para el <code>try</code>/<code>catch</code> es dentro del slot conectado a <code>finished()</code>, justo en el momento en que accedes a los resultados.</p>
+<h2>¿QtConcurrent o QThread manual? La pregunta que el vibe coding se salta</h2>
+<p>Llegamos al punto que de verdad cierra el círculo con el que empezaste este módulo. <code>QtConcurrent</code> es cómodo —lo bastante cómodo como para ser, históricamente, la primera herramienta de multithreading de Qt que muchos desarrolladores encuentran, a menudo sin saber bien qué eligen <em>no</em> usar al hacerlo.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-03/16-qtconcurrent-vs-manual-qthread.png" alt="Comparison diagram of QtConcurrent versus manual QThread usage" loading="lazy"></p>
+<p>La pregunta correcta que hacerte, cada vez, antes de escribir una línea de código concurrente en Qt, es <strong>&quot;¿mi trabajo es una transformación sin estado sobre una colección de datos?&quot;</strong></p>
+<p>Si la respuesta es sí —tienes N elementos, aplicas la misma operación a cada uno, cada procesamiento es independiente de los demás, no necesitas coordinación fina durante la ejecución, y cuando todo termina te bastan los resultados—, entonces <code>QtConcurrent::mapped</code>/<code>filtered</code>/<code>reduced</code> (o <code>run()</code> para un único trabajo) es casi siempre la elección correcta. Obtienes paralelismo real, gestión del pool de hilos gratis, ningún mutex que escribir, ningún ciclo de vida de <code>QThread</code> que gestionar a mano. Es exactamente el proyecto práctico de hoy.</p>
+<p>Si en cambio tu trabajo tiene cualquiera de estas características, <code>QtConcurrent</code> se convierte en la herramienta equivocada, no porque &quot;no funcione&quot;, sino porque te obliga a forzar dentro de una caja sin estado algo que es stateful por naturaleza:</p>
+<p>Un <strong>worker que vive mucho tiempo y mantiene estado entre una operación y otra</strong> —el Productor y el Consumidor del módulo anterior no eran &quot;transformaciones sobre una colección&quot;: eran objetos con vida propia, que seguían trabajando hasta que el programa los detenía. Un <strong>productor-consumidor, pipeline con varias etapas</strong> —cuando el resultado de una etapa alimenta continuamente la siguiente, y la coordinación entre ambas (lleno/vacío, backpressure) es el corazón del problema, no un detalle. La <strong>necesidad de pausa, parada, cancelación de grano fino durante la ejecución</strong> (no solo &quot;cancela todo lo que queda&quot;, como el <code>cancel()</code> cooperativo de <code>QFutureWatcher</code>, sino &quot;suspende ahora, retoma después, con control preciso de dónde te encuentras&quot;) —es exactamente el tema del próximo módulo. Y la <strong>coordinación mediante mutex/wait condition entre hilos que de verdad necesitan hablarse durante el trabajo</strong>, no solo intercambiar un resultado final.</p>
+<p>En todos estos casos, el patrón <code>QThread</code> + objeto worker + <code>moveToThread()</code> + señales/slots (con, si hace falta, <code>QMutex</code>/<code>QWaitCondition</code> para el estado compartido) que construiste en los módulos anteriores sigue siendo la herramienta correcta —no un recurso &quot;menos moderno&quot;. <code>QtConcurrent</code> no sustituye ese patrón: lo <em>exime</em> de los casos en los que sería innecesariamente pesado, es decir, exactamente el caso de la transformación de datos que ves hoy.</p>
+<p>Mantener firme esta distinción —y saber reconocerla en treinta segundos al mirar un problema nuevo, en vez de arrancar &quot;a ojo&quot; hacia la herramienta que mejor conoces— es precisamente la competencia que este módulo quería darte.</p>
+<h2>De la teoría a las manos sobre el teclado</h2>
+<p>Ahora tienes todo el vocabulario para usar <code>QtConcurrent</code> con conocimiento de causa: <code>QFuture</code> como handle no bloqueante, <code>QFutureWatcher</code> para las notificaciones seguras en el hilo de la GUI, <code>QPromise</code> para los casos avanzados, la gestión de excepciones y, sobre todo, el criterio para decidir cuándo esta herramienta es la correcta y cuándo no. En el próximo artículo lo ponemos todo en práctica con un batch de procesamiento de imágenes real, con una lección de medición que vale por sí sola todo el artículo.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/learning-paths/multithreading-cpp/modulo-03-articulo-1-qtconcurrent-run-mapped-threadpool/">
+        <span class="post-nav__label">← Lección anterior</span>
+        <span class="post-nav__title">QtConcurrent::run, mapped/filtered/reduced, y el QThreadPool detrás de escena</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/learning-paths/multithreading-cpp/modulo-03-articulo-3-proyecto-lote-imagenes/">
+        <span class="post-nav__label">Lección siguiente →</span>
+        <span class="post-nav__title">Proyecto: procesamiento por lotes de imágenes con QtConcurrent::mapped y QFutureWatcher</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/learning-paths/multithreading-cpp/">← Volver a la ruta</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

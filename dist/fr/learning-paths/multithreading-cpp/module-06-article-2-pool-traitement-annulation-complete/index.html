@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Capstone : pool de traitement persistant et annulation coopérative complète — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code</title>
+  <meta name="description" content="Multithreading en C++ avec Qt — Module 6 (Capstone)">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-06-article-2-pool-traitement-annulation-complete/">
+  <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-06-article-2-pool-traitement-annulation-complete/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-06-article-2-pool-traitement-annulation-complete/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Capstone : pool de traitement persistant et annulation coopérative complète — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code">
+  <meta property="og:description" content="Multithreading en C++ avec Qt — Module 6 (Capstone)">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-06-article-2-pool-traitement-annulation-complete/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/">Articles</a>
+        <a href="/fr/learning-paths/" aria-current="page">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <a href="/fr/learning-paths/multithreading-cpp/module-06-article-2-pool-traitement-annulation-complete/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/fr/learning-paths/multithreading-cpp/">Multithreading en C++ : de la théorie à une machine à états fonctionnelle</a> · Module 6 — Projet final : pipeline de vision en temps quasi réel
+        </div>
+        <span class="eyebrow">Théorie · Leçon 21 sur 22</span>
+        <h1>Capstone : pool de traitement persistant et annulation coopérative complète</h1>
+        <p class="article-hero__excerpt">Multithreading en C++ avec Qt — Module 6 (Capstone)</p>
+        <div class="article-hero__meta"><span>9 min de lecture</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Tu peux trouver tout le code source <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">ici</a></p>
+<h1>Capstone : pool de traitement persistant et annulation coopérative complète</h1>
+<p>Dans l&#39;article précédent, tu as vu les deux premiers étages du pipeline capstone : un worker de capture persistant (Module 1) qui produit des frames dans un buffer limité (Module 2), avec la contropression comme choix délibéré. Cet article aborde les étages 3 et 4 : comment traiter ces frames en parallèle, et — la partie la plus difficile de tout le cours — comment arrêter correctement un pipeline dans lequel plusieurs étages concurrents peuvent être endormis à des endroits différents au même instant.</p>
+<h2>Étage 3 : traitement parallèle, et pourquoi QThreadPool bat QtConcurrent ici</h2>
+<p><strong>Objectif.</strong> Appliquer à chaque frame un filtre réel, gourmand en CPU — dans le Projet H, un détecteur de contours de type Sobel — en répartissant le travail sur plusieurs threads, de sorte que le temps total de traitement s&#39;adapte au nombre de cœurs disponibles.</p>
+<h3>La décision de conception qui compte : pool persistant contre lot fini</h3>
+<p>Le Module 3 t&#39;a enseigné <code>QtConcurrent::mapped</code> : tu donnes une collection, tu donnes une fonction, tu obtiens un <code>QFuture</code> qui te livre les résultats avec une progression observable via <code>QFutureWatcher</code>. C&#39;est l&#39;outil adapté chaque fois que ton problème a la forme « j&#39;ai <em>N</em> éléments, tous déjà disponibles, et je veux tous les traiter ». Le Projet H, cependant, <strong>n&#39;a pas cette forme</strong> : les frames arrivent une par une, à un rythme que tu ne connais pas à l&#39;avance, pendant une durée qui pourrait ne pas avoir de terme fixe (une véritable caméra ne te dit jamais à l&#39;avance « je suis la dernière frame »). <code>QtConcurrent::mapped</code> a besoin de connaître la collection complète avant de démarrer — il n&#39;est pas pensé pour un flux continu qui grandit pendant qu&#39;on le consomme.</p>
+<p>La solution adoptée est un pool de <strong>tâches persistantes</strong> : pas un <code>QRunnable</code> par frame (ce qui paierait le coût de créer et de planifier un nouvel objet pour chaque frame, un surcoût qui, avec des frames arrivant toutes les 90 millisecondes, compte réellement), mais un nombre fixe de <code>FrameWorkerTask</code> — typiquement 2, configurable par l&#39;utilisateur dans l&#39;interface — dont chacune reste en exécution <strong>pendant toute la durée du pipeline</strong>, prélevant des frames dans le buffer l&#39;une après l&#39;autre dans sa propre boucle interne :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">FrameWorkerTask::run</span><span class="hljs-params">()</span> </span>{
+    QImage frame;
+    <span class="hljs-type">int</span> frameNumber = <span class="hljs-number">-1</span>;
+
+    <span class="hljs-keyword">while</span> (m_buffer-&gt;<span class="hljs-built_in">consume</span>(frame, frameNumber)) {
+        <span class="hljs-comment">// ... process, measure, emit signals ...</span>
+        <span class="hljs-keyword">if</span> (m_flag-&gt;<span class="hljs-built_in">requested</span>()) <span class="hljs-keyword">break</span>;
+    }
+}</code></pre>
+<p>Chaque <code>FrameWorkerTask</code> hérite à la fois de <code>QObject</code> (pour pouvoir émettre des signaux vers l&#39;interface) et de <code>QRunnable</code> (pour être planifiable par <code>QThreadPool::start()</code>) — un double héritage que le Module 5 ne t&#39;avait pas encore donné l&#39;occasion d&#39;utiliser, car tes <code>QRunnable</code> y étaient purement calculatoires, sans besoin de communiquer de résultats via des signaux.</p>
+<p><strong>Piège — la taille du pool doit être fixée <em>avant</em> de démarrer les tâches, pas après.</strong> <code>QThreadPool::setMaxThreadCount(N)</code> doit être appelé avant <code>start()</code>, et avec des tâches persistantes, la séquence inversée n&#39;est pas seulement sous-optimale, c&#39;est potentiellement un blocage silencieux : si tu démarres <code>N</code> tâches mais que le pool a de la place pour moins de <code>N</code> threads simultanés, les tâches excédentaires restent en file interne au pool, en attendant qu&#39;une des tâches déjà en cours se termine — ce qui, pour une tâche qui boucle jusqu&#39;à ce que le buffer se ferme, n&#39;arrive pas avant la fin du pipeline. Le résultat est un pool qui semble « démarré » mais dans lequel seule une partie des workers consomme réellement le buffer, avec un débit réduit et aucun message d&#39;erreur pour le signaler.</p>
+<p><strong>Quand choisir l&#39;un ou l&#39;autre, dans ton travail réel.</strong> Si ton problème est « j&#39;ai un lot de 200 images déjà sur disque, traite-les toutes et dis-moi quand tu as fini », <code>QtConcurrent::mapped</code> avec un <code>QFutureWatcher</code> reste le choix le plus simple et le plus lisible — ne le réinvente pas avec un pool persistant simplement parce que tu l&#39;as vu ici. Si ton problème est « un flux continu de données arrivant, de durée inconnue, qui doit être traité avec un délai minimal pendant qu&#39;il continue d&#39;arriver », le pattern du Projet H — pool persistant prélevant dans un buffer partagé — est la forme naturelle du problème.</p>
+<h2>Étage 4 : annulation coopérative complète — la partie la plus difficile du cours</h2>
+<p>S&#39;il y a un seul passage de ce module dont il vaut la peine de relire chaque phrase deux fois, c&#39;est celui-ci. Arrêter correctement <strong>un</strong> worker, comme au Module 4, demande de la discipline mais reste conceptuellement simple : un drapeau, une boucle qui le vérifie, un <code>quit()</code> + <code>wait()</code> final. Arrêter <strong>un pipeline à trois étages concurrents qui se transmettent des données via un buffer bloquant</strong> est un problème qualitativement différent, car il existe désormais plusieurs façons dont un thread peut être « occupé » au moment précis où arrive la demande d&#39;arrêt, et chacune exige que quelqu&#39;un d&#39;autre le réveille physiquement — un drapeau seul ne suffit plus.</p>
+<h3>L&#39;erreur qu&#39;une version naïve commettrait</h3>
+<p>Imagine écrire, spontanément, cette séquence d&#39;arrêt :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-comment">// NAIVE VERSION -- DO NOT DO THIS</span>
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">naiveShutdown</span><span class="hljs-params">()</span> </span>{
+    m_flag.<span class="hljs-built_in">requestStop</span>();        <span class="hljs-comment">// (a)</span>
+    m_captureThread-&gt;<span class="hljs-built_in">quit</span>();     <span class="hljs-comment">// (b)</span>
+    m_captureThread-&gt;<span class="hljs-built_in">wait</span>();     <span class="hljs-comment">// (c)  &lt;-- can hang here forever</span>
+    m_pool-&gt;<span class="hljs-built_in">waitForDone</span>();       <span class="hljs-comment">// (d)</span>
+}</code></pre>
+<p>Cela semble raisonnable, et c&#39;est exactement le genre de code qui passerait un test rapide fait en appuyant sur Stop pendant que le pipeline est peu chargé. Le problème apparaît dans un cas précis mais tout sauf rare : si, au moment où <code>naiveShutdown()</code> est appelée, le thread de capture est bloqué <em>à l&#39;intérieur</em> de <code>m_buffer-&gt;produce()</code> parce que le buffer est plein — c&#39;est-à-dire exactement le scénario de contropression de l&#39;article précédent, un comportement <strong>normal et attendu</strong> du pipeline — alors l&#39;étape (a) ne sert à rien : <code>m_flag</code> est une variable atomique, mais le thread de capture n&#39;est pas en train de la regarder à ce moment-là, il dort dans <code>QWaitCondition::wait()</code>, qui ne se réveille que sur un <code>wakeOne()</code>/<code>wakeAll()</code> explicite ou un réveil intempestif (spurious wakeup). L&#39;étape (b) met en file une demande de sortie que le thread ne pourra jamais traiter, car il n&#39;est pas dans sa boucle d&#39;événements. L&#39;étape (c), <code>wait()</code>, se bloque alors <strong>pour toujours</strong> — ce n&#39;est pas un ralentissement, c&#39;est un véritable interblocage (deadlock).</p>
+<h3>La séquence correcte, étape par étape</h3>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-06/27-full-pipeline-shutdown.png" alt="Full shutdown: the deadlock-free stop ordering" loading="lazy"></p>
+<p>Ce qui manque à la version naïve est l&#39;appel à <code>FrameBuffer::close()</code>, et sa position dans la séquence n&#39;est pas négociable : il doit venir <strong>avant</strong> tout <code>wait()</code> bloquant sur un thread ou un pool, car c&#39;est le seul des quatre pas qui <strong>réveille physiquement</strong> ceux qui dorment dans une <code>QWaitCondition</code> — exactement la même leçon que celle du Module 2, ici appliquée à trois étages concurrents au lieu de deux :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::startShutdownSequence</span><span class="hljs-params">(<span class="hljs-type">const</span> QString &amp;reason, <span class="hljs-type">bool</span> earlyCancellation)</span> </span>{
+    <span class="hljs-keyword">if</span> (m_stopInProgress || !m_running) <span class="hljs-keyword">return</span>;
+    m_stopInProgress = <span class="hljs-literal">true</span>;
+
+    <span class="hljs-keyword">if</span> (earlyCancellation) {
+        m_flag.<span class="hljs-built_in">requestStop</span>();    <span class="hljs-comment">// stop producing NEW frames</span>
+    }
+    m_buffer-&gt;<span class="hljs-built_in">close</span>();           <span class="hljs-comment">// WAKES anyone blocked in wait() -- the step that matters</span>
+
+    <span class="hljs-comment">// wait for real termination, but NEVER on the GUI thread (see below)</span>
+    QThread *captureThread = m_captureThread;
+    QThreadPool *pool = m_pool;
+    QFuture&lt;<span class="hljs-type">void</span>&gt; future = QtConcurrent::<span class="hljs-built_in">run</span>([captureThread, pool]() {
+        captureThread-&gt;<span class="hljs-built_in">quit</span>();
+        captureThread-&gt;<span class="hljs-built_in">wait</span>();
+        pool-&gt;<span class="hljs-built_in">waitForDone</span>();
+    });
+    <span class="hljs-comment">// ... QFutureWatcher signals onPipelineFullyStopped() when done ...</span>
+}</code></pre>
+<p>Avec <code>close()</code> appelé en premier, le thread de capture bloqué dans <code>produce()</code> se réveille immédiatement (<code>m_notFull.wakeAll()</code> à l&#39;intérieur de <code>close()</code>), constate <code>m_closed == true</code>, et <code>produce()</code> renvoie <code>false</code> — sa <code>start()</code> sort de la boucle et retourne, le thread revient à sa propre boucle d&#39;événements, et c&#39;est seulement à ce moment-là que le <code>quit()</code> mis en file précédemment prend effet réel. Il en va de même, de manière symétrique, pour chaque <code>FrameWorkerTask</code> éventuellement bloquée dans <code>consume()</code> sur un buffer vide.</p>
+<h3>Pourquoi l&#39;attente finale ne peut pas se trouver sur le thread GUI</h3>
+<p>Il existe un second piège, moins spectaculaire qu&#39;un interblocage mais pas moins important : <code>QThread::wait()</code> et <code>QThreadPool::waitForDone()</code> sont toutes deux des appels <strong>bloquants</strong>. Même une fois le problème d&#39;interblocage résolu grâce à <code>close()</code>, les appeler directement depuis le slot connecté au bouton Stop bloquerait le thread de l&#39;interface pendant toute la durée du drainage — ce qui, avec des workers encore à mi-chemin d&#39;une frame de 200 millisecondes, peut être perceptible. C&#39;est exactement la même leçon que celle du Module 0, le tout premier chapitre du cours entier (« ne jamais bloquer le thread GUI »), qui revient ici à l&#39;échelle du pipeline complet : la solution consiste à déplacer l&#39;attente hors du thread GUI avec <code>QtConcurrent::run()</code> (Module 3, utilisé ici pour une tâche différente de celle pour laquelle tu l&#39;avais appris — non pas traiter des données, mais <em>attendre</em> que d&#39;autres threads terminent) et un <code>QFutureWatcher</code> qui rappelle <code>onPipelineFullyStopped()</code> une fois le drainage réellement terminé, avec une connexion en file vers le thread GUI (Module 4).</p>
+<h3>Arrêt anticipé contre arrêt naturel : ce n&#39;est pas la même chose</h3>
+<p>Une dernière distinction, subtile mais réelle : quand l&#39;utilisateur appuie sur Stop en plein milieu du pipeline, le drapeau coopératif est levé, et chaque <code>FrameWorkerTask</code> le vérifie après avoir terminé la frame qu&#39;elle a en main — elle cesse donc d&#39;en prélever d&#39;autres, même si le buffer en contient encore. C&#39;est un choix de réactivité : l&#39;utilisateur a demandé de s&#39;arrêter <em>maintenant</em>, pas « quand tu auras fini tout le travail déjà en file ». Quand, au contraire, la capture se termine d&#39;elle-même parce qu&#39;elle a atteint le nombre de frames demandé, il n&#39;y a aucune urgence analogue : le drapeau <strong>n&#39;est pas</strong> levé, et les workers continuent de drainer via <code>consume()</code> jusqu&#39;à ce que le buffer soit véritablement vide — chaque frame capturée est garantie d&#39;arriver au traitement. Deux chemins d&#39;arrêt, la même séquence <code>close()</code> → attente asynchrone → notification, mais une seule différence délibérée, et c&#39;est la différence entre « arrête-toi tout de suite » et « termine ce que tu as commencé » : dans le travail sur des systèmes de vision, c&#39;est presque toujours une distinction que l&#39;opérateur de la machine s&#39;attend à pouvoir contrôler, pas un détail d&#39;implémentation.</p>
+<p>Avec le traitement parallèle et l&#39;annulation coopérative complète désormais clairs, le dernier article de ce module — et du cours — traverse l&#39;intégration de l&#39;interface graphique et le projet guidé complet : comment le construire, comment le compiler, et ce qu&#39;il faut observer quand on l&#39;exécute vraiment.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/learning-paths/multithreading-cpp/module-06-article-1-architecture-capture-buffer-limite/">
+        <span class="post-nav__label">← Leçon précédente</span>
+        <span class="post-nav__title">Capstone : architecture d'un pipeline de vision — capture et buffer limité</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/learning-paths/multithreading-cpp/module-06-article-3-projet-pipeline-vision-capstone/">
+        <span class="post-nav__label">Leçon suivante →</span>
+        <span class="post-nav__title">Projet Capstone : pipeline de traitement de frames en quasi temps réel</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/learning-paths/multithreading-cpp/">← Retour au parcours</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

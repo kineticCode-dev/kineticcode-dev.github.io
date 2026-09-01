@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proyecto: productor, consumidor, y el buffer que los mantiene en equilibrio — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code</title>
+  <meta name="description" content="Multithreading en C++ con Qt — Módulo 2 — Proyecto">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-02-articulo-3-proyecto-productor-consumidor/">
+  <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-02-articulo-3-proyecto-productor-consumidor/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-02-articulo-3-proyecto-productor-consumidor/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Proyecto: productor, consumidor, y el buffer que los mantiene en equilibrio — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code">
+  <meta property="og:description" content="Multithreading en C++ con Qt — Módulo 2 — Proyecto">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-02-articulo-3-proyecto-productor-consumidor/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/">Artículos</a>
+        <a href="/es/learning-paths/" aria-current="page">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <a href="/es/learning-paths/multithreading-cpp/modulo-02-articulo-3-proyecto-productor-consumidor/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/es/learning-paths/multithreading-cpp/">Multithreading en C++: de la teoría a una máquina de estados funcional</a> · Módulo 2 — Sincronización: mutexes, condiciones de espera, semáforos y problemas clásicos
+        </div>
+        <span class="eyebrow">Proyecto · Lección 10 de 22</span>
+        <h1>Proyecto: productor, consumidor, y el buffer que los mantiene en equilibrio</h1>
+        <p class="article-hero__excerpt">Multithreading en C++ con Qt — Módulo 2 — Proyecto</p>
+        <div class="article-hero__meta"><span>9 min de lectura</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Puedes encontrar todo el código fuente <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">aquì</a></p>
+<h1>Proyecto: productor, consumidor, y el buffer que los mantiene en equilibrio</h1>
+<p>Construyamos una aplicación Qt Widgets con tres threads activos simultáneamente: el thread de la GUI (que ya conoces bien), un thread <strong>Productor</strong> que genera un nuevo valor a intervalos aleatorios y lo inserta en el buffer, y un thread <strong>Consumidor</strong> que lo extrae y simula procesarlo.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-02/10-producer-consumer-buffer.png" alt="Producer-consumer with a bounded buffer" loading="lazy"></p>
+<p>Una barra de progreso muestra la ocupación del buffer en tiempo real, y una lista de log registra cada producción y cada consumo.</p>
+<h2>Paso 1 — El esqueleto del proyecto</h2>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.16</span>)
+<span class="hljs-keyword">project</span>(producer_consumer_demo LANGUAGES CXX)
+
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">17</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD_REQUIRED <span class="hljs-keyword">ON</span>)
+<span class="hljs-keyword">set</span>(CMAKE_AUTOMOC <span class="hljs-keyword">ON</span>)
+
+<span class="hljs-keyword">find_package</span>(Qt6 REQUIRED COMPONENTS Widgets)
+
+<span class="hljs-keyword">add_executable</span>(producer_consumer_demo
+    main.cpp
+    mainwindow.h
+    mainwindow.cpp
+    sharedbuffer.h
+    sharedbuffer.cpp
+    producer.h
+    producer.cpp
+    consumer.h
+    consumer.cpp
+)
+
+<span class="hljs-keyword">target_link_libraries</span>(producer_consumer_demo PRIVATE Qt6::Widgets)</code></pre>
+<p>Cinco archivos fuente hoy, no tres como en los proyectos anteriores: <code>SharedBuffer</code> es una clase aparte, distinta tanto del Productor como del Consumidor, porque — a diferencia del proyecto del módulo anterior, donde todo el estado vivía dentro de un único worker — hoy el estado compartido es precisamente el objeto que <em>ambos</em> threads deben poder alcanzar.</p>
+<h2>Paso 2 — El buffer compartido: el corazón del proyecto</h2>
+<p>Crea <code>sharedbuffer.h</code>:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QObject&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QMutex&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QWaitCondition&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QQueue&gt;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">SharedBuffer</span> : <span class="hljs-keyword">public</span> QObject {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">SharedBuffer</span><span class="hljs-params">(<span class="hljs-type">int</span> capacity, QObject *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">produce</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">consume</span><span class="hljs-params">(<span class="hljs-type">int</span> &amp;valueOut)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">close</span><span class="hljs-params">()</span></span>;
+
+signals:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">occupancyChanged</span><span class="hljs-params">(<span class="hljs-type">int</span> occupancy, <span class="hljs-type">int</span> capacity)</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    QMutex m_mutex;
+    QWaitCondition m_notFull;
+    QWaitCondition m_notEmpty;
+    QQueue&lt;<span class="hljs-type">int</span>&gt; m_queue;
+    <span class="hljs-type">int</span> m_capacity;
+    <span class="hljs-type">bool</span> m_closed = <span class="hljs-literal">false</span>;
+};</code></pre>
+<p>Detente en la declaración: <code>produce()</code> y <code>consume()</code> <strong>no son slots</strong>. Son métodos públicos ordinarios, pensados para ser llamados <strong>directamente</strong> desde el código del Productor y del Consumidor — no mediante una señal. Es una diferencia de estilo importante respecto al módulo anterior, donde <em>todo</em> pasaba por señales y slots: allí era necesario porque simplemente estábamos intercambiando mensajes entre threads. Aquí, en cambio, <code>SharedBuffer</code> es un objeto cuya seguridad en presencia de varios threads está garantizada <strong>internamente</strong>, por su <code>QMutex</code> — puede ser llamado directamente desde cualquier thread, en cualquier momento, exactamente como harías con cualquier clase C++ thread-safe escrita sin Qt. Las señales siguen siendo la herramienta adecuada para la <em>notificación</em> hacia la GUI (<code>occupancyChanged</code>), no para el acceso al dato en sí.</p>
+<p>Ahora <code>sharedbuffer.cpp</code>:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sharedbuffer.h&quot;</span></span>
+
+SharedBuffer::<span class="hljs-built_in">SharedBuffer</span>(<span class="hljs-type">int</span> capacity, QObject *parent)
+    : <span class="hljs-built_in">QObject</span>(parent), <span class="hljs-built_in">m_capacity</span>(capacity) {}
+
+<span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">SharedBuffer::produce</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span> </span>{
+    <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+
+    <span class="hljs-keyword">while</span> (m_queue.<span class="hljs-built_in">size</span>() &gt;= m_capacity &amp;&amp; !m_closed) {
+        m_notFull.<span class="hljs-built_in">wait</span>(&amp;m_mutex);
+    }
+
+    <span class="hljs-keyword">if</span> (m_closed) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+
+    m_queue.<span class="hljs-built_in">enqueue</span>(value);
+    <span class="hljs-function">emit <span class="hljs-title">occupancyChanged</span><span class="hljs-params">(m_queue.size(), m_capacity)</span></span>;
+
+    m_notEmpty.<span class="hljs-built_in">wakeOne</span>();
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+}
+
+<span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">SharedBuffer::consume</span><span class="hljs-params">(<span class="hljs-type">int</span> &amp;valueOut)</span> </span>{
+    <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+
+    <span class="hljs-keyword">while</span> (m_queue.<span class="hljs-built_in">isEmpty</span>() &amp;&amp; !m_closed) {
+        m_notEmpty.<span class="hljs-built_in">wait</span>(&amp;m_mutex);
+    }
+
+    <span class="hljs-keyword">if</span> (m_queue.<span class="hljs-built_in">isEmpty</span>()) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+
+    valueOut = m_queue.<span class="hljs-built_in">dequeue</span>();
+    <span class="hljs-function">emit <span class="hljs-title">occupancyChanged</span><span class="hljs-params">(m_queue.size(), m_capacity)</span></span>;
+
+    m_notFull.<span class="hljs-built_in">wakeOne</span>();
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">SharedBuffer::close</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+    m_closed = <span class="hljs-literal">true</span>;
+    m_notFull.<span class="hljs-built_in">wakeAll</span>();
+    m_notEmpty.<span class="hljs-built_in">wakeAll</span>();
+}</code></pre>
+<p>Reconoces el patrón del artículo anterior: el <code>while</code>, no el <code>if</code>; el mutex siempre adquirido antes de tocar <code>m_queue</code> o <code>m_closed</code>; el despertar dirigido (<code>wakeOne</code>) en los caminos normales, el despertar total (<code>wakeAll</code>) solo en <code>close()</code>, donde queremos que <strong>cualquiera</strong> que esté esperando, productor o consumidor, despierte y se entere.</p>
+<h2>Paso 3 — El Productor</h2>
+<p><code>producer.h</code>:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QObject&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sharedbuffer.h&quot;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Producer</span> : <span class="hljs-keyword">public</span> QObject {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">Producer</span><span class="hljs-params">(SharedBuffer *buffer, QObject *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+
+<span class="hljs-keyword">public</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span></span>;
+
+signals:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">valueProduced</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    SharedBuffer *m_buffer;
+};</code></pre>
+<p><code>producer.cpp</code>:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;producer.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QThread&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QRandomGenerator&gt;</span></span>
+
+Producer::<span class="hljs-built_in">Producer</span>(SharedBuffer *buffer, QObject *parent)
+    : <span class="hljs-built_in">QObject</span>(parent), <span class="hljs-built_in">m_buffer</span>(buffer) {}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">Producer::start</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-type">int</span> nextValue = <span class="hljs-number">1</span>;
+
+    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+        QThread::<span class="hljs-built_in">msleep</span>(QRandomGenerator::<span class="hljs-built_in">global</span>()-&gt;<span class="hljs-built_in">bounded</span>(<span class="hljs-number">200</span>, <span class="hljs-number">800</span>));
+
+        <span class="hljs-keyword">if</span> (!m_buffer-&gt;<span class="hljs-built_in">produce</span>(nextValue)) <span class="hljs-keyword">break</span>;
+
+        <span class="hljs-function">emit <span class="hljs-title">valueProduced</span><span class="hljs-params">(nextValue)</span></span>;
+        ++nextValue;
+    }
+}</code></pre>
+<p>Nota lo que <strong>falta</strong> respecto al proyecto del módulo anterior: ningún flag de parada dedicado. El ciclo vive mientras <code>produce()</code> devuelva <code>true</code>, y <code>produce()</code> devuelve <code>false</code> exactamente cuando (y solo cuando) se ha llamado a <code>SharedBuffer::close()</code>. La condición de terminación del thread queda enteramente delegada al objeto compartido — una decisión de diseño que mantiene la lógica del ciclo de vida en un único lugar en vez de repartida entre varias clases.</p>
+<h2>Paso 4 — El Consumidor</h2>
+<p><code>consumer.h</code> y <code>consumer.cpp</code> siguen la misma estructura, de forma especular:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QObject&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sharedbuffer.h&quot;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Consumer</span> : <span class="hljs-keyword">public</span> QObject {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">Consumer</span><span class="hljs-params">(SharedBuffer *buffer, QObject *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+
+<span class="hljs-keyword">public</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span></span>;
+
+signals:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">valueConsumed</span><span class="hljs-params">(<span class="hljs-type">int</span> value, <span class="hljs-type">int</span> msProcessing)</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    SharedBuffer *m_buffer;
+};</code></pre>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;consumer.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QThread&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QRandomGenerator&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QElapsedTimer&gt;</span></span>
+
+Consumer::<span class="hljs-built_in">Consumer</span>(SharedBuffer *buffer, QObject *parent)
+    : <span class="hljs-built_in">QObject</span>(parent), <span class="hljs-built_in">m_buffer</span>(buffer) {}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">Consumer::start</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+        <span class="hljs-type">int</span> value;
+        <span class="hljs-keyword">if</span> (!m_buffer-&gt;<span class="hljs-built_in">consume</span>(value)) <span class="hljs-keyword">break</span>;
+
+        QElapsedTimer stopwatch;
+        stopwatch.<span class="hljs-built_in">start</span>();
+        <span class="hljs-type">int</span> processingTime = QRandomGenerator::<span class="hljs-built_in">global</span>()-&gt;<span class="hljs-built_in">bounded</span>(<span class="hljs-number">300</span>, <span class="hljs-number">1100</span>);
+        QThread::<span class="hljs-built_in">msleep</span>(processingTime);
+
+        <span class="hljs-function">emit <span class="hljs-title">valueConsumed</span><span class="hljs-params">(value, <span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-type">int</span>&gt;(stopwatch.elapsed()))</span></span>;
+    }
+}</code></pre>
+<p>El consumidor es deliberadamente un poco más lento e irregular que el productor (intervalos 300-1100ms frente a 200-800ms): es lo que te permitirá ver el buffer llenarse visiblemente en la barra de progreso en lugar de quedarse siempre vacío.</p>
+<h2>Paso 5 — La ventana: conectar los tres threads</h2>
+<p><code>mainwindow.h</code>:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QMainWindow&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QProgressBar&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QListWidget&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QLabel&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QThread&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sharedbuffer.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;producer.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;consumer.h&quot;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MainWindow</span> : <span class="hljs-keyword">public</span> QMainWindow {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">MainWindow</span><span class="hljs-params">(QWidget *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+    ~<span class="hljs-built_in">MainWindow</span>() <span class="hljs-keyword">override</span>;
+
+<span class="hljs-keyword">private</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updateOccupancy</span><span class="hljs-params">(<span class="hljs-type">int</span> occupancy, <span class="hljs-type">int</span> capacity)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">logProduced</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">logConsumed</span><span class="hljs-params">(<span class="hljs-type">int</span> value, <span class="hljs-type">int</span> msProcessing)</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    QProgressBar *m_occupancyBar;
+    QListWidget *m_log;
+    QLabel *m_labelOccupancy;
+
+    SharedBuffer *m_buffer;
+    QThread *m_producerThread;
+    QThread *m_consumerThread;
+    Producer *m_producer;
+    Consumer *m_consumer;
+};</code></pre>
+<p>En el constructor, tras montar los widgets (barra de progreso, lista de log — nada nuevo respecto a los proyectos anteriores), la parte que importa:</p>
+<pre><code class="hljs language-cpp">    m_buffer = <span class="hljs-keyword">new</span> <span class="hljs-built_in">SharedBuffer</span>(BUFFER_CAPACITY, <span class="hljs-keyword">this</span>);
+    <span class="hljs-built_in">connect</span>(m_buffer, &amp;SharedBuffer::occupancyChanged, <span class="hljs-keyword">this</span>, &amp;MainWindow::updateOccupancy);
+
+    m_producerThread = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QThread</span>(<span class="hljs-keyword">this</span>);
+    m_producer = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Producer</span>(m_buffer);
+    m_producer-&gt;<span class="hljs-built_in">moveToThread</span>(m_producerThread);
+    <span class="hljs-built_in">connect</span>(m_producerThread, &amp;QThread::started, m_producer, &amp;Producer::start);
+    <span class="hljs-built_in">connect</span>(m_producer, &amp;Producer::valueProduced, <span class="hljs-keyword">this</span>, &amp;MainWindow::logProduced);
+
+    m_consumerThread = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QThread</span>(<span class="hljs-keyword">this</span>);
+    m_consumer = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Consumer</span>(m_buffer);
+    m_consumer-&gt;<span class="hljs-built_in">moveToThread</span>(m_consumerThread);
+    <span class="hljs-built_in">connect</span>(m_consumerThread, &amp;QThread::started, m_consumer, &amp;Consumer::start);
+    <span class="hljs-built_in">connect</span>(m_consumer, &amp;Consumer::valueConsumed, <span class="hljs-keyword">this</span>, &amp;MainWindow::logConsumed);
+
+    m_producerThread-&gt;<span class="hljs-built_in">start</span>();
+    m_consumerThread-&gt;<span class="hljs-built_in">start</span>();</code></pre>
+<p>Observa dónde vive <code>m_buffer</code>: se construye con <code>this</code> (la ventana) como padre, así que su thread affinity sigue siendo la del thread de la GUI — y está perfectamente bien así, porque como viste en el Paso 2 nadie llama a sus métodos <code>produce()</code>/<code>consume()</code> mediante señales (donde la affinity importaría para decidir Direct o Queued): se llaman directamente, desde threads distintos, confiando en el <code>QMutex</code> interno para la seguridad. La señal <code>occupancyChanged</code>, en cambio, se emite desde dentro de <code>produce()</code>/<code>consume()</code> — por lo tanto desde el thread del Productor o del Consumidor, según quién acaba de actuar — hacia un slot que vive en el thread de la GUI: aquí la thread affinity <strong>sí importa</strong>, y Qt elige automáticamente una conexión queued, exactamente igual que en el módulo anterior, independientemente de dónde &quot;viva&quot; nominalmente el objeto <code>SharedBuffer</code> que emitió la señal.</p>
+<h2>Paso 6 — Los slots de la ventana</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::updateOccupancy</span><span class="hljs-params">(<span class="hljs-type">int</span> occupancy, <span class="hljs-type">int</span> capacity)</span> </span>{
+    m_occupancyBar-&gt;<span class="hljs-built_in">setValue</span>(occupancy);
+    m_labelOccupancy-&gt;<span class="hljs-built_in">setText</span>(<span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Buffer occupancy: %1 / %2&quot;</span>).<span class="hljs-built_in">arg</span>(occupancy).<span class="hljs-built_in">arg</span>(capacity));
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::logProduced</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span> </span>{
+    m_log-&gt;<span class="hljs-built_in">addItem</span>(<span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Produced: value %1&quot;</span>).<span class="hljs-built_in">arg</span>(value));
+    m_log-&gt;<span class="hljs-built_in">scrollToBottom</span>();
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::logConsumed</span><span class="hljs-params">(<span class="hljs-type">int</span> value, <span class="hljs-type">int</span> msProcessing)</span> </span>{
+    m_log-&gt;<span class="hljs-built_in">addItem</span>(<span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Consumed: value %1 (processed in %2 ms)&quot;</span>).<span class="hljs-built_in">arg</span>(value).<span class="hljs-built_in">arg</span>(msProcessing));
+    m_log-&gt;<span class="hljs-built_in">scrollToBottom</span>();
+}</code></pre>
+<p>Nada nuevo aquí — son slots normales ejecutados en el thread de la GUI, poblados con seguridad gracias a las conexiones queued mencionadas arriba.</p>
+<h2>Paso 7 — El destructor: el orden que realmente importa</h2>
+<pre><code class="hljs language-cpp">MainWindow::~<span class="hljs-built_in">MainWindow</span>() {
+    m_buffer-&gt;<span class="hljs-built_in">close</span>();
+
+    m_producerThread-&gt;<span class="hljs-built_in">quit</span>();
+    m_producerThread-&gt;<span class="hljs-built_in">wait</span>();
+
+    m_consumerThread-&gt;<span class="hljs-built_in">quit</span>();
+    m_consumerThread-&gt;<span class="hljs-built_in">wait</span>();
+
+    <span class="hljs-keyword">delete</span> m_producer;
+    <span class="hljs-keyword">delete</span> m_consumer;
+}</code></pre>
+<p>Este es el punto en el que el ciclo de vida de un worker thread visto en el módulo anterior y las wait conditions de hoy se encuentran, y merece la pena explicar por qué el orden de estas líneas no es intercambiable. Si en este momento el Productor está dormido dentro de <code>produce()</code> (buffer lleno, esperando en <code>notFull</code>), su <code>start()</code> <strong>nunca volverá por sí sola</strong>: está bloqueada ahí, no en su event loop. Esto significa que el thread del Productor no está en condiciones de procesar <strong>ningún otro evento</strong>, incluida una eventual solicitud de <code>quit()</code> puesta en cola antes. <code>close()</code> es lo que desbloquea físicamente la situación: despierta a quien esté esperando, su <code>start()</code> puede por fin evaluar <code>if (m_closed) return false;</code> y retornar, y <strong>solo entonces</strong> el thread vuelve a su event loop, libre para recibir y ejecutar <code>quit()</code>. Si invirtieras el orden — <code>quit()</code> antes de <code>close()</code> — no pasaría nada catastrófico (la solicitud de salida simplemente quedaría en cola, inocua), pero el verdadero trabajo de desbloqueo lo seguiría haciendo solo <code>close()</code>: es ella, no <code>quit()</code>, la clave de un apagado limpio cuando hay wait conditions de por medio.</p>
+<h2>Paso 8 — Compila, ejecuta, observa el almacén respirar</h2>
+<pre><code class="hljs language-bash">cmake -S . -B build
+cmake --build build
+./build/producer_consumer_demo</code></pre>
+<p>Mira la barra de progreso: sube a saltos cuando el Productor inserta un valor, baja cuando el Consumidor extrae uno. Como el Consumidor es en promedio más lento, con el tiempo tenderá a ver el buffer llenarse hacia la capacidad máxima (5) más a menudo que vaciarse del todo — es exactamente el comportamiento que la teoría de los artículos anteriores predice, ahora observable en pantalla. Mira también la lista de log: los valores aparecen siempre en el mismo orden en que fueron producidos, tanto en la columna &quot;Produced&quot; como en la de &quot;Consumed&quot; — el buffer, al ser una cola (<code>QQueue</code>, primero en entrar primero en salir), preserva el orden, una propiedad que en tu trabajo con pipelines de imágenes es casi siempre la que quieres (el frame número 10 debe procesarse y emitirse antes que el frame número 11, no después).</p>
+<p>Cierra la ventana y observa que la aplicación termina de inmediato, sin quedarse colgada: es la prueba directa de que la secuencia <code>close()</code> + <code>quit()</code> + <code>wait()</code> del Paso 7 funciona como se prometió, incluso si en ese preciso instante uno de los dos threads estaba dormido esperando dentro del buffer.</p>
+<h2>Qué acabas de demostrarte a ti mismo</h2>
+<p>Has construido, y verificado con tus propios ojos, el patrón de sincronización más citado en la historia de los sistemas concurrentes — no como ejercicio de manual, sino con dos threads reales, un mutex real, dos wait conditions reales, y un apagado que no deja nada colgado. También has visto una distinción de diseño importante respecto al módulo anterior: no todo tiene que pasar por señales y slots — un objeto con su propia sincronización interna puede ser llamado directamente desde varios threads, y a menudo es la elección más natural cuando el estado compartido es el punto central del problema, no un detalle a esconder detrás de mensajes.</p>
+<p>Si el productor-consumidor de hoy te ha despertado la curiosidad, una excelente forma de profundizar por tu cuenta es extender el proyecto a <strong>varios productores o varios consumidores</strong> sobre el mismo buffer: el código de <code>SharedBuffer</code> no cambia ni una línea (ya es correcto para ese caso, <code>wakeOne()</code> y el ciclo <code>while</code> lo garantizan), pero observar cómo se comporta con tres consumidores en lugar de uno es un ejercicio que vale más que muchas páginas de teoría sobre la starvation.</p>
+<hr>
+<p><em>El código fuente completo de este proyecto está disponible en el repositorio que acompaña a este curso, en la carpeta <code>project-D-producer-consumer</code>.</em></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/learning-paths/multithreading-cpp/profundizacion-mars-pathfinder-inversion-de-prioridad/">
+        <span class="post-nav__label">← Lección anterior</span>
+        <span class="post-nav__title">El día en que Marte casi gana: Pathfinder y la inversión de prioridad</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/learning-paths/multithreading-cpp/modulo-03-articulo-1-qtconcurrent-run-mapped-threadpool/">
+        <span class="post-nav__label">Lección siguiente →</span>
+        <span class="post-nav__title">QtConcurrent::run, mapped/filtered/reduced, y el QThreadPool detrás de escena</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/learning-paths/multithreading-cpp/">← Volver a la ruta</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

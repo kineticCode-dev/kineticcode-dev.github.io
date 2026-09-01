@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QRunnable und QThreadPool: ein Pool von Aufgaben, nicht ein Thread pro Aufgabe — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ mit Qt — Modul 5">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-05-artikel-1-qrunnable-qthreadpool/">
+  <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-05-artikel-1-qrunnable-qthreadpool/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-05-artikel-1-qrunnable-qthreadpool/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="QRunnable und QThreadPool: ein Pool von Aufgaben, nicht ein Thread pro Aufgabe — Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ mit Qt — Modul 5">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-05-artikel-1-qrunnable-qthreadpool/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/">Artikel</a>
+        <a href="/de/learning-paths/" aria-current="page">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <a href="/de/learning-paths/multithreading-cpp/modul-05-artikel-1-qrunnable-qthreadpool/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/de/learning-paths/multithreading-cpp/">Multithreading in C++: Von der Theorie zur funktionierenden Zustandsmaschine</a> · Modul 5 — Fortgeschrittene Muster: Benutzerdefinierte Thread-Pools, Atomics und die versteckten Kosten des Caches
+        </div>
+        <span class="eyebrow">Theorie · Lektion 17 von 22</span>
+        <h1>QRunnable und QThreadPool: ein Pool von Aufgaben, nicht ein Thread pro Aufgabe</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ mit Qt — Modul 5</p>
+        <div class="article-hero__meta"><span>5 Min. Lesezeit</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Den gesamten Quellcode findest du <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">hier</a></p>
+<h1>QRunnable und QThreadPool: ein Pool von Aufgaben, nicht ein Thread pro Aufgabe</h1>
+<p>Im Modul 2 hast du gelernt, geteilten Speicher mit <code>QMutex</code> zu schützen und Threads mit <code>QWaitCondition</code> zu koordinieren. Das ganze Modul stützte sich auf eine Grundidee, die es jetzt wert ist, explizit gemacht zu werden: Ein Mutex ist ein <em>allgemeines</em> Werkzeug, das schützt, was auch immer du hineinlegst, um den Preis eines Mechanismus, der bei jedem Erwerb potenziell den Scheduler des Betriebssystems einbezieht — und einen zum Warten gebrachten Thread wieder zur Ausführung zu bringen, hat reale Kosten, nicht null, wie du im Modul 0 beim Thema Kontextwechsel gesehen hast.</p>
+<p>Dieses Modul beginnt mit einer unbequemen, aber ehrlichen Frage: Sind diese Kosten immer notwendig? Die Antwort lautet, wie so oft in der Ingenieurskunst, &quot;es kommt darauf an&quot; — und dieser erste Artikel behandelt die eher organisatorische Ebene des Problems, bevor wir im nächsten auf die physische Ebene von Cache und Speichermodell hinabsteigen.</p>
+<h2>Das Problem, das ein dauerhafter QThread nicht gut löst</h2>
+<p>Denk zurück an das Muster aus den Modulen 1, 2 und 4: ein erzeugter <code>QThread</code>, ein mit <code>moveToThread()</code> darauf verschobener Worker, ein sorgfältig verwalteter Lebenszyklus (<code>start()</code>, <code>quit()</code>, <code>wait()</code>). Das ist das richtige Muster, wenn die Arbeit <em>kontinuierlich</em> ist — ein Producer, der über die gesamte Lebensdauer des Programms läuft, ein Worker, der einen konstanten Strom von Videobildern verarbeitet. Aber was passiert, wenn dein Problem anders gelagert ist: Du hast hundert Bilder, die <em>einmal</em>, parallel, verarbeitet werden müssen, und dann ist diese Arbeit erledigt? Hundert <code>QThread</code>, einen pro Bild, zu erzeugen, wäre absurd — das Erzeugen eines Betriebssystem-Threads hat nicht zu vernachlässigende Kosten (Stack-Allokation, Registrierung beim Scheduler, typischerweise mehrere Dutzend Mikrosekunden selbst auf einem modernen System), und hundert Threads, die jeweils nur wenige Millisekunden leben, würden einen enormen Anteil ihrer Gesamtzeit einfach mit Entstehen und Vergehen verbringen, nicht mit Arbeiten.</p>
+<p>Die klassische Lösung, so alt wie die nebenläufige Programmierung selbst, ist der <strong>Thread-Pool</strong>: eine feste Anzahl von Worker-Threads, einmalig beim Start erzeugt, die am Leben bleiben und sich anstellen, um sich die nächste verfügbare Arbeit aus einer gemeinsamen Warteschlange zu &quot;ziehen&quot; (pull), statt jedes Mal neu erzeugt zu werden.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-05/21-qrunnable-qthreadpool.png" alt="QRunnable + QThreadPool: queued tasks consumed by a fixed set of worker threads" loading="lazy"></p>
+<h2>QRunnable: die Aufgabe, nicht der Thread</h2>
+<p>In Qt schreibt man eine Arbeitseinheit, die an einen Pool übergeben wird, indem man <code>QRunnable</code> ableitet und nur eine einzige Methode überschreibt, <code>run()</code>:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ImageProcessingTask</span> : <span class="hljs-keyword">public</span> QRunnable {
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">ImageProcessingTask</span><span class="hljs-params">(<span class="hljs-type">int</span> imageId)</span> : m_imageId(imageId) {</span>}
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> <span class="hljs-keyword">override</span> </span>{
+        <span class="hljs-comment">// the actual work, executed on one of the pool&#x27;s threads</span>
+        <span class="hljs-built_in">processImage</span>(m_imageId);
+    }
+
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-type">int</span> m_imageId;
+};</code></pre>
+<p>Beachte den begrifflichen Unterschied zu einem <code>QObject</code>-Worker, der mit <code>moveToThread()</code> verschoben wird: Ein <code>QRunnable</code> <strong>ist kein</strong> <code>QObject</code>, hat keine eigenen Signale, hat keine Thread-Affinität in dem Sinn, den du aus Modul 1 kennst. Es ist bewusst ein ärmeres und leichteres Werkzeug: Es repräsentiert <em>die zu erledigende Arbeit</em>, nicht <em>wer sie erledigt</em>. Das &quot;wer&quot; entscheidet der Pool im laufenden Betrieb, je nachdem, welcher Worker-Thread als Erster frei wird — und das muss nicht bei jeder Ausführung derselbe Thread sein, eine Frage, die sich bei einem dauerhaften <code>QThread</code> gar nicht erst stellen würde.</p>
+<h2>Die Aufgabe übergeben: QThreadPool</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-comment">// Qt&#x27;s shared global pool</span>
+QThreadPool *pool = QThreadPool::<span class="hljs-built_in">globalInstance</span>();
+pool-&gt;<span class="hljs-built_in">start</span>(<span class="hljs-keyword">new</span> <span class="hljs-built_in">ImageProcessingTask</span>(imageId));</code></pre>
+<p><code>QThreadPool::globalInstance()</code> liefert einen von der gesamten Anwendung gemeinsam genutzten Pool zurück, standardmäßig bemessen nach der Anzahl der logischen Kerne der Maschine (<code>QThread::idealThreadCount()</code>) — dieselbe physische Kennzahl wie <code>std::thread::hardware_concurrency()</code>, die dir im geführten Projekt des nächsten Artikels wiederbegegnen wird. Du kannst auch einen eigenen, unabhängigen <code>QThreadPool</code> konstruieren, wenn du eine bestimmte Art von Arbeit vom Rest isolieren willst (zum Beispiel um zu verhindern, dass die Bildverarbeitung im Hintergrund mit dringenderen Aufgaben konkurriert, die über den globalen Pool laufen):</p>
+<pre><code class="hljs language-cpp">QThreadPool dedicatedPool;
+dedicatedPool.<span class="hljs-built_in">setMaxThreadCount</span>(<span class="hljs-number">4</span>);
+dedicatedPool.<span class="hljs-built_in">start</span>(<span class="hljs-keyword">new</span> <span class="hljs-built_in">ImageProcessingTask</span>(imageId));</code></pre>
+<h2>Wer zerstört das QRunnable? setAutoDelete</h2>
+<p>Hier gibt es ein Detail der Speicherverwaltung, das, wenn man es ignoriert, entweder ein Leck oder einen Absturz durch doppeltes <code>delete</code> erzeugt. Standardmäßig ist <code>QRunnable::autoDelete()</code> <code>true</code>: Der Pool zerstört das Objekt nach Abschluss von <code>run()</code> selbst mit <code>delete</code>. Deshalb schreiben wir im obigen Beispiel <code>new ImageProcessingTask(...)</code> und kümmern uns nicht weiter darum — der Pool übernimmt das. Wenn du hingegen dasselbe <code>QRunnable</code> mehrfach wiederverwenden musst, oder es nach der Ausführung am Leben halten willst, um ein Ergebnis auszulesen, musst du dieses Verhalten explizit deaktivieren, <strong>bevor</strong> du es übergibst:</p>
+<pre><code class="hljs language-cpp">ImageProcessingTask *task = <span class="hljs-keyword">new</span> <span class="hljs-built_in">ImageProcessingTask</span>(imageId);
+task-&gt;<span class="hljs-built_in">setAutoDelete</span>(<span class="hljs-literal">false</span>);
+pool-&gt;<span class="hljs-built_in">start</span>(task);
+pool-&gt;<span class="hljs-built_in">waitForDone</span>();      <span class="hljs-comment">// wait for all submitted tasks to finish</span>
+<span class="hljs-keyword">delete</span> task;              <span class="hljs-comment">// the responsibility is yours again now</span></code></pre>
+<p><code>waitForDone()</code> blockiert den Aufrufer, bis der Pool alle in der Warteschlange befindlichen Aufgaben abgearbeitet hat — nützlich in einem Batch-Kontext, wo ein klarer Synchronisationspunkt gebraucht wird, deutlich weniger nützlich in einem reaktiven Kontext, in dem die GUI am Leben bleiben soll (in diesem Fall wirst du, wie im Modul 3 mit <code>QFutureWatcher</code>, einen benachrichtigungsbasierten Mechanismus einer blockierenden Wartezeit vorziehen).</p>
+<h2>Die Verbindung zu QtConcurrent, jetzt explizit gemacht</h2>
+<p>Im Modul 3 hast du <code>QtConcurrent::run()</code> und <code>QtConcurrent::mapped()</code> verwendet, ohne je ein <code>QRunnable</code> oder einen <code>QThreadPool</code> zu Gesicht zu bekommen — und genau das ist der Punkt: <strong>Du hast sie nicht gesehen, weil Qt sie für dich hinter den Kulissen erzeugt</strong>. Jeder Aufruf von <code>QtConcurrent::run(funktion)</code> verpackt intern <code>funktion</code> in ein automatisch generiertes <code>QRunnable</code> und übergibt es an <code>QThreadPool::globalInstance()</code> — genau denselben Pool, den du gerade in diesem Artikel gelernt hast, von Hand zu benutzen. <code>QtConcurrent::mapped()</code> macht dasselbe, vervielfacht für jedes Element der zu verarbeitenden Sequenz, mit dem einzigen Zusatz der Logistik, um die Teilergebnisse in einem <code>QFuture</code> zu sammeln. Das ist keine ähnliche Implementierung, das ist <strong>derselbe Motor</strong>: Wenn du <code>pool-&gt;start(new ImageProcessingTask(...))</code> schreibst, tust du von Hand und explizit genau das, was <code>QtConcurrent::run()</code> implizit für dich erledigt.</p>
+<p>Das zu wissen sagt dir auch, wann es sich lohnt, auf die Ebene von direktem <code>QRunnable</code> hinabzusteigen, statt bei <code>QtConcurrent</code> zu bleiben: wenn du unterschiedliche Prioritäten zwischen Aufgaben brauchst (<code>QThreadPool::start()</code> akzeptiert einen optionalen Prioritätsparameter), oder einen eigenen, vom globalen getrennten Pool, oder eine feinere Kontrolle über den Lebenszyklus der einzelnen Aufgabe — alles Dinge, die die bequemere, aber undurchsichtigere Schnittstelle von <code>QtConcurrent</code> nicht offenlegt.</p>
+<p>Mit <code>QRunnable</code> und <code>QThreadPool</code> eingeordnet, und ihrer Verbindung zu <code>QtConcurrent</code> endlich explizit gemacht, steigt der nächste Artikel eine Ebene tiefer: Was garantiert <code>std::atomic</code> wirklich, erklärt nicht als Liste von Schlüsselwörtern zum Auswendiglernen, sondern ausgehend davon, was physisch in einem Mehrkern-Prozessor passiert.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/de/learning-paths/multithreading-cpp/modul-04-artikel-3-projekt-worker-lebenszyklus/">
+        <span class="post-nav__label">← Vorherige Lektion</span>
+        <span class="post-nav__title">Projekt: der vollständige Lebenszyklus eines Workers — starten, pausieren, fortsetzen, stoppen</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/de/learning-paths/multithreading-cpp/modul-05-artikel-2-speichermodell-und-false-sharing/">
+        <span class="post-nav__label">Nächste Lektion →</span>
+        <span class="post-nav__title">std::atomic, das C++-Speichermodell, und der Performance-Bug, den man im Code nicht sieht</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/learning-paths/multithreading-cpp/">← Zurück zum Lernpfad</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

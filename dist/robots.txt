@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kineticcode-dev.github.io/sitemap.xml

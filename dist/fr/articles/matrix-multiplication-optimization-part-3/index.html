@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Optimiser la multiplication de matrices en C++ — Partie 3 : la vectorisation, le grand bilan, et deux surprises bien réelles — Kinetic Code</title>
+  <meta name="description" content="Dernier volet de la série : on écrit à la main des instructions vectorielles AVX2 + FMA pour faire quatre multiplications-additions en une seule fois, on compare les cinq étapes de bout en bout — de 1,88 à 11,49 GFLOP/s — et on tombe sur deux surprises mesurées : une taille de matrice, puissance de deux, qui tourne 6,5 fois plus lentement que ses voisines, et un gain de 2,12x obtenu sans changer une seule ligne de code.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-3/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/matrix-multiplication-optimization-part-3/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-3/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/matrix-multiplication-optimization-part-3/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-3/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/matrix-multiplication-optimization-part-3/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-3/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Optimiser la multiplication de matrices en C++ — Partie 3 : la vectorisation, le grand bilan, et deux surprises bien réelles — Kinetic Code">
+  <meta property="og:description" content="Dernier volet de la série : on écrit à la main des instructions vectorielles AVX2 + FMA pour faire quatre multiplications-additions en une seule fois, on compare les cinq étapes de bout en bout — de 1,88 à 11,49 GFLOP/s — et on tombe sur deux surprises mesurées : une taille de matrice, puissance de deux, qui tourne 6,5 fois plus lentement que ses voisines, et un gain de 2,12x obtenu sans changer une seule ligne de code.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-3/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Optimiser la multiplication de matrices en C++ — Partie 3 : la vectorisation, le grand bilan, et deux surprises bien réelles","description":"Dernier volet de la série : on écrit à la main des instructions vectorielles AVX2 + FMA pour faire quatre multiplications-additions en une seule fois, on compare les cinq étapes de bout en bout — de 1,88 à 11,49 GFLOP/s — et on tombe sur deux surprises mesurées : une taille de matrice, puissance de deux, qui tourne 6,5 fois plus lentement que ses voisines, et un gain de 2,12x obtenu sans changer une seule ligne de code.","datePublished":"2026-08-23","inLanguage":"fr","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <link rel="stylesheet" href="/assets/vendor/katex/katex.min.css">
+<script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/" aria-current="page">Articles</a>
+        <a href="/fr/learning-paths/">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/matrix-multiplication-optimization-part-3/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/matrix-multiplication-optimization-part-3/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/matrix-multiplication-optimization-part-3/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/matrix-multiplication-optimization-part-3/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/matrix-multiplication-optimization-part-3/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-3);color:var(--chart-3)">Génie Logiciel</span>
+        <h1>Optimiser la multiplication de matrices en C++ — Partie 3 : la vectorisation, le grand bilan, et deux surprises bien réelles</h1>
+        <p class="article-hero__excerpt">Dernier volet de la série : on écrit à la main des instructions vectorielles AVX2 + FMA pour faire quatre multiplications-additions en une seule fois, on compare les cinq étapes de bout en bout — de 1,88 à 11,49 GFLOP/s — et on tombe sur deux surprises mesurées : une taille de matrice, puissance de deux, qui tourne 6,5 fois plus lentement que ses voisines, et un gain de 2,12x obtenu sans changer une seule ligne de code.</p>
+        <div class="article-hero__meta">
+          <span>23 août 2026</span>
+          <span>·</span>
+          <span>16 min de lecture</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Si vous suivez cette série depuis la <a href="https://kineticcode-dev.github.io/astro-pulsar/blog/matrix-multiplication-optimization-part-1/">Partie 1</a>, installez-vous confortablement, parce que c&#39;est ici que tout se met en place. On était partis de 1.88 GFLOP/s avec la multiplication de matrices que tout cours d&#39;introduction à l&#39;informatique enseigne — trois boucles imbriquées, rien de sophistiqué. La <a href="https://kineticcode-dev.github.io/astro-pulsar/blog/matrix-multiplication-optimization-part-2/">Partie 2</a> nous a fait faire un détour par le tuilage (qui, mesuré honnêtement, rendait les choses <em>pires</em> à lui seul), avant de nous amener à 8.30 GFLOP/s une fois qu&#39;on a mis un second cœur du processeur au travail avec un simple pragma OpenMP.</p>
+<p>Aujourd&#39;hui on actionne un dernier levier — apprendre à la boucle la plus interne à traiter quatre nombres d&#39;un coup au lieu d&#39;un seul — puis on prend du recul pour regarder tout le trajet parcouru, côte à côte. Au passage, deux choses sont apparues dans les mesures qui n&#39;auraient dû surprendre personne ayant lu attentivement la Partie 1, et pourtant : une taille de matrice plus lente que ses voisines sans aucune raison algorithmique, et un gain de 2,12x obtenu sans modifier la moindre ligne de code source.</p>
+<p>Vous pouvez retrouver tout le code source à ce <a href="https://github.com/kineticCode-dev/MatrixMultiplicationOptimization">lien</a></p>
+<h2>Apprendre au processeur à faire quatre multiplications-additions d&#39;un coup</h2>
+<p>Chaque version vue jusqu&#39;ici fait, au fond, exactement la même chose dans son cœur le plus interne : multiplier deux valeurs <code>double</code>, ajouter le résultat à un accumulateur, un nombre à la fois. Ce n&#39;est pas que le processeur ne sache traiter qu&#39;un nombre à la fois — c&#39;est qu&#39;on ne lui a jamais demandé autre chose. Les processeurs modernes prennent en charge les instructions <strong>SIMD</strong> (Single Instruction, Multiple Data) : une seule instruction machine qui applique la même opération à plusieurs nombres simultanément. L&#39;extension SIMD qu&#39;on va utiliser ici s&#39;appelle <strong>AVX2</strong>, qui opère sur des registres de 256 bits — assez larges pour loger quatre valeurs <code>double</code> de 64 bits côte à côte. Elle s&#39;accompagne de <strong>FMA</strong> (Fused Multiply-Add), une instruction qui calcule <code>a * b + c</code> en une seule étape au lieu de deux séparées — ce qui se trouve être <em>exactement</em> l&#39;opération logée au cœur de la boucle la plus interne, à chaque étape de cette série. Difficile d&#39;imaginer une instruction plus taillée sur mesure pour ce problème.</p>
+<p><img src="/assets/images/articles/10-avx2-simd.png" alt="À gauche : la version scalaire traite un double à la fois — huit étapes distinctes pour huit éléments. À droite : AVX2 + FMA charge quatre doubles dans un registre de 256 bits et effectue la multiplication-addition pour les quatre en une seule instruction — deux étapes au lieu de huit." loading="lazy"></p>
+<p>D&#39;où viennent ces instructions ? Pas d&#39;une bibliothèque externe — ce sont des <strong>intrinsèques</strong>, des fonctions C++ déclarées dans l&#39;en-tête standard <code>&lt;immintrin.h&gt;</code>, fourni avec toute installation moderne de GCC, Clang ou MSVC. Ce sont de fines enveloppes qui correspondent presque une à une à des instructions machine individuelles ; le compilateur les traduit directement, avec pratiquement aucun des frais généraux qu&#39;un appel de fonction normal impliquerait.</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title">multiply_blocked_avx2</span><span class="hljs-params">(<span class="hljs-type">const</span> Matrix&amp; A, <span class="hljs-type">const</span> Matrix&amp; B, Matrix&amp; C, <span class="hljs-type">int</span> N, <span class="hljs-type">int</span> BS = <span class="hljs-number">64</span>)</span> </span>{
+    std::<span class="hljs-built_in">fill</span>(C.<span class="hljs-built_in">begin</span>(), C.<span class="hljs-built_in">end</span>(), <span class="hljs-number">0.0</span>);
+    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel for schedule(dynamic)</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> ii = <span class="hljs-number">0</span>; ii &lt; N; ii += BS) {
+        <span class="hljs-type">const</span> <span class="hljs-type">int</span> i_max = std::<span class="hljs-built_in">min</span>(ii + BS, N);
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> kk = <span class="hljs-number">0</span>; kk &lt; N; kk += BS) {
+            <span class="hljs-type">const</span> <span class="hljs-type">int</span> k_max = std::<span class="hljs-built_in">min</span>(kk + BS, N);
+            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> jj = <span class="hljs-number">0</span>; jj &lt; N; jj += BS) {
+                <span class="hljs-type">const</span> <span class="hljs-type">int</span> j_max = std::<span class="hljs-built_in">min</span>(jj + BS, N);
+                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = ii; i &lt; i_max; ++i) {
+                    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = kk; k &lt; k_max; ++k) {
+                        <span class="hljs-type">const</span> <span class="hljs-type">double</span> a_ik = A[i * N + k];
+                        __m256d a_vec = _mm256_set1_pd(a_ik);
+
+                        <span class="hljs-type">int</span> j = jj;
+                        <span class="hljs-keyword">for</span> (; j + <span class="hljs-number">4</span> &lt;= j_max; j += <span class="hljs-number">4</span>) {
+                            <span class="hljs-type">double</span>* c_ptr = &amp;C[i * N + j];
+                            <span class="hljs-type">const</span> <span class="hljs-type">double</span>* b_ptr = &amp;B[k * N + j];
+                            __m256d c_vec = _mm256_loadu_pd(c_ptr);
+                            __m256d b_vec = _mm256_loadu_pd(b_ptr);
+                            c_vec = _mm256_fmadd_pd(a_vec, b_vec, c_vec);
+                            _mm256_storeu_pd(c_ptr, c_vec);
+                        }
+                        <span class="hljs-keyword">for</span> (; j &lt; j_max; ++j) {
+                            C[i * N + j] += a_ik * B[k * N + j];
+                        }
+                    }
+                }
+            }
+        }
+    }
+}</code></pre>
+<p>Partons de l&#39;extérieur vers l&#39;intérieur : la structure de tuilage et le pragma OpenMP sont <strong>identiques</strong> à l&#39;Étape 4. La vectorisation ne touche que la boucle la plus interne, celle sur <code>j</code> — c&#39;est donc elle qui mérite d&#39;être lue ligne par ligne.</p>
+<p><code>__m256d</code> est le type C++ représentant un registre AVX de 256 bits contenant quatre valeurs <code>double</code>. <code>_mm256_set1_pd(a_ik)</code> construit un registre où <code>a_ik</code> est répété quatre fois — nécessaire parce que <code>a_ik</code> est un simple scalaire, constant sur tout le balayage de <code>j</code> (exactement comme à chaque étape précédente), mais les instructions AVX opèrent sur des registres complets, donc il faut le « répandre » dans les quatre voies avant qu&#39;il puisse participer à une opération vectorielle.</p>
+<p>La boucle <code>for (; j + 4 &lt;= j_max; j += 4)</code> avance <strong>quatre par quatre</strong> au lieu d&#39;un par un : chaque itération traite quatre colonnes contiguës en une seule fois. <code>_mm256_loadu_pd</code> charge quatre valeurs <code>double</code> consécutives depuis la mémoire dans un registre AVX (le <code>u</code> signifie <em>unaligned</em>, non aligné : ça fonctionne même quand l&#39;adresse de départ n&#39;est pas alignée sur 32 octets, au prix d&#39;un léger coût de performance par rapport à la variante alignée — un choix de simplicité et de robustesse plutôt que de gratter le dernier pourcent). <code>_mm256_fmadd_pd(a_vec, b_vec, c_vec)</code> calcule, en une seule instruction, <code>a_vec * b_vec + c_vec</code> sur les quatre voies à la fois — quatre multiplications et quatre additions en virgule flottante en un seul cycle d&#39;horloge (dans l&#39;idéal). <code>_mm256_storeu_pd</code> réécrit le résultat en mémoire.</p>
+<p>La seconde boucle, <code>for (; j &lt; j_max; ++j)</code>, est la <strong>queue scalaire</strong> : elle traite ce qui reste quand la largeur de la tuile courante (<code>j_max - jj</code>) n&#39;est pas un multiple exact de quatre. Avec une taille de bloc de 64 (toujours un multiple de 4), cette queue ne se déclenche que sur des valeurs de N qui ne sont pas elles-mêmes un multiple de <code>BS</code> — mais elle doit rester présente quoi qu&#39;il arrive, pour garantir la correction sur tout N et tout BS que quelqu&#39;un exécuterait réellement.</p>
+<h2>Un détail de compilation qu&#39;on ne peut pas se permettre de sauter</h2>
+<p>Contrairement à OpenMP, où oublier <code>-fopenmp</code> donne quand même un programme correct, simplement séquentiel en silence, oublier les drapeaux AVX2 ici fait que le code <strong>ne compile tout simplement pas</strong> — <code>&lt;immintrin.h&gt;</code> verrouille ses propres fonctions derrière des macros liées aux options de compilation :</p>
+<pre><code class="hljs language-bash">g++ -O2 -std=c++17 -fopenmp -mavx2 -mfma stage5_avx2.cpp -o stage5_avx2
+./stage5_avx2 1023 64</code></pre>
+<pre><code class="hljs language-apache"><span class="hljs-attribute">AVX2</span>/FMA active at compile time.
+<span class="hljs-attribute">Stage</span> <span class="hljs-number">5</span> - blocked AVX2+FMA   N=<span class="hljs-number">1023</span>   time=  <span class="hljs-number">0</span>.<span class="hljs-number">1863</span> s      <span class="hljs-number">11</span>.<span class="hljs-number">493</span> GFLOP/s</code></pre>
+<p>Face à l&#39;Étape 4 (0.258 s), c&#39;est <strong>1.39x plus rapide</strong> — un gain réel, mais nettement en deçà du 4x qu&#39;on pourrait naïvement attendre de « quatre nombres à la fois au lieu d&#39;un ». Cet écart mérite une explication honnête plutôt qu&#39;un passage sous silence : la vectorisation n&#39;accélère que l&#39;arithmétique pure. Le temps d&#39;horloge total inclut aussi le trafic mémoire (toujours quatre valeurs <code>double</code> par chargement, ce n&#39;est pas une opération instantanée) et les frais de gestion des blocs qui l&#39;entourent. Un plafond théorique de 4x s&#39;applique strictement à la portion arithmétique, pas à l&#39;ensemble du tableau — bon à garder en tête chaque fois qu&#39;un gain de performance est estimé sur le papier avant d&#39;être mesuré pour de vrai.</p>
+<h2>Le grand bilan</h2>
+<p>Cinq étapes, un même protocole de mesure, la même matrice N = 1023, le même matériel tout au long de cette série :</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Time (s)</th>
+<th>GFLOP/s</th>
+<th>Speedup vs Stage 1</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Stage 1 — naive ijk</td>
+<td>1.140</td>
+<td>1.88</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Stage 2 — reordered ikj</td>
+<td>0.514</td>
+<td>4.16</td>
+<td>2.22x</td>
+</tr>
+<tr>
+<td>Stage 3 — blocked ikj</td>
+<td>0.719</td>
+<td>2.98</td>
+<td>1.58x</td>
+</tr>
+<tr>
+<td>Stage 4 — blocked + OpenMP</td>
+<td>0.258</td>
+<td>8.30</td>
+<td>4.42x</td>
+</tr>
+<tr>
+<td>Stage 5 — blocked + OpenMP + AVX2/FMA</td>
+<td>0.186</td>
+<td>11.49</td>
+<td><strong>6.12x</strong></td>
+</tr>
+</tbody></table>
+<p><img src="/assets/images/articles/11-full-comparison.png" alt="Diagramme en barres des cinq étapes, GFLOP/s passant de 1,88 à 11,49, annoté 6,12x par rapport à l&amp;#39;Étape 1." loading="lazy"></p>
+<p>Avant de faire davantage confiance à ce tableau, voici la divulgation complète que chacun de ces chiffres mérite : g++ 13.3.0 sous Ubuntu, 2 cœurs CPU disponibles, AVX2/FMA pris en charge par le matériel, OpenMP fonctionnel, <code>-O2</code> pour chaque étape sauf mention explicite du contraire (la section suivante). <strong>Un chiffre de performance sans le contexte matériel et logiciel dans lequel il a été mesuré ne dit presque rien</strong> — si vous relancez tout ça vous-même sur un autre matériel, attendez-vous à des chiffres absolus différents ; la forme relative, elle, devrait tenir, à la seule exception déjà signalée honnêtement dans la Partie 2 concernant l&#39;Étape 3.</p>
+<p>De tout juste sous 2 GFLOP/s à près de 11,5 — un facteur supérieur à six — via quatre changements distincts et cumulatifs, chacun justifié par un principe sous-jacent différent : l&#39;ordre d&#39;accès à la mémoire (Étape 2), des ensembles de travail à la taille du cache (Étape 3, détour compris), plusieurs cœurs (Étape 4), les instructions vectorielles (Étape 5). Aucun d&#39;eux n&#39;a touché à <em>ce qui</em> est calculé — seulement à <em>comment</em>.</p>
+<h2>Surprise n°1 : le piège de la puissance de deux</h2>
+<p>En préparant cette série, quelque chose est apparu qui n&#39;était pas prévu au programme, et c&#39;est un trop bel exemple de la théorie du cache de la Partie 1 percutant la pratique pour le laisser de côté. En chronométrant l&#39;Étape 1 — la version naïve toute simple — sur trois tailles de matrice voisines :</p>
+<pre><code class="hljs language-apache"><span class="hljs-attribute">N</span> = <span class="hljs-number">1023</span> (not a power of two):  time = <span class="hljs-number">1</span>.<span class="hljs-number">309</span> s
+<span class="hljs-attribute">N</span> = <span class="hljs-number">1024</span> (a power of two):      time = <span class="hljs-number">8</span>.<span class="hljs-number">488</span> s
+<span class="hljs-attribute">N</span> = <span class="hljs-number">1025</span>:                       time = <span class="hljs-number">1</span>.<span class="hljs-number">382</span> s</code></pre>
+<p><img src="/assets/images/articles/13-power-of-two-trap.png" alt="Diagramme en barres : N=1023 à 1,31s, N=1024 grimpant à 8,49s, N=1025 redescendant à 1,38s — annoté « puissance de deux ⇒ conflits d&amp;#39;ensembles de cache »." loading="lazy"></p>
+<p><strong>N = 1024 prend presque 6,5 fois plus de temps que N = 1023 ou N = 1025</strong>, alors qu&#39;elle est à peine plus grande — N = 1024 effectue environ 0,3 % d&#39;arithmétique en plus que N = 1023. Rien dans la théorie de complexité en <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>N</mi><mn>3</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N^3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.109em;">N</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> ne prédit une falaise pareille ; elle prédit une courbe lisse. L&#39;explication tient encore au cache, mais via un mécanisme plus subtil que celui de la Partie 1.</p>
+<p><img src="/assets/images/articles/12-cache-conflict.png" alt="À gauche : avec N=1023, six débuts de ligne consécutifs atterrissent répartis sur six ensembles de cache différents — comportement ordinaire. À droite : avec N=1024, les six débuts de ligne s&amp;#39;entassent exactement dans le même ensemble de cache, qui se retrouve évincé et rechargé à chaque accès." loading="lazy"></p>
+<p>Les caches réels sont organisés en structures <strong>associatives par ensembles</strong> : une adresse mémoire donnée ne peut atterrir que dans un sous-ensemble bien précis des lignes de cache disponibles, déterminé par les bits de poids faible de son adresse. Quand la longueur d&#39;une ligne de matrice est <em>exactement</em> une puissance de deux (ou un grand multiple d&#39;une puissance de deux), les adresses que la boucle la plus interne de l&#39;Étape 1 touche successivement — rappelons, <code>B[k*N + j]</code>, avec <code>k</code> comme boucle qui saute de <code>N</code> éléments à chaque pas — retombent sans cesse sur le <strong>même sous-ensemble identique</strong> de lignes de cache au lieu de se répartir. Il en résulte un <strong>conflict miss</strong> de cache : le cache a pourtant de la place libre ailleurs, mais ce sous-ensemble précis se fait écraser en boucle, comme si le cache entier était bien plus petit qu&#39;il ne l&#39;est réellement.</p>
+<p>Cet effet est spécifique au motif d&#39;accès à foulée N de l&#39;Étape 1 — précisément le motif d&#39;accès « pire cas » signalé dans la Partie 1, rendu pathologique par une coïncidence d&#39;alignement. Les étapes suivantes, avec un accès séquentiel ou tuilé, y sont bien moins sensibles. C&#39;est tout de même une leçon générale utile : quand une dimension de matrice ou de tableau est sous votre contrôle et que le motif d&#39;accès n&#39;est pas purement séquentiel, éviter les puissances de deux exactes (ou remplir légèrement la ligne pour casser l&#39;alignement) est une véritable technique employée en code de production haute performance, pas juste une curiosité de manuel. Essayez-le vous-même si vous voulez le voir de vos propres yeux — <code>./stage1_naive 1023</code>, puis <code>1024</code>, puis <code>1025</code> — c&#39;est l&#39;une des expériences les plus immédiatement convaincantes de toute cette série.</p>
+<h2>Surprise n°2 : isoler l&#39;effet des options de compilation</h2>
+<p>Toutes les mesures jusqu&#39;ici ont gardé <code>-O2</code> constant, spécifiquement pour que les changements algorithmiques ne se mélangent pas avec les changements du niveau d&#39;optimisation du compilateur. Mais combien reste sur la table, rien qu&#39;avec les drapeaux, code source resté rigoureusement fixe ? Prenons le code source de l&#39;Étape 4 (tuilé + OpenMP) — <strong>pas une seule ligne modifiée</strong> — et compilons-le de deux façons différentes :</p>
+<pre><code class="hljs language-bash">g++ -O2 -std=c++17 -fopenmp stage4_parallel.cpp -o stage4_O2
+g++ -O3 -march=native -ffast-math -std=c++17 -fopenmp stage4_parallel.cpp -o stage4_O3native</code></pre>
+<p><code>-O3</code> active des optimisations plus agressives que <code>-O2</code>, y compris la propre tentative du compilateur de vectorisation automatique. <code>-march=native</code> demande au compilateur de générer du code spécifique au processeur exact sur lequel il compile (y compris, si disponible, l&#39;utilisation automatique d&#39;AVX2 — sans le moindre intrinsèque requis) au lieu de code générique fonctionnant sur n&#39;importe quel processeur x86 — un vrai compromis, puisque le binaire résultant peut ne plus du tout fonctionner sur une autre machine dotée d&#39;un jeu d&#39;instructions plus ancien. <code>-ffast-math</code> assouplit certaines règles strictes de la norme IEEE 754 en virgule flottante — précisément, elle autorise le compilateur à réordonner des additions, ce qu&#39;il ne peut normalement pas faire parce que cela changerait le résultat d&#39;une infime quantité — ce qui est exactement la liberté supplémentaire dont une boucle d&#39;accumulation comme la nôtre a besoin pour une vectorisation automatique agressive.</p>
+<pre><code class="hljs language-apache"><span class="hljs-attribute">Stage</span> <span class="hljs-number">4</span> with -O2:                              <span class="hljs-number">0</span>.<span class="hljs-number">3176</span> s     <span class="hljs-number">6</span>.<span class="hljs-number">741</span> GFLOP/s
+<span class="hljs-attribute">Stage</span> <span class="hljs-number">4</span> with -O3 -march=native -ffast-math:    <span class="hljs-number">0</span>.<span class="hljs-number">1497</span> s    <span class="hljs-number">14</span>.<span class="hljs-number">308</span> GFLOP/s</code></pre>
+<p><img src="/assets/images/articles/14-compiler-flags.png" alt="Diagramme en barres : -O2 à 6,74 GFLOP/s contre -O3 -march=native -ffast-math à 14,31 GFLOP/s sur le même code source identique — annoté 2,12x, zéro ligne modifiée." loading="lazy"></p>
+<p><strong>2,12x plus rapide, exactement le même fichier source.</strong> Ça vaut la peine de le mettre en regard du reste de la série : réordonner les boucles (Partie 1) avait rapporté 2,22x. Les options de compilation seules, sur une boucle déjà bien écrite, en rapportent encore 2,12x — un rappel à garder tout près avant d&#39;investir du temps dans l&#39;optimisation manuelle : <strong>vérifier que les options de compilation correspondent réellement au matériel visé est souvent le gain de performance le moins cher qui soit disponible</strong>, et cela doit se faire au tout début du processus, pas comme une réflexion après coup une fois l&#39;algorithme déjà réécrit à la main.</p>
+<p>On a délibérément choisi de ne pas compiler avec <code>-O3 -march=native -ffast-math</code> dès la toute première étape de la Partie 1. Mélanger l&#39;effet des options de compilation avec l&#39;effet des changements algorithmiques aurait rendu impossible de déterminer lequel des deux était réellement responsable d&#39;une amélioration donnée — isoler une variable à la fois, ici les drapeaux face à un code source fixe, c&#39;est la même discipline de mesure que cette série entière a tenté d&#39;incarner de bout en bout.</p>
+<h2>Tout rassembler : un seul benchmark, un seul dépôt</h2>
+<p>Chaque étape a vécu jusqu&#39;ici dans son propre petit exécutable — pratique pour suivre étape par étape, moins pratique si on veut simplement comparer les cinq d&#39;une seule commande. C&#39;est à ça que sert <code>benchmark_all.cpp</code> dans le dépôt : il construit une paire de matrices d&#39;entrée (même graine pour chaque version, pour que chaque étape soit mesurée sur des données identiques), calcule un résultat de référence une fois avec l&#39;Étape 1, puis exécute et chronomètre chaque autre version, en vérifiant chaque résultat par rapport à cette référence avec un contrôle de correction <code>max_abs_diff</code> avant de faire confiance à l&#39;un quelconque des chiffres.</p>
+<pre><code class="hljs language-bash">g++ -O2 -std=c++17 -fopenmp -mavx2 -mfma benchmark_all.cpp -o benchmark_all
+./benchmark_all 1023 64</code></pre>
+<p>Il affiche le même tableau comparatif montré plus haut — temps, GFLOP/s, gain par rapport à l&#39;Étape 1, et l&#39;erreur maximale par rapport à la référence (de l&#39;ordre de <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>10</mn><mrow><mo>−</mo><mn>14</mn></mrow></msup></mrow><annotation encoding="application/x-tex">10^{-14}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">14</span></span></span></span></span></span></span></span></span></span></span></span> pour chaque étape, exactement ce que prédit l&#39;arrondi en virgule flottante) — et écrit un fichier <code>benchmark_results.csv</code> à côté, prêt pour l&#39;outil de visualisation de votre choix.</p>
+<p>Le code source complet de chaque étape de cette série — <code>common.h</code>, <code>kernels.h</code>, les cinq fichiers <code>stageN_*.cpp</code>, <code>benchmark_all.cpp</code>, un <code>CMakeLists.txt</code>, et un <code>build_and_run.sh</code> — se trouve dans le dépôt GitHub qui accompagne la série, lié depuis la Partie 1. Clonez-le, compilez-le, et lancez les chiffres sur votre propre machine : processeur différent, nombre de cœurs différent, compilateur différent, chiffres différents — et le constater par soi-même vaut plus que de faire confiance à n&#39;importe quel tableau dans un billet de blog, y compris celui-ci.</p>
+<h2>Ce qui reste sur la table</h2>
+<p>Aucune série technique honnête ne se termine par « et voilà, c&#39;est tout ». Certaines choses ont été délibérément laissées de côté, à la fois pour des raisons de portée et comme piste pour continuer à explorer. On n&#39;a pas touché à l&#39;<strong>algorithme de Strassen</strong> ni à ses proches parents, qui réduisent la complexité asymptotique <em>en dessous</em> de <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>N</mi><mn>3</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N^3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.109em;">N</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> en changeant l&#39;algorithme lui-même, plutôt qu&#39;en optimisant l&#39;implémentation d&#39;un algorithme fixe comme l&#39;a fait toute cette série. On n&#39;a pas exploré les <strong>algorithmes cache-oblivious</strong>, qui obtiennent un bon comportement vis-à-vis du cache par un diviser-pour-régner récursif au lieu d&#39;une taille de bloc choisie à la main comme notre <code>BS</code> — une approche plus élégante en théorie, puisqu&#39;elle n&#39;a jamais besoin de connaître à l&#39;avance les tailles de cache du processeur cible. Et on n&#39;a pas comparé nos résultats à une bibliothèque BLAS optimisée professionnellement (OpenBLAS, Intel MKL, et consorts) — il serait honnête de s&#39;attendre à ce que l&#39;une d&#39;elles batte encore sensiblement l&#39;Étape 5, étant écrite par des spécialistes et réglée pendant des décennies sur d&#39;innombrables architectures. Le but de cette série n&#39;a jamais été de rivaliser avec ce niveau d&#39;ingénierie — c&#39;était de comprendre, une étape mesurée à la fois, d&#39;où vient réellement ce genre de performance.</p>
+<h2>Une dernière chose</h2>
+<p>L&#39;enseignement le plus durable ici n&#39;est pas le nombre 6,12x — c&#39;est l&#39;habitude qu&#39;il représente : mesurer avant d&#39;optimiser, mesurer à nouveau après chaque changement, un par un, vérifier la correction à chaque étape, et alors seulement en tirer une conclusion. Cette habitude s&#39;applique bien au-delà de la multiplication de matrices — une requête de base de données lente, une boucle de contrôle qui rate sans cesse son temps de cycle, un pipeline de vision qui n&#39;arrive pas à suivre la cadence de la chaîne, tous récompensent exactement la même discipline. Le code change d&#39;un domaine à l&#39;autre. La méthode — la théorie pour savoir quoi chercher, la mesure honnête pour la vérifier, la correction vérifiée à chaque étape — ne change pas.</p>
+<p>Merci d&#39;être resté jusqu&#39;au bout de ces trois parties. Allez mesurer quelque chose.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px);"><a class="post-nav__link post-nav__link--prev" href="/fr/articles/matrix-multiplication-optimization-part-2/">
+        <span class="post-nav__label">← Article précédent</span>
+        <span class="post-nav__title">Optimiser la multiplication de matrices en C++ — Partie 2 : tiling, threads et une surprise bien honnête</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/articles/">← Retour à tous les articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

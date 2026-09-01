@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Costruire un Tracker di Spese Personali da Zero: Architettura e Progettazione del Database (Parte 3) — Kinetic Code</title>
+  <meta name="description" content="Questo articolo ripercorre il processo di progettazione e sviluppo di una web app per il tracciamento delle spese personali. L'obiettivo non è solo creare uno strumento funzionante, ma analizzare ogni decisione ingegneristica e capire il 'perché' dietro le nostre scelte tecnologiche.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/it/articles/personal-expense-trackerp3/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/personal-expense-trackerp3/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/personal-expense-trackerp3/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/personal-expense-trackerp3/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/personal-expense-trackerp3/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/personal-expense-trackerp3/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/personal-expense-trackerp3/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Costruire un Tracker di Spese Personali da Zero: Architettura e Progettazione del Database (Parte 3) — Kinetic Code">
+  <meta property="og:description" content="Questo articolo ripercorre il processo di progettazione e sviluppo di una web app per il tracciamento delle spese personali. L'obiettivo non è solo creare uno strumento funzionante, ma analizzare ogni decisione ingegneristica e capire il 'perché' dietro le nostre scelte tecnologiche.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/it/articles/personal-expense-trackerp3/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (it)" href="/it/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Costruire un Tracker di Spese Personali da Zero: Architettura e Progettazione del Database (Parte 3)","description":"Questo articolo ripercorre il processo di progettazione e sviluppo di una web app per il tracciamento delle spese personali. L'obiettivo non è solo creare uno strumento funzionante, ma analizzare ogni decisione ingegneristica e capire il 'perché' dietro le nostre scelte tecnologiche.","datePublished":"2026-07-18","inLanguage":"it","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/it/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/it/">Home</a>
+        <a href="/it/articles/" aria-current="page">Articoli</a>
+        <a href="/it/learning-paths/">Corsi</a>
+        <a href="/it/about/">About</a>
+        <a href="/it/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Lingua">
+            IT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/personal-expense-trackerp3/" aria-current="true"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/personal-expense-trackerp3/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/personal-expense-trackerp3/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/personal-expense-trackerp3/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/personal-expense-trackerp3/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-4);color:var(--chart-4)">Progetti</span>
+        <h1>Costruire un Tracker di Spese Personali da Zero: Architettura e Progettazione del Database (Parte 3)</h1>
+        <p class="article-hero__excerpt">Questo articolo ripercorre il processo di progettazione e sviluppo di una web app per il tracciamento delle spese personali. L'obiettivo non è solo creare uno strumento funzionante, ma analizzare ogni decisione ingegneristica e capire il 'perché' dietro le nostre scelte tecnologiche.</p>
+        <div class="article-hero__meta">
+          <span>18 lug 2026</span>
+          <span>·</span>
+          <span>6 min di lettura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Bentornati! Nella <strong>Parte 2</strong> abbiamo trattato lo sviluppo del frontend usando <strong>Flutter</strong>. Abbiamo impostato il progetto, lo abbiamo collegato al nostro database cloud e abbiamo iniziato a costruire l&#39;interfaccia utente.</p>
+<p><a href="https://github.com/kineticCode-dev/03-webappTrackingSpeseDummy">Link al Repository Github</a></p>
+<h1>Mockup della Webapp</h1>
+<p>La webapp sarà composta da due schermate diverse:</p>
+<ul>
+<li>Una dashboard: dove mostreremo grafici a barre e a torta.</li>
+<li>Una schermata di inserimento: dove potremo aggiungere le spese al nostro database.</li>
+</ul>
+<p>Il mockup della dashboard è questo:
+<img src="/assets/images/articles/mainView.png" alt="Vista Principale" loading="lazy"></p>
+<p>Il mockup della vista di inserimento è questo:
+<img src="/assets/images/articles/insertView.png" alt="Vista di Inserimento" loading="lazy"></p>
+<h2>Sviluppo della Vista di Inserimento</h2>
+<p>In questa sezione svilupperemo la vista di inserimento, che ci permette di aggiungere una spesa al database.
+L&#39;utente dovrà inserire:</p>
+<ul>
+<li>L&#39;importo della spesa/entrata. Le spese verranno inserite come importi negativi, mentre le entrate come importi positivi.</li>
+<li>La data in cui la spesa è avvenuta.</li>
+<li>La categoria a cui appartiene.</li>
+<li>Note.</li>
+</ul>
+<p>L&#39;interfaccia finale è questa:
+<img src="/assets/images/articles/insert_view.png" alt="Vista di Inserimento" loading="lazy"></p>
+<h2>Sviluppo della Vista Dashboard</h2>
+<p>Ora svilupperemo la Vista Dashboard, che sarà la schermata riassuntiva delle nostre finanze. L&#39;idea è inserire alcuni grafici per mostrare immediatamente il nostro stato finanziario. Dobbiamo considerare che verrà usata principalmente da mobile, quindi lo schermo sarà piccolo. È molto importante organizzare lo spazio nel modo migliore possibile. Una buona idea potrebbe essere: mostro un solo grafico alla volta, e in qualche modo ho la possibilità di cambiare vista.</p>
+<p>Iniziamo installando il pacchetto Flutter che ci permette di disegnare i grafici:</p>
+<pre><code class="hljs language-bash">$ flutter pub add fl_chart</code></pre>
+<p>Poi importiamo il pacchetto:</p>
+<pre><code class="hljs language-dart"><span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;package:fl_chart/fl_chart.dart&#x27;</span>;</code></pre>
+<p>Il primo grafico che svilupperemo sarà quello delle spese del mese corrente. Per farlo useremo un classico grafico a torta.
+Quando calcoliamo le spese mensili, abbiamo due approcci possibili:</p>
+<ul>
+<li>Leggo tutte le spese del mese dal database dentro Flutter, e all&#39;interno di Flutter scorro spesa per spesa e calcolo ciò che mi serve, come l&#39;importo finale e l&#39;importo per categoria.</li>
+<li>Aggrego i dati direttamente dentro il database e manipolo una parte di dati già aggregati.</li>
+</ul>
+<p>Seguiremo questa seconda strada. Questo ci permette di delegare al database quanto più lavoro pesante e filtraggio possibile, perché un database è uno strumento nato proprio per fare aggregazioni.
+Per farlo useremo una Stored Procedure. Una <code>Stored Procedure</code>, o <code>Function</code>, è un blocco di codice scritto in linguaggio SQL che viene salvato ed eseguito direttamente dentro il database. Possiamo pensarla come una vera e propria funzione software, con argomenti in ingresso e un valore di ritorno, che vive sul server del database. Ogni client che si connette al database ha queste funzioni a disposizione.</p>
+<p>Perché è meglio usare una Stored Procedure nel nostro caso? Ecco i motivi:</p>
+<ul>
+<li><strong>Efficienza di rete:</strong> se un utente ha registrato 200 spese in un mese, una query standard scaricherebbe 200 record JSON attraverso internet. Con la stored procedure, il database calcola le somme internamente e restituisce solo poche righe (una per ogni categoria attiva, ad esempio 5 righe). Meno dati in viaggio significa un&#39;app più veloce.</li>
+<li><strong>Performance:</strong> il motore SQL di PostgreSQL è altamente ottimizzato per scorrere e aggregare record. Eseguire la somma (<code>SUM</code>) e il raggruppamento (<code>GROUP BY</code>) nativamente sul server è infinitamente più veloce che fare la stessa operazione scorrendo una lista in Dart sulla CPU di uno smartphone.</li>
+<li><strong>Superare i limiti delle API client:</strong> le librerie client di Supabase sono ottime per le operazioni CRUD semplici, ma non supportano nativamente la clausola SQL <code>GROUP BY</code>. Creare una funzione sul database ci permette di sfruttare tutta la potenza del linguaggio SQL (PL/pgSQL), esponendola a Flutter con una chiamata molto semplice.</li>
+</ul>
+<p>Tutto questo vale anche per le spese settimanali, quindi creiamo una stored procedure generica che prende in input:</p>
+<ul>
+<li>anno</li>
+<li>mese/settimana</li>
+<li>granularità (mensile/settimanale)</li>
+</ul>
+<p>E restituisce, per quel mese/settimana specifico:</p>
+<ul>
+<li>categoria di spesa</li>
+<li>importo</li>
+</ul>
+<p>Per farlo, andiamo su Supabase, nell&#39;SQL editor, e scriviamo questo codice:</p>
+<pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">OR</span> REPLACE <span class="hljs-keyword">FUNCTION</span> get_aggregated_expenses(
+    req_year <span class="hljs-type">INT</span>,
+    req_value <span class="hljs-type">INT</span>, <span class="hljs-comment">-- Mese (1-12) o settimana (1-53)</span>
+    time_frame TEXT <span class="hljs-comment">-- Può essere &#x27;monthly&#x27; o &#x27;weekly&#x27;</span>
+)
+<span class="hljs-keyword">RETURNS</span> <span class="hljs-keyword">TABLE</span> (category_name TEXT, total_amount <span class="hljs-type">NUMERIC</span>) <span class="hljs-keyword">AS</span> $$
+<span class="hljs-keyword">BEGIN</span>
+    IF time_frame <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;weekly&#x27;</span> <span class="hljs-keyword">THEN</span>
+        <span class="hljs-keyword">RETURN</span> QUERY
+        <span class="hljs-keyword">SELECT</span>
+            t.name::TEXT <span class="hljs-keyword">as</span> category_name,
+            <span class="hljs-built_in">SUM</span>(e.importo)::<span class="hljs-type">NUMERIC</span> <span class="hljs-keyword">as</span> total_amount
+        <span class="hljs-keyword">FROM</span> expenses e
+        <span class="hljs-keyword">JOIN</span> tag t <span class="hljs-keyword">ON</span> e.id_tag <span class="hljs-operator">=</span> t.id
+        <span class="hljs-keyword">WHERE</span> <span class="hljs-built_in">EXTRACT</span>(<span class="hljs-keyword">YEAR</span> <span class="hljs-keyword">FROM</span> e.data) <span class="hljs-operator">=</span> req_year
+          <span class="hljs-keyword">AND</span> <span class="hljs-built_in">EXTRACT</span>(WEEK <span class="hljs-keyword">FROM</span> e.data) <span class="hljs-operator">=</span> req_value
+        <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> t.name;
+    <span class="hljs-keyword">ELSE</span>
+        <span class="hljs-keyword">RETURN</span> QUERY
+        <span class="hljs-keyword">SELECT</span>
+            t.name::TEXT <span class="hljs-keyword">as</span> category_name,
+            <span class="hljs-built_in">SUM</span>(e.importo)::<span class="hljs-type">NUMERIC</span> <span class="hljs-keyword">as</span> total_amount
+        <span class="hljs-keyword">FROM</span> expenses e
+        <span class="hljs-keyword">JOIN</span> tag t <span class="hljs-keyword">ON</span> e.id_tag <span class="hljs-operator">=</span> t.id
+        <span class="hljs-keyword">WHERE</span> <span class="hljs-built_in">EXTRACT</span>(<span class="hljs-keyword">YEAR</span> <span class="hljs-keyword">FROM</span> e.data) <span class="hljs-operator">=</span> req_year
+          <span class="hljs-keyword">AND</span> <span class="hljs-built_in">EXTRACT</span>(<span class="hljs-keyword">MONTH</span> <span class="hljs-keyword">FROM</span> e.data) <span class="hljs-operator">=</span> req_value
+        <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> t.name;
+    <span class="hljs-keyword">END</span> IF;
+<span class="hljs-keyword">END</span>;
+$$ <span class="hljs-keyword">LANGUAGE</span> plpgsql;</code></pre>
+<p>Lato client, per conoscere l&#39;elenco delle spese di un mese specifico, dobbiamo semplicemente fare:</p>
+<pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> get_aggregated_expenses(<span class="hljs-number">2026</span>, <span class="hljs-number">7</span>, <span class="hljs-string">&#x27;monthly&#x27;</span>);</code></pre>
+<p>E per conoscere l&#39;elenco delle spese di una settimana specifica:</p>
+<pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> get_aggregated_expenses(<span class="hljs-number">2026</span>, <span class="hljs-number">28</span>, <span class="hljs-string">&#x27;weekly&#x27;</span>);</code></pre>
+<p>E il database risponderà con i dati richiesti.</p>
+<p>La Dashboard finale è questa:</p>
+<p><img src="/assets/images/articles/dashboard_view.png" alt="Dashboard" loading="lazy"></p>
+<p><img src="/assets/images/articles/dashboard_view2.png" alt="Dashboard2" loading="lazy"></p>
+<h2>Pubblicare la webapp online</h2>
+<p>Per ospitare la nostra Flutter web app, useremo GitHub Pages come servizio di hosting per siti statici, che è completamente gratuito. Una volta compilata, la nostra webapp non è altro che un insieme di file <code>HTML, CSS, JavaScript e asset</code>.</p>
+<p>Vediamo i passaggi per farlo. I prerequisiti sono:</p>
+<ul>
+<li>Un account GitHub</li>
+<li>Git installato sul PC</li>
+<li>La build della webapp</li>
+</ul>
+<h3>Passo 1: Modificare il <code>base href</code> in Flutter</h3>
+<p>Apriamo il terminale nella root del progetto Flutter, dove si trova il file <code>pubspec.yaml</code>, ed eseguiamo il seguente comando nel terminale:</p>
+<pre><code class="hljs language-bash">flutter build web --release --base-href <span class="hljs-string">&quot;/&lt;name-of-your-repo&gt;/&quot;</span> --pwa-strategy=none</code></pre>
+<p>A questo punto la compilazione partirà all&#39;interno della cartella <code>/build/web</code>. Quando sarà terminata, troveremo i file <code>index.html</code>, <code>main.dart.js</code>, <code>flutter_bootstrap.js</code> e <code>flutter_service_worker.js</code>.</p>
+<h3>Passo 2: Creare il Repository su GitHub</h3>
+<ol>
+<li>Andiamo su GitHub e creiamo un nuovo repository.</li>
+<li>Scegliamo il nome (lo stesso usato nel <code>--base-href</code>).</li>
+<li>Impostiamo il repository come pubblico, il che è necessario per avere GitHub Pages gratuitamente.</li>
+<li>Lasciamo deselezionate le opzioni &quot;<code>Add a README</code>&quot; o &quot;<code>.gitignore</code>&quot;.</li>
+</ol>
+<h3>Passo 3: Il trucco del 404 per le SPA</h3>
+<p>Per risolvere il problema con i refresh di pagina, applichiamo la seguente soluzione:</p>
+<ol>
+<li>Navighiamo nella cartella <code>build/web</code> sul nostro PC.</li>
+<li>Duplichiamo il file <code>index.html</code> e lo rinominiamo in <code>404.html</code>.
+In questo modo, se un utente ricarica la pagina su un URL profondo, GitHub non troverà la pagina, caricherà il file <code>404.html</code> (identico a <code>index.html</code>), e Flutter prenderà il controllo leggendo l&#39;URL e portando l&#39;utente alla schermata corretta.</li>
+</ol>
+<h3>Passo 4: Caricare i file</h3>
+<p>Aggiungiamo l&#39;intera cartella <code>build/web</code> al repository GitHub appena creato.</p>
+<h3>Passo 5: Abilitare GitHub Pages</h3>
+<ol>
+<li>Andiamo sul nostro repository GitHub.</li>
+<li>Clicchiamo su <strong>Settings</strong> in alto a destra.</li>
+<li>Nel menu a sinistra, clicchiamo su <strong>Pages</strong>.</li>
+<li>Sotto <strong>Build and deployment</strong>, impostiamo la sorgente su <strong>Deploy from a branch</strong>.</li>
+<li>Sotto <strong>Branch</strong>, selezioniamo <code>main</code> e la cartella <code>/ (root)</code>, poi clicchiamo su <strong>Save</strong>.</li>
+<li>GitHub Actions costruirà la pagina. Troveremo l&#39;URL finale in cima alla stessa sezione Pages non appena il processo sarà terminato: ci vogliono un paio di minuti.</li>
+</ol>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/it/articles/personal-expense-tracker-p2/">
+        <span class="post-nav__label">← Articolo precedente</span>
+        <span class="post-nav__title">Costruire un Tracker di Spese Personali da Zero: Architettura e Progettazione del Database (Parte 2)</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ti va di offrirmi un caffè?</h3>
+          <p>Se questo contenuto ti è stato utile, puoi sostenere il progetto con una piccola donazione libera.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/it/articles/windows-autostart-article/">
+        <span class="post-nav__label">Articolo successivo →</span>
+        <span class="post-nav__title">Come avviare automaticamente un programma su Windows</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/it/articles/">← Torna a tutti gli articoli</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tutti i contenuti sono opera dell'autore, verificati sul campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Guarda il codice su GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Scrivimi una mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/it/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Torna su</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

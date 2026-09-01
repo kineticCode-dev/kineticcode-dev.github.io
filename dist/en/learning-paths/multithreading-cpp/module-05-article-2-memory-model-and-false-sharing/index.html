@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>std::atomic, the C++ memory model, and the performance bug you can't see in the code — Multithreading in C++: from theory to a working state machine — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ with Qt — Module 5">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-05-article-2-memory-model-and-false-sharing/">
+  <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-05-article-2-memory-model-and-false-sharing/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-05-article-2-memory-model-and-false-sharing/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="std::atomic, the C++ memory model, and the performance bug you can't see in the code — Multithreading in C++: from theory to a working state machine — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ with Qt — Module 5">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-05-article-2-memory-model-and-false-sharing/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/">Articles</a>
+        <a href="/en/learning-paths/" aria-current="page">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <a href="/en/learning-paths/multithreading-cpp/module-05-article-2-memory-model-and-false-sharing/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/en/learning-paths/multithreading-cpp/">Multithreading in C++: from theory to a working state machine</a> · Module 5 — Advanced Patterns: Custom Thread Pools, Atomics, and the Hidden Cost of Cache
+        </div>
+        <span class="eyebrow">Theory · Lesson 18 of 22</span>
+        <h1>std::atomic, the C++ memory model, and the performance bug you can't see in the code</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ with Qt — Module 5</p>
+        <div class="article-hero__meta"><span>11 min read</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>All source code available <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">here</a></p>
+<h1>std::atomic, the C++ memory model, and the performance bug you can&#39;t see in the code</h1>
+<p>This article tackles the physical core of the module: <code>std::atomic</code> and the <strong>C++ memory model</strong>. It&#39;s a topic that most online tutorials explain poorly, listing <code>memory_order_relaxed</code>, <code>acquire</code>, <code>release</code>, <code>seq_cst</code> as if they were arbitrary configuration options to pick by feel. Here we explain them starting from what <em>physically</em> happens inside a multi-core processor — per-core L1 cache, cache lines, the protocol that keeps them coherent — because that&#39;s the only way these concepts stop being rules to memorize and become obvious consequences of how the hardware you&#39;re running on is built.</p>
+<p>From there we arrive at a direct consequence, and perhaps the most surprising lesson of the module: two <code>atomic</code> variables that are completely independent from a logical standpoint — no thread ever uses them together, no invariant ties them — can still slow each other down dramatically, simply because they sit close together in memory. This is <strong>false sharing</strong>.</p>
+<h2>Two different questions that concurrent code always asks together</h2>
+<p>When two threads share a variable, there are actually two distinct problems, and confusing the two is the source of 80% of the misunderstandings about the memory model:</p>
+<p><strong>Atomicity</strong>: the operation (a write, an increment, a compare-and-swap) happens as a whole, with no other thread ever able to observe it &quot;halfway done.&quot; <code>counter++</code> on a plain <code>int</code>, as you saw in Module 0, is <em>not</em> atomic: it&#39;s actually three separate steps (read, increment, write), and two threads can interleave in the middle of those three steps, losing an update.</p>
+<p><strong>Ordering and visibility</strong>: even if an operation is atomic, the question remains open of &quot;<em>when</em>, exactly, does the effect of that write become visible to other threads, and relative to which other operations in the program is it guaranteed to happen before or after?&quot;. This is a completely different question from atomicity, and <code>std::atomic&lt;T&gt;</code> addresses both — but with separate control levers, and this is where <code>std::memory_order</code> comes in.</p>
+<h2>Why the visibility problem exists physically: per-core L1 cache</h2>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-05/22-cpp-memory-model.png" alt="The C++ memory model: per-core L1 caches and the coherence problem" loading="lazy"></p>
+<p>A modern multi-core processor doesn&#39;t read and write main memory (RAM) directly on every instruction: it would be too slow, by orders of magnitude, compared to the speed at which the CPU executes instructions. Each core has its own <strong>L1 cache</strong>, small (typically 32-64 KB) but extremely fast (a few clock cycles versus the hundreds needed to reach RAM), where it keeps local copies of the data it&#39;s using.</p>
+<p>The problem is immediate and physical, not an implementation detail you can ignore: if Thread A, running on Core 1, writes <code>x = 1</code>, that write first updates Core 1&#39;s L1 cache — <strong>not</strong> the shared RAM, not right away, and not necessarily ever in an order you directly control by writing <code>x = 1</code> in C++. If, at the same instant, Thread B, on Core 2, reads <code>x</code> from its own L1 cache, it can perfectly well read <code>0</code> still — the old copy, because its cache has no automatic reason to know that Core 1 just changed its mind, until some explicit mechanism tells it so. This isn&#39;t a processor bug: it&#39;s the physical price, deliberately accepted by hardware designers, for having fast local caches instead of slow shared access to everything.</p>
+<p>Modern processors solve this with a <strong>cache coherence protocol</strong> (the most common one is called MESI, from the initials of the four states a cache line can be in — Modified, Exclusive, Shared, Invalid) that keeps the various cores&#39; caches aligned with each other <em>when it matters</em>. But &quot;when it matters&quot; is precisely what you, as the programmer, have to specify — and you specify it by choosing the <code>memory_order</code> of your atomic operations. Without that explicit specification, the compiler and the CPU are both free to reorder reads and writes in ways that, on single-threaded code, would never change the observable result (it&#39;s the same freedom you saw in Module 0 being used by the compiler to keep an unprotected variable in a register, masking the race) — but that on multi-threaded code can produce results that your source-code order of writes didn&#39;t anticipate at all.</p>
+<h2>What std::atomic guarantees about atomicity: how it works at the hardware level</h2>
+<p>On an x86-64 CPU — the most common processor family on desktops and servers, almost certainly the one you&#39;ll compile and run the guided project on — an operation like <code>fetch_add</code> on a <code>std::atomic&lt;int&gt;</code> typically compiles down to a single machine instruction with the <code>LOCK</code> prefix (for example <code>LOCK XADD</code>), which tells the memory bus and the cache-coherence protocol: &quot;this read-modify-write operation must happen as a single indivisible block, no other core can step in the middle.&quot; On different architectures (ARM, very common in embedded systems) the mechanism takes a different shape — typically a pair of load-linked/store-conditional (LL/SC) instructions that detects whether someone else has touched the same location in the meantime and, if so, retries — but the final guarantee that the C++ standard offers you is identical: <code>fetch_add</code>, <code>compare_exchange</code>, and the other read-modify-write operations of <code>std::atomic</code> are indivisible, whatever hardware is underneath.</p>
+<h2>memory_order_relaxed: only atomicity, zero ordering guarantees</h2>
+<pre><code class="hljs language-cpp">atomicCounter.<span class="hljs-built_in">fetch_add</span>(<span class="hljs-number">1</span>, std::memory_order_relaxed);</code></pre>
+<p><code>relaxed</code> gives you the first guarantee (the operation is indivisible — no update is ever lost) and <strong>gives you nothing else</strong>. It promises nothing about when that increment will become visible to other threads, nor about how it relates in time to other reads or writes, atomic or not, that the same thread performed before or after. It&#39;s the right choice when the only thing you care about is a correct numeric count — a statistics counter, an event counter — and no other part of the program needs to infer anything from the <em>moment</em> that increment happened relative to anything else.</p>
+<h2>acquire/release: the &quot;happens-before&quot; bridge between two threads</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-comment">// Thread A: prepares the data, then publishes it</span>
+data.x = <span class="hljs-number">42</span>;
+data.y = <span class="hljs-string">&quot;result&quot;</span>;
+<span class="hljs-comment">// &quot;release&quot;: publish everything that precedes</span>
+readyFlag.<span class="hljs-built_in">store</span>(<span class="hljs-literal">true</span>, std::memory_order_release);
+
+<span class="hljs-comment">// Thread B: waits, then consumes</span>
+<span class="hljs-comment">// &quot;acquire&quot;: makes everything before the release visible</span>
+<span class="hljs-keyword">while</span> (!readyFlag.<span class="hljs-built_in">load</span>(std::memory_order_acquire)) { }
+<span class="hljs-comment">// guaranteed to see the values written above, not stale ones</span>
+<span class="hljs-built_in">readData</span>(data.x, data.y);</code></pre>
+<p>The mechanism is what the literature calls a <strong>happens-before</strong> relationship: a <code>store</code> with <code>memory_order_release</code> acts as a barrier that says &quot;all memory writes made by this thread <em>before</em> this instruction must be visible to anyone, on another thread, who observes <em>this very value</em> via a <code>load</code> with <code>memory_order_acquire</code>.&quot; It&#39;s literally the padlock analogy the name suggests: <code>release</code> is like closing a padlock and leaving it where someone else can find it, <code>acquire</code> is like picking it up and opening it — and the moment you open it, everything that was &quot;inside the room&quot; before the first thread closed it is guaranteed visible to you.</p>
+<h2>memory_order_seq_cst: the default choice, and why it is one</h2>
+<p><code>seq_cst</code> (sequentially consistent) gives all the guarantees of <code>acquire</code>/<code>release</code> <strong>plus</strong> one additional, stronger one: all <code>seq_cst</code> operations from all threads in the program appear to happen in a single total order, the very same order seen by every thread that observes them. It&#39;s the reasoning model closest to &quot;the program executes instructions one at a time, alternating between threads in some order&quot; — the naive intuition you probably had in mind from the start, made here into a real guarantee. The price is an extra bit of hardware synchronization, almost always small on modern x86-64 CPUs, but not zero.</p>
+<p>The practical recommendation: <strong>use <code>seq_cst</code> (the default) unless you have a measured, specific reason to drop to a weaker ordering</strong>. <code>relaxed</code> and <code>acquire</code>/<code>release</code> are real tools, used in game-engine code, in databases, in operating systems — but they require formal, disciplined reasoning about every single use. <code>seq_cst</code> isn&#39;t &quot;the lazy version&quot;: it&#39;s the version where your mental reasoning actually matches a guarantee of the language.</p>
+<h2>The apparent paradox of false sharing</h2>
+<p>Here&#39;s a fact that, the first time you see it measured, seems to break your intuition: two <code>std::atomic&lt;int&gt;</code> variables, used by two different threads, with neither ever touching the other&#39;s variable, can slow each other down drastically. No race condition, no correctness violation, no wrong <code>memory_order</code>: the program computes the right result in both cases. The problem is purely one of performance, and it&#39;s entirely down to the physics we just covered, applied to a detail that seems irrelevant: exactly where in memory the two variables live relative to each other.</p>
+<p>Caches don&#39;t move data one byte at a time, nor one variable at a time. They move in fixed-size blocks called <strong>cache lines</strong>, typically 64 bytes on modern x86-64 CPUs — a physical property of the hardware, not a compiler choice. When a core reads even a single byte from an address, the hardware loads into cache the entire 64-byte line that contains it — and the cache-coherence protocol also operates at the level of a whole line, not a single variable.</p>
+<p>Two 4-byte <code>std::atomic&lt;int&gt;</code> values, declared one after the other in a struct, occupy a tiny fraction of a 64-byte line, so the compiler, with no instruction to the contrary, places them close together in memory — and it&#39;s entirely plausible that they end up in the same cache line. Now Thread A executes <code>a.fetch_add(1)</code>: to execute it, its core needs exclusive access to the cache line containing <code>a</code>, per the MESI protocol. And that line also contains <code>b</code>. The result: A&#39;s write to its own variable silently invalidates the copy of the line that B&#39;s core was holding in cache — even though B never read or wrote <code>a</code>. This is <strong>phantom contention</strong>, generated not by any real access to the same data, but by the accidental physical sharing of the cache line that holds them both.</p>
+<h2>The cure: alignas(64)</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">alignas</span>(<span class="hljs-number">64</span>) PaddedCounter {
+    std::atomic&lt;<span class="hljs-type">int</span>&gt; value{<span class="hljs-number">0</span>};
+    <span class="hljs-comment">// fills the rest of the line, deliberately unused</span>
+    <span class="hljs-type">char</span> padding[<span class="hljs-number">64</span> - <span class="hljs-keyword">sizeof</span>(std::atomic&lt;<span class="hljs-type">int</span>&gt;)];
+};</code></pre>
+<p><code>alignas(64)</code> tells the compiler: &quot;every instance of this struct must start at a memory address that&#39;s a multiple of 64&quot; — that is, at the start of a cache line. The <code>padding</code> field, an array of bytes that will never be read or written by anyone, exists for the sole purpose of occupying the rest of the line&#39;s space, preventing the compiler from placing something else right next to it.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-05/23-false-sharing-cache-line.png" alt="False sharing: two independent atomics sharing one 64-byte cache line, and the alignas(64) fix" loading="lazy"></p>
+<p>This is an explicit trade-off and should be recognized as such: you&#39;re <em>wasting</em> memory (60 unused bytes for every 4-byte <code>int</code> you want to protect) to <em>gain</em> speed by avoiding cross-invalidation. For two counters this cost is negligible; if you were padding thousands of small structs in a huge array, that trade-off would deserve more careful weighing.</p>
+<h2>Lock-free vs mutex: when it pays off, when it doesn&#39;t</h2>
+<p>With cache physics behind you, you&#39;re now equipped to answer a question Module 2 left open: if <code>std::atomic</code> can be faster than a mutex for a simple operation — and the guided project in the next article will prove it with real numbers — why not <em>always</em> replace mutexes with atomics?</p>
+<p>A <code>std::atomic&lt;T&gt;</code> guarantees you the atomicity of a single operation on a single variable. The moment your problem requires updating <strong>multiple related variables as if they were one indivisible operation</strong> — the classic invariant from Module 2, where, for instance, inserting into a queue means both adding the element and updating the element count — a single atomic is no longer enough. You could build a lock-free algorithm that handles that case, typically based on <code>compare_exchange</code> in retry loops with non-trivial techniques to avoid the <em>ABA problem</em> — but this is code that&#39;s notoriously hard to write correctly, hard to review, and hard to test, because the bugs it introduces are often extremely rare and dependent on exact timing between cores. For the vast majority of real application code, a <code>QMutex</code> protecting the entire multi-variable invariant remains the more correct, more readable, and easier-to-maintain choice.</p>
+<p>This is an all-too-common simplification, and it needs to be corrected explicitly: a lock-free algorithm isn&#39;t automatically faster than a mutex-based one. Under low contention, a modern mutex on Linux (futex-based, which in the common case avoids a system call entirely) and an atomic behave very similarly in terms of cost. Under high contention, a single atomic operation tends to remain cheaper than a full lock/unlock, because it avoids involving the scheduler when the thread loses the &quot;race&quot;: it simply retries, instead of being put to sleep and woken up later. But if the protected operation is complex, an equivalent lock-free algorithm quickly becomes more expensive to design, more expensive to run, and far riskier to certify correct than a well-placed mutex.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-05/24-lockfree-vs-mutex-tradeoff.png" alt="Mutex vs lock-free atomics: two tools with different cost and risk profiles, not a ranking" loading="lazy"></p>
+<p>The practical rule worth taking away: always start from <code>QMutex</code> (or <code>std::mutex</code>) as the default for any complex or multi-variable shared state. Consider <code>std::atomic</code> only for a specific, narrow case — a counter, a boolean flag, a shared pointer in a well-known pattern — and only after <strong>measuring</strong> that this section is really a bottleneck under real contention, not by intuition.</p>
+<p>With the memory model, false sharing, and the lock-free/mutex comparison now clear, the next article puts it all to the test with a guided project: two real benchmarks that measure these effects with an actual stopwatch, and ThreadSanitizer to verify that neither version is hiding a race.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/learning-paths/multithreading-cpp/module-05-article-1-qrunnable-qthreadpool/">
+        <span class="post-nav__label">← Previous lesson</span>
+        <span class="post-nav__title">QRunnable and QThreadPool: a pool of tasks, not a thread per job</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/learning-paths/multithreading-cpp/module-05-article-3-project-benchmark-mutex-atomic/">
+        <span class="post-nav__label">Next lesson →</span>
+        <span class="post-nav__title">Project: benchmarking mutex vs atomic, false sharing, and verification with ThreadSanitizer</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/learning-paths/multithreading-cpp/">← Back to the course</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

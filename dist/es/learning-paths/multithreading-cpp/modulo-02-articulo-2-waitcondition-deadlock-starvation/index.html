@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Esperar un evento, no un lock: QWaitCondition, QSemaphore, y cómo dispararse en el pie — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code</title>
+  <meta name="description" content="Multithreading en C++ con Qt — Módulo 2">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-02-articulo-2-waitcondition-deadlock-starvation/">
+  <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-02-articulo-2-waitcondition-deadlock-starvation/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-02-articulo-2-waitcondition-deadlock-starvation/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Esperar un evento, no un lock: QWaitCondition, QSemaphore, y cómo dispararse en el pie — Multithreading en C++: de la teoría a una máquina de estados funcional — Kinetic Code">
+  <meta property="og:description" content="Multithreading en C++ con Qt — Módulo 2">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-02-articulo-2-waitcondition-deadlock-starvation/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/">Artículos</a>
+        <a href="/es/learning-paths/" aria-current="page">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <a href="/es/learning-paths/multithreading-cpp/modulo-02-articulo-2-waitcondition-deadlock-starvation/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/es/learning-paths/multithreading-cpp/">Multithreading en C++: de la teoría a una máquina de estados funcional</a> · Módulo 2 — Sincronización: mutexes, condiciones de espera, semáforos y problemas clásicos
+        </div>
+        <span class="eyebrow">Teoría · Lección 8 de 22</span>
+        <h1>Esperar un evento, no un lock: QWaitCondition, QSemaphore, y cómo dispararse en el pie</h1>
+        <p class="article-hero__excerpt">Multithreading en C++ con Qt — Módulo 2</p>
+        <div class="article-hero__meta"><span>10 min de lectura</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Puedes encontrar todo el código fuente <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">aquì</a></p>
+<h1>Esperar un evento, no un lock: QWaitCondition, QSemaphore, y cómo dispararse en el pie</h1>
+<p>En el artículo anterior vimos cómo proteger un dato compartido con <code>QMutex</code> y <code>QReadWriteLock</code>. Pero el productor-consumidor necesita responder a una pregunta distinta y más sutil: &quot;el buffer está lleno — debo esperar a que <em>cambie algo</em>, no solo a que el lock se libere&quot;. Un mutex por sí solo no basta para expresar &quot;espera hasta que cierta condición sobre los datos se vuelva verdadera&quot;: puedes tenerlo bloqueado para siempre en un ciclo que revisa continuamente (una espera activa, que desperdicia CPU inútilmente), o bien necesitas una herramienta pensada específicamente para esto. Esa herramienta es <code>QWaitCondition</code>.</p>
+<h2>QWaitCondition: esperar un evento, no solo un lock libre</h2>
+<p>Una <code>QWaitCondition</code> permite a un thread <strong>dormirse</strong> liberando temporalmente un mutex que posee, quedar en espera hasta que otro thread lo <strong>despierte</strong> explícitamente, y solo entonces readquirir el mutex y continuar. La parte crucial, la que la hace diferente de un simple &quot;duerme y vuelve a comprobar&quot;, es que el dormirse y el liberar el mutex ocurren como una única operación atómica: nunca hay una ventana de tiempo en la que el thread ya haya liberado el lock pero aún no esté &quot;registrado&quot; como en espera, ventana que de otro modo podría hacer perder un despertar enviado justo en ese instante (un bug clásico llamado <em>lost wakeup</em>, que <code>QWaitCondition</code> previene por construcción).</p>
+<p>El patrón de uso es siempre el mismo:</p>
+<pre><code class="hljs language-cpp">QMutex mutex;
+QWaitCondition condition;
+<span class="hljs-type">bool</span> dataReady = <span class="hljs-literal">false</span>;
+
+<span class="hljs-comment">// Waiting thread:</span>
+<span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;mutex)</span></span>;
+<span class="hljs-keyword">while</span> (!dataReady) {
+    condition.<span class="hljs-built_in">wait</span>(&amp;mutex);   <span class="hljs-comment">// releases the mutex, sleeps, reacquires it on wake-up</span>
+}
+<span class="hljs-comment">// the mutex is back in my hands here, and dataReady is true</span>
+
+<span class="hljs-comment">// Notifying thread:</span>
+{
+    <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;mutex)</span></span>;
+    dataReady = <span class="hljs-literal">true</span>;
+}
+condition.<span class="hljs-built_in">wakeOne</span>();   <span class="hljs-comment">// or wakeAll(), if more than one thread must be woken</span></code></pre>
+<p>Fíjate en el <code>while</code>, no un simple <code>if</code>: es deliberado, y no es una manía estilística. Al despertar, el código <strong>debe volver a comprobar desde cero</strong> la condición que estaba esperando, porque puede haber despertares &quot;espurios&quot; (por razones internas del sistema operativo, sin que nadie haya llamado realmente a <code>wakeOne()</code>), o bien porque — en el caso de <code>wakeAll()</code> con varios threads en espera — otro thread podría haberse adelantado y haber consumido ya lo que estabas esperando antes de que tú retomaras de verdad el control. Un <code>if</code> en lugar del <code>while</code> es uno de los errores más comunes y más difíciles de detectar en código basado en wait conditions: funciona casi siempre en las pruebas, y falla raramente, en producción, en un momento que nadie logra reproducir a voluntad.</p>
+<p><code>wakeOne()</code> despierta exactamente un thread en espera (si hay más de uno, la elección de cuál no está especificada — nunca confíes en un orden); <code>wakeAll()</code> los despierta a todos, cada uno de los cuales volverá igualmente a comprobar su propia condición (de ahí, otra vez, la importancia del <code>while</code>) y volverá eventualmente a esperar si la condición todavía no es la adecuada para él.</p>
+<p>En el proyecto práctico de este módulo usarás <strong>dos</strong> <code>QWaitCondition</code> distintas sobre el mismo buffer: una para la dirección &quot;el buffer está lleno, el productor espera&quot;, otra para &quot;el buffer está vacío, el consumidor espera&quot;. Es un patrón estándar, y verlo aplicado con tus propias manos aclarará mucho más que cualquier explicación abstracta adicional.</p>
+<h2>QSemaphore: contar en lugar de esperar un booleano</h2>
+<p>Hay una última primitiva que merece la pena conocer, aunque hoy no la usaremos directamente: <code>QSemaphore</code>. Un semáforo (en el sentido informático del término, concepto que se remonta a Dijkstra en los años 60) es, conceptualmente, un contador entero no negativo con dos operaciones: <code>acquire()</code>, que decrementa el contador pero <strong>bloquea</strong> al llamante si el contador ya está en cero, esperando a que vuelva a ser positivo; y <code>release()</code>, que incrementa el contador y despierta a los threads que pudieran estar esperando en <code>acquire()</code>.</p>
+<p>¿Por qué es útil? Porque expresa naturalmente el concepto de &quot;N recursos intercambiables disponibles&quot; — no &quot;el buffer está lleno o vacío&quot; en sentido booleano, sino &quot;cuántos espacios libres hay en este momento&quot;, contados explícitamente. El productor-consumidor de este módulo también se puede resolver de esta manera, y es instructivo ver la correspondencia: dos semáforos, <code>freeSlots</code> inicializado a la capacidad del buffer y <code>usedSlots</code> inicializado a cero, donde el productor hace <code>freeSlots.acquire()</code> antes de insertar y <code>usedSlots.release()</code> después, y el consumidor hace exactamente lo contrario. El resultado final es equivalente en comportamiento al que construimos con <code>QWaitCondition</code> — es la misma idea, el mismo par de condiciones &quot;lleno&quot; y &quot;vacío&quot;, pero expresada con un contador en lugar de con un booleano y dos wait conditions explícitas.</p>
+<p>¿Cuál de los dos estilos elegir, en el código real que escribirás después de este curso? <code>QWaitCondition</code> (la que usaremos hoy) es la herramienta adecuada cuando la condición de espera es más rica que un simple conteo — por ejemplo &quot;espera hasta que el buffer contenga <em>un elemento con cierta propiedad</em>&quot;, no solo &quot;espera hasta que no esté vacío&quot;. <code>QSemaphore</code> es más directo y legible cuando tu problema es, literalmente, un conteo de recursos disponibles — un pool de conexiones, un número fijo de slots de hardware, un límite de cuántas operaciones concurrentes están permitidas. Ninguno de los dos es &quot;superior&quot;: elige el que refleje más fielmente la forma real del problema.</p>
+<h2>Deadlock: la espera circular</h2>
+<p>Introducir mutex y wait conditions sin hablar de cómo uno se dispara en el pie con ellos sería deshonesto. Tres trampas, en orden de cuán comunes son en la práctica.</p>
+<p>Un <strong>deadlock</strong> se produce cuando dos (o más) threads quedan bloqueados para siempre, cada uno esperando un recurso que otro thread del grupo posee y nunca liberará — porque, a su vez, está esperando algo que el primero posee. El Thread A tiene el Mutex X y espera adquirir el Mutex Y; el Thread B, en el mismo momento, tiene Y y espera X. Ninguno de los dos puede avanzar, ninguno de los dos liberará jamás lo que tiene (porque para liberarlo debería primero terminar su propio trabajo, que está bloqueado), y el programa se queda ahí, silenciosamente, para siempre — sin crash, sin mensaje de error, simplemente dos threads que ya no hacen nada.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-02/11-deadlock-circular-wait.png" alt="Deadlock: circular waiting" loading="lazy"></p>
+<p>La condición que hace posible este escenario tiene un nombre en la literatura clásica de sistemas operativos (las &quot;condiciones de Coffman&quot;, por el nombre de uno de los autores del artículo de 1971 que las formalizó por primera vez), y son cuatro, todas necesarias simultáneamente para que un deadlock pueda producirse: exclusión mutua (los recursos no se pueden compartir), posesión-y-espera (un thread tiene un recurso mientras espera otro), sin apropiación (un recurso no puede arrebatarse a la fuerza a quien lo posee), y <strong>espera circular</strong> (existe un ciclo de threads, cada uno esperando un recurso que posee el siguiente del ciclo). De las cuatro, las primeras tres son casi siempre intrínsecas al problema que estás resolviendo — no puedes eliminarlas sin desnaturalizar la solución. La cuarta, la espera circular, es en cambio sobre la que tienes palanca práctica, y es por eso que toda guía sobre deadlock converge en la misma recomendación: <strong>establece un orden global fijo en el que los locks siempre se adquieren</strong>, en cada punto del programa, sin excepciones. Si cada thread que necesita tanto X como Y los adquiere siempre en el mismo orden (digamos, siempre primero X y luego Y, nunca al revés), el ciclo se vuelve estructuralmente imposible: no puede existir una espera circular si todos hacen fila en la misma dirección.</p>
+<p>En el proyecto práctico de hoy el riesgo de deadlock es bajo porque usamos un solo mutex (el interno del buffer) — pero es un riesgo que crece rápidamente en cuanto un proyecto real empieza a tener varios recursos protegidos por separado, y es el motivo por el que merece la pena fijar bien el principio desde ahora, antes de que lo necesites bajo presión con un depurador abierto y un programa que ya no responde.</p>
+<h2>Starvation: técnicamente vivo, de hecho olvidado</h2>
+<p>La <strong>starvation</strong> (inanición) es más sutil que el deadlock porque no bloquea todo: un thread específico, simplemente, nunca obtiene el recurso que necesita, aunque no exista ningún ciclo de espera que lo impida en teoría — siempre es adelantado por otros threads más &quot;afortunados&quot; o más frecuentes en sus solicitudes. Es exactamente la violación de la tercera propiedad vista en el artículo anterior, la espera limitada. <code>wakeOne()</code> sobre una <code>QWaitCondition</code> con muchos threads en espera, por ejemplo, no garantiza un orden de despertar equitativo (no es necesariamente FIFO) — en escenarios con contención muy alta y patrones de acceso desequilibrados, es teóricamente posible que el mismo thread quede desafortunado durante más tiempo del que esperarías. Para nuestro proyecto práctico, con un solo productor y un solo consumidor, este riesgo es nulo por construcción (no hay a quién adelantar); se convierte en un factor real a considerar cuando tu sistema crece a varios productores o varios consumidores sobre el mismo buffer.</p>
+<h2>Inversión de prioridad: cuando el sistema operativo añade un tercero incómodo</h2>
+<p>Una última trampa, más rara pero que merece la pena conocer por su nombre porque cuando ocurre es particularmente difícil de diagnosticar: la <strong>inversión de prioridad</strong>. Sucede cuando un thread de <strong>baja prioridad</strong> posee un lock que necesita un thread de <strong>alta prioridad</strong>; este último se bloquea esperando, lo cual ya sería normal — pero si mientras tanto un tercer thread de prioridad <strong>media</strong> (que no necesita ese lock) mantiene ocupada la CPU, el scheduler sigue dándole espacio en detrimento del thread de baja prioridad que posee el lock, el cual no logra terminar su trabajo y liberarlo. El resultado neto es que el thread de alta prioridad queda bloqueado indirectamente por uno de prioridad media, una inversión completa del orden de prioridad que el sistema debería haber respetado.</p>
+<p>Es un problema bastante real como para haber causado, históricamente, el casi-fracaso de la misión Mars Pathfinder de la NASA en 1997 — un caso de estudio citado con muchísima frecuencia en la literatura precisamente por esto. Cuento los detalles en un artículo aparte, porque merece la pena entender exactamente cómo un problema de sincronización en un rover a 225 millones de kilómetros de distancia se convirtió en un reinicio periódico de todo el sistema, y cómo se diagnosticó y resolvió — ver <em>&quot;Mars Pathfinder: cuando la inversión de prioridad llega a Marte&quot;</em>.</p>
+<p>La mitigación clásica a nivel de sistema operativo se llama <em>priority inheritance</em> (herencia de prioridad): temporalmente, el thread de baja prioridad que posee el lock disputado &quot;hereda&quot; la prioridad del thread más alto que lo está esperando, de modo que el scheduler lo favorece lo suficiente como para que termine el trabajo y libere el lock. Qt no gestiona esto automáticamente a nivel de aplicación — es típicamente responsabilidad del scheduler del sistema operativo subyacente — pero saber que el fenómeno existe, y reconocer sus síntomas (un thread de alta prioridad misteriosamente lento, en presencia de carga de threads de prioridad intermedia), te ahorrará horas de depuración el día en que lo encuentres en un sistema con restricciones de tiempo real.</p>
+<h2>De la teoría a las manos sobre el teclado</h2>
+<p>Ahora tienes todas las herramientas para proteger y coordinar estado compartido de verdad: <code>QMutex</code>, <code>QReadWriteLock</code>, <code>QWaitCondition</code>, <code>QSemaphore</code>, y el vocabulario para reconocer deadlock, starvation e inversión de prioridad cuando los encuentres. En el próximo artículo juntamos todo construyendo un verdadero productor-consumidor, con dos threads persistentes que se disputan un buffer limitado ante tus ojos.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/learning-paths/multithreading-cpp/modulo-02-articulo-1-qmutex-y-readwritelock/">
+        <span class="post-nav__label">← Lección anterior</span>
+        <span class="post-nav__title">La sección crítica formalizada: QMutex, QMutexLocker y QReadWriteLock</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/learning-paths/multithreading-cpp/profundizacion-mars-pathfinder-inversion-de-prioridad/">
+        <span class="post-nav__label">Lección siguiente →</span>
+        <span class="post-nav__title">El día en que Marte casi gana: Pathfinder y la inversión de prioridad</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/learning-paths/multithreading-cpp/">← Volver a la ruta</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

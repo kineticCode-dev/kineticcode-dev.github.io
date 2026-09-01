@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+  <title>Kinetic Code — Artisanat Ingénieur Numérique</title>
+  <link>https://kineticcode-dev.github.io/fr/</link>
+  <description>Le journal technique d'un ingénieur mécatronicien : systèmes embarqués, automatisation industrielle et logiciel, racontés comme on les raconterait à voix haute.</description>
+  <language>fr</language>
+  <item>
+    <title>Optimiser la multiplication de matrices en C++ — Partie 3 : la vectorisation, le grand bilan, et deux surprises bien réelles</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-3/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-3/</guid>
+    <pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate>
+    <description>Dernier volet de la série : on écrit à la main des instructions vectorielles AVX2 + FMA pour faire quatre multiplications-additions en une seule fois, on compare les cinq étapes de bout en bout — de 1,88 à 11,49 GFLOP/s — et on tombe sur deux surprises mesurées : une taille de matrice, puissance de deux, qui tourne 6,5 fois plus lentement que ses voisines, et un gain de 2,12x obtenu sans changer une seule ligne de code.</description>
+  </item>
+  <item>
+    <title>Optimiser la multiplication de matrices en C++ — Partie 2 : tiling, threads et une surprise bien honnête</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-2/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-2/</guid>
+    <pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate>
+    <description>Partie 2 de la série pratique sur l'optimisation des performances : pourquoi découper les matrices en petites tuiles dimensionnées pour le cache ne paie pas forcément tout seul, et comment mettre un second cœur CPU au travail avec un simple pragma OpenMP nous pousse à un gain mesuré de 4,42x — le tout vérifié, le tout reproductible.</description>
+  </item>
+  <item>
+    <title>Optimiser la multiplication de matrices en C++ — Partie 1 : ce que l'ordre des boucles apporte réellement</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-1/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-1/</guid>
+    <pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate>
+    <description>Le premier article d'une série pratique sur l'ingénierie de la performance : pourquoi la multiplication de matrices est lente par défaut, comment fonctionne réellement la mémoire d'un ordinateur, et comment le simple fait de réordonner trois boucles for permet un gain de 2,2x — mesuré, pas supposé.</description>
+  </item>
+  <item>
+    <title>Les fondamentaux de l'optique industrielle : ce qui compte vraiment quand on choisit un objectif</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/industrial-optics-fundamentals/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/industrial-optics-fundamentals/</guid>
+    <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+    <description>Une introduction pratique à l'optique en vision industrielle — champ de vision, distance de travail, profondeur de champ, distance focale, montures, ouverture (F-number) et les compromis qui déterminent si un système d'inspection fonctionne vraiment.</description>
+  </item>
+  <item>
+    <title>Rediriger les qDebug de Qt vers un fichier sans recompiler : la classe LoggerManager</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/loggermanager-qdebug-redirect-article-en/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/loggermanager-qdebug-redirect-article-en/</guid>
+    <pubDate>Wed, 05 Aug 2026 00:00:00 GMT</pubDate>
+    <description>Un plantage sur le terrain que je n'arrivais pas à diagnostiquer, aucun moyen de recompiler sur place, et la classe C++/Qt que j'ai écrite pour capturer les logs à l'exécution — avec chaque erreur d'édition de liens rencontrée en chemin.</description>
+  </item>
+  <item>
+    <title>Sécuriser Supabase dans un monde open source</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/securing-supabase-in-open-source-world/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/securing-supabase-in-open-source-world/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>Comment autoriser l'accès à la Base de données Supabase uniquement aux comptes autorisés</description>
+  </item>
+  <item>
+    <title>Comment démarrer automatiquement un programme sous Windows</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/windows-autostart-article/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/windows-autostart-article/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>Vous avez un programme que vous aimeriez voir s'ouvrir automatiquement à chaque démarrage de votre ordinateur ? Dans ce court guide, nous allons voir comment faire ça rapidement et facilement grâce à un outil intégré à Windows, le Planificateur de tâches.</description>
+  </item>
+  <item>
+    <title>Construire un Suivi de Dépenses Personnelles à Partir de Zéro : Architecture et Conception de la Base de Données (Partie 3)</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/personal-expense-trackerp3/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/personal-expense-trackerp3/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>Cet article retrace le processus de conception et de développement d'une application web de suivi des dépenses personnelles. L'objectif n'est pas seulement de créer un outil fonctionnel, mais d'analyser chaque décision d'ingénierie et de comprendre le « pourquoi » derrière nos choix technologiques.</description>
+  </item>
+  <item>
+    <title>Créer un Suivi de Dépenses Personnelles depuis Zéro : Architecture et Conception de la Base de Données (Partie 2)</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/personal-expense-tracker-p2/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/personal-expense-tracker-p2/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>Cet article retrace le processus de conception et de développement d'une application web de suivi des dépenses personnelles. L'objectif n'est pas seulement de créer un outil fonctionnel, mais d'analyser chaque décision d'ingénierie et de comprendre le « pourquoi » derrière nos choix technologiques.</description>
+  </item>
+  <item>
+    <title>Créer un suivi de dépenses personnelles de zéro : architecture et conception de la base de données (Partie 1)</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/personal-expense-tracker-p1/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/personal-expense-tracker-p1/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>Cet article retrace le processus de conception et de développement d'une application web de suivi des dépenses personnelles. L'objectif n'est pas seulement de créer un outil fonctionnel, mais d'analyser chaque décision d'ingénierie et de comprendre le « pourquoi » derrière nos choix technologiques.</description>
+  </item>
+  <item>
+    <title>Démystifier les bibliothèques C sous Windows : comment inspecter et profiler des fichiers .dll inconnus</title>
+    <link>https://kineticcode-dev.github.io/fr/articles/demystifying-c-libraries-on-windows/</link>
+    <guid>https://kineticcode-dev.github.io/fr/articles/demystifying-c-libraries-on-windows/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>Un guide pratique pour inspecter et profiler des fichiers .dll inconnus dans un environnement Windows.</description>
+  </item>
+</channel></rss>

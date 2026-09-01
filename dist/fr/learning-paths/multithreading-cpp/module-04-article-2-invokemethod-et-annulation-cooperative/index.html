@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QMetaObject::invokeMethod et annulation coopérative : appeler et arrêter un thread sans risque — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code</title>
+  <meta name="description" content="Le multithreading en C++ avec Qt — Module 4">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-et-annulation-cooperative/">
+  <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-et-annulation-cooperative/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-et-annulation-cooperative/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="QMetaObject::invokeMethod et annulation coopérative : appeler et arrêter un thread sans risque — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code">
+  <meta property="og:description" content="Le multithreading en C++ avec Qt — Module 4">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-et-annulation-cooperative/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/">Articles</a>
+        <a href="/fr/learning-paths/" aria-current="page">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <a href="/fr/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-et-annulation-cooperative/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/fr/learning-paths/multithreading-cpp/">Multithreading en C++ : de la théorie à une machine à états fonctionnelle</a> · Module 4 — Communication sécurisée entre threads : connexions Qt et annulation coopérative
+        </div>
+        <span class="eyebrow">Théorie · Leçon 15 sur 22</span>
+        <h1>QMetaObject::invokeMethod et annulation coopérative : appeler et arrêter un thread sans risque</h1>
+        <p class="article-hero__excerpt">Le multithreading en C++ avec Qt — Module 4</p>
+        <div class="article-hero__meta"><span>9 min de lecture</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Tu peux trouver tout le code source <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">ici</a></p>
+<h1>QMetaObject::invokeMethod et annulation coopérative : appeler et arrêter un thread sans risque</h1>
+<p>Dans l&#39;article précédent, tu as démonté les quatre <code>Qt::ConnectionType</code>. Tout ce que tu as fait jusqu&#39;ici pour communiquer entre threads, cependant, est passé par une paire signal-slot déclarée à l&#39;avance : tu définis un signal dans la classe émettrice, un slot dans la classe destinataire, tu les relies avec <code>connect()</code>, et à partir de là chaque <code>emit</code> marshalle l&#39;appel selon ces règles. Ça fonctionne très bien pour une communication <strong>récurrente</strong> — un worker qui émet une progression de manière répétée, une fenêtre qui envoie des commandes chaque fois que l&#39;utilisateur clique sur un bouton. Mais que fais-tu quand tu as besoin d&#39;<strong>un seul appel occasionnel</strong>, peut-être avec des arguments différents à chaque fois, vers une méthode que tu ne veux pas promouvoir en signal/slot dédié pour ce seul usage ?</p>
+<h2>QMetaObject::invokeMethod : appeler une méthode sans connect() dédiée</h2>
+<p><code>QMetaObject::invokeMethod()</code> résout exactement ce cas. C&#39;est une fonction statique qui prend un pointeur vers un <code>QObject</code>, le nom d&#39;une méthode (sous forme de chaîne, ou — dans les surcharges plus modernes de Qt 6 — un pointeur de fonction ou une lambda), un <code>Qt::ConnectionType</code> explicite, et les arguments à passer, empaquetés avec la macro <code>Q_ARG(Type, valeur)</code>. Le mécanisme de livraison est <strong>identique</strong> à celui d&#39;une connexion queued ordinaire — l&#39;appel est marshallé à travers la file d&#39;événements du thread destinataire — mais sans que tu aies à déclarer à l&#39;avance un signal et à le relier avec <code>connect()</code>. La seule exigence sur la méthode cible est qu&#39;elle soit marquée <code>Q_INVOKABLE</code> (si c&#39;est une méthode publique ordinaire) ou qu&#39;elle soit déjà un slot existant : dans les deux cas, le système de méta-objets de Qt sait comment la trouver et l&#39;invoquer par son nom à l&#39;exécution.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-04/18-invokemethod-safe-call.png" alt="QMetaObject::invokeMethod delivering a call safely without a dedicated connect()" loading="lazy"></p>
+<p>Comme pour un <code>connect()</code> ordinaire, tu peux choisir le type de connexion : <code>Qt::QueuedConnection</code> pour une commande <em>fire-and-forget</em>, où l&#39;appelant n&#39;attend rien et poursuit immédiatement, ou <code>Qt::BlockingQueuedConnection</code> quand tu as besoin de <strong>la valeur de retour</strong> de la méthode invoquée. Avec cette dernière, tu utilises en plus la macro <code>Q_RETURN_ARG(Type, variableDestination)</code> : le thread appelant se bloque jusqu&#39;à ce que la méthode ait réellement exécuté sur le thread destinataire et ait écrit sa valeur de retour dans la variable que tu lui as passée. C&#39;est le seul moyen propre de lire de manière synchrone une donnée calculée sur un autre thread sans avoir à inventer toi-même un mécanisme d&#39;attente avec mutex et wait condition pour ce seul but.</p>
+<p>Il vaut la peine de noter une chose que tu n&#39;avais peut-être pas reliée : tu as déjà <em>utilisé</em> <code>QMetaObject::invokeMethod</code> indirectement, même si tu ne l&#39;as jamais écrit toi-même. C&#39;est précisément le mécanisme que Qt utilise en interne quand tu appelles <code>deleteLater()</code> depuis un autre thread (Module 1), et c&#39;est conceptuellement apparenté à la manière dont <code>QTimer::singleShot</code> avec un récepteur sur un autre thread marshalle son propre appel. Ce n&#39;est pas une fonction exotique en marge de Qt : c&#39;est une brique fondamentale qui reste habituellement cachée derrière des API plus commodes, et aujourd&#39;hui tu apprends à l&#39;utiliser directement.</p>
+<p>Une précision qui t&#39;épargnera un après-midi de debug : la règle sur le deadlock de <code>BlockingQueuedConnection</code> vue dans l&#39;article précédent s&#39;applique de manière identique ici. Si tu appelles <code>QMetaObject::invokeMethod(objet, &quot;methode&quot;, Qt::BlockingQueuedConnection, ...)</code> et que <code>objet</code> vit exactement sur le thread depuis lequel tu appelles, tu te bloques pour toujours, pour exactement la même raison.</p>
+<h2>Annulation coopérative : arrêter un worker sans l&#39;éteindre de force</h2>
+<p>Dans les Modules 1 et 2, ton worker avait un cycle de vie simple : il partait, faisait son travail jusqu&#39;au bout, et la fenêtre attendait avec <code>quit()</code> + <code>wait()</code>. Tu ne t&#39;es jamais vraiment posé le problème d&#39;<strong>interrompre</strong> un travail à mi-chemin, sur demande explicite de l&#39;utilisateur, pendant qu&#39;il est encore en cours. La solution standard a un nom : l&#39;<strong>annulation coopérative</strong>.</p>
+<p>L&#39;idée de fond est simple : le worker, dans sa boucle, vérifie périodiquement un drapeau booléen partagé — « dois-je m&#39;arrêter ? » — et quand il le trouve à <code>true</code>, il sort de la boucle de son propre chef, à un point qu&#39;il a lui-même choisi, où il sait ne rien laisser à moitié fait. Personne n&#39;« éteint » le worker de l&#39;extérieur : c&#39;est le worker lui-même, en coopérant, qui décide quand il est sûr de s&#39;arrêter. D&#39;où le nom.</p>
+<h3>Pourquoi std::atomic<bool>, pas simplement bool</h3>
+<p>Le drapeau que nous utiliserons est un <code>std::atomic&lt;bool&gt;</code>, pas un simple <code>bool</code>. Que changerait un <code>bool</code> ordinaire ? Ce n&#39;est pas une question de corruption de la donnée elle-même — un <code>bool</code> est tellement petit que presque aucune architecture réelle ne produit une écriture « à moitié » dessus. Le vrai problème est plus subtil, et c&#39;est celui que le Module 5 traite dans toute sa profondeur quand il aborde le modèle mémoire du C++ : la <strong>visibilité cross-core</strong>. Les CPU modernes n&#39;écrivent pas une valeur directement en RAM à chaque fois et ne la relisent pas depuis là à chaque fois : chaque cœur a ses propres caches, et sans mécanisme explicite de synchronisation, un thread qui tourne sur un cœur peut continuer à voir pendant un temps indéfini l&#39;ancienne valeur d&#39;une variable qu&#39;un autre thread, sur un autre cœur, a déjà modifiée — non pas parce que la donnée est corrompue, mais parce que cette écriture n&#39;est pas encore « arrivée » jusqu&#39;au cache du premier cœur. Le compilateur lui-même, en l&#39;absence de garanties différentes, est libre d&#39;optimiser purement et simplement cette revérification répétée du drapeau à l&#39;intérieur de la boucle, en le gardant dans un registre plutôt que de le relire depuis la mémoire à chaque itération.</p>
+<p><code>std::atomic&lt;bool&gt;</code> résout les deux problèmes avec une seule garantie du langage : chaque <code>load()</code> et chaque <code>store()</code> sur une variable atomique a une relation de synchronisation bien définie avec les autres opérations atomiques sur la même variable, le compilateur ne peut pas optimiser les relectures, et — avec l&#39;ordonnancement par défaut (<em>sequentially consistent</em>, celui que tu obtiens sans rien spécifier d&#39;autre) — une écriture faite par un thread est garantie visible par un autre thread qui exécute une lecture ultérieure sur la même variable atomique. Tu n&#39;as pas besoin de comprendre aujourd&#39;hui toute la taxonomie du modèle mémoire (relaxed, acquire/release, sequentially consistent : ça arrive avec toute la rigueur qu&#39;elle mérite au Module 5) — il te suffit, pour l&#39;instant, du principe pratique : <strong>un drapeau d&#39;annulation partagé entre threads doit être atomique, pas simplement booléen</strong>, parce que la garantie dont tu as besoin n&#39;est pas « aucun bit corrompu », c&#39;est « l&#39;autre thread verra vraiment la nouvelle valeur dans un délai raisonnable, et pas une valeur figée en cache ».</p>
+<p>Le pattern complet est un <code>while (!m_stop.load())</code> qui englobe une seule étape de travail, avec l&#39;écriture du drapeau (<code>m_stop.store(true)</code>) faite par le thread GUI en réponse à un clic. Chaque itération de la boucle est un point de contrôle naturel : si le drapeau est vrai, le worker sort, et aucune ressource ne reste à moitié — les mutex acquis à l&#39;intérieur de cette étape ont déjà été relâchés avant la prochaine vérification, les destructeurs C++ des objets locaux à cette étape ont déjà tourné, l&#39;état partagé est dans un état cohérent.</p>
+<h2>QThread::terminate() : pourquoi il existe, et pourquoi il faut (presque) toujours l&#39;éviter</h2>
+<p>Si l&#39;annulation coopérative te semble un long détour pour un problème qui se résoudrait apparemment par un seul appel, tu as raison de te demander : pourquoi ne pas simplement utiliser <code>thread-&gt;terminate()</code> ? Cette méthode existe bel et bien dans l&#39;API de <code>QThread</code>, et fait exactement ce que son nom promet — <strong>elle termine le thread du système d&#39;exploitation immédiatement</strong>, à l&#39;endroit exact où se trouve son exécution, sans le prévenir, sans lui donner la possibilité de réagir.</p>
+<p>Le problème réside précisément dans cette brutalité. Le worker est interrompu en un point arbitraire — potentiellement <strong>à l&#39;intérieur</strong> d&#39;une région critique protégée par un mutex qu&#39;il venait d&#39;acquérir et n&#39;a pas encore relâché. Le système d&#39;exploitation ne fait rien pour le débloquer : ce mutex reste bloqué pour toujours, et tout autre thread qui tentera à l&#39;avenir de l&#39;acquérir restera en attente indéfiniment — un deadlock que personne n&#39;a « programmé » mais que l&#39;arrêt forcé a créé comme effet secondaire. Pire encore : <code>terminate()</code> ne fait tourner <strong>aucun destructeur C++</strong> pour les objets qui vivaient sur la pile de ce thread au moment de l&#39;interruption — aucun <code>QMutexLocker</code> ne se débloque automatiquement par RAII (le mécanisme même de RAII suppose que le flux de contrôle passe par le destructeur, ce qu&#39;un arrêt au niveau du système d&#39;exploitation court-circuite entièrement), aucun fichier n&#39;est fermé proprement, aucune ressource allouée n&#39;est libérée. Le résultat est un état du programme potentiellement <strong>incohérent à mi-chemin</strong> : une structure de données qui était en train d&#39;être mise à jour en deux passes et n&#39;en a reçu qu&#39;une, un buffer avec un index avancé mais le contenu pas encore écrit.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-04/19-cooperative-cancellation-vs-terminate.png" alt="Cooperative cancellation compared with QThread::terminate()" loading="lazy"></p>
+<p>Pour être honnête jusqu&#39;au bout : <code>terminate()</code> n&#39;est <em>jamais</em> complètement interdit par la documentation officielle de Qt, et dans des cas extrêmes — un thread tiers dont tu sais avec certitude qu&#39;il ne touche jamais d&#39;état partagé, que tu dois arrêter à tout prix parce qu&#39;il est entré dans une boucle infinie irrécupérable, dans un contexte où il est acceptable de perdre ce processus proprement — il peut être le dernier recours disponible. Mais dans 99 % des cas que tu rencontreras en écrivant du code Qt applicatif, « le thread ne répond plus et je veux le tuer » est le symptôme d&#39;un problème de conception dans le worker (une boucle qui ne vérifie jamais aucun drapeau, une attente que personne ne réveille jamais), pas une justification pour <code>terminate()</code> — le remède correct est presque toujours de rendre ce worker annulable de manière coopérative avec le pattern que l&#39;on vient de voir, pas de forcer sa mort de l&#39;extérieur.</p>
+<p>Avec <code>invokeMethod</code> et l&#39;annulation coopérative en poche, tu es prêt pour le projet guidé de ce module : un worker avec un cycle de vie complet — démarrer, mettre en pause, reprendre, arrêter — qui met en pratique exactement ces idées, y compris un vrai deadlock qui a été commis puis résolu durant la préparation de ce cours même.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/learning-paths/multithreading-cpp/module-04-article-1-les-quatre-types-de-connexion-qt/">
+        <span class="post-nav__label">← Leçon précédente</span>
+        <span class="post-nav__title">Les quatre Qt::ConnectionType : ce qui se passe vraiment quand tu écris connect()</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/learning-paths/multithreading-cpp/module-04-article-3-projet-cycle-de-vie-worker/">
+        <span class="post-nav__label">Leçon suivante →</span>
+        <span class="post-nav__title">Projet : cycle de vie complet d'un worker — démarrer, mettre en pause, reprendre, arrêter</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/learning-paths/multithreading-cpp/">← Retour au parcours</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

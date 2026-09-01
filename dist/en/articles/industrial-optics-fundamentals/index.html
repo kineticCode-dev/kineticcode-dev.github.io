@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Industrial optics fundamentals: what actually matters when you pick a lens — Kinetic Code</title>
+  <meta name="description" content="A practical primer on machine vision optics — field of view, working distance, depth of field, focal length, mounts, F-number, and the trade-offs that decide whether an inspection system actually works.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/industrial-optics-fundamentals/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/industrial-optics-fundamentals/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/industrial-optics-fundamentals/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/industrial-optics-fundamentals/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/industrial-optics-fundamentals/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/industrial-optics-fundamentals/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/industrial-optics-fundamentals/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Industrial optics fundamentals: what actually matters when you pick a lens — Kinetic Code">
+  <meta property="og:description" content="A practical primer on machine vision optics — field of view, working distance, depth of field, focal length, mounts, F-number, and the trade-offs that decide whether an inspection system actually works.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/industrial-optics-fundamentals/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Industrial optics fundamentals: what actually matters when you pick a lens","description":"A practical primer on machine vision optics — field of view, working distance, depth of field, focal length, mounts, F-number, and the trade-offs that decide whether an inspection system actually works.","datePublished":"2026-08-18","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/industrial-optics-fundamentals/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/industrial-optics-fundamentals/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/industrial-optics-fundamentals/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/industrial-optics-fundamentals/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/industrial-optics-fundamentals/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrial Automation</span>
+        <h1>Industrial optics fundamentals: what actually matters when you pick a lens</h1>
+        <p class="article-hero__excerpt">A practical primer on machine vision optics — field of view, working distance, depth of field, focal length, mounts, F-number, and the trade-offs that decide whether an inspection system actually works.</p>
+        <div class="article-hero__meta">
+          <span>Aug 18, 2026</span>
+          <span>·</span>
+          <span>16 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h2>What an industrial optical system actually does</h2>
+<p>A lens has one job: collect the light bouncing off an object and rebuild an image of that object on a sensor — usually a CCD or a CMOS, the two technologies behind every digital camera sensor. Your own eye does the same thing: the cornea and the lens bend incoming light onto the retina, and that bending is what lets you reconstruct an image. An industrial camera does exactly the same, with a lens instead of a cornea and a sensor instead of a retina.</p>
+<p>In a lab or a hobby project, &quot;good enough&quot; framing is fine. In an industrial inspection system it is not. If you are checking whether a mechanical part is within tolerance, or whether a label printed correctly, you need to know exactly how large the object will appear on the sensor, how sharp it needs to be, and exactly where in space it has to sit for the system to work at all. That is why a handful of parameters, taken together, fully describe how an optical system behaves.</p>
+<h2>The parameters that define an optical system</h2>
+<ul>
+<li><strong>Field of view (FoV)</strong> — the total area the lens frames. If you need to inspect a 5 cm object, your FoV has to be at least 5 cm.</li>
+<li><strong>Working distance (WD)</strong> — the distance between the object and the lens at which the object is in perfect focus. It is not an arbitrary distance: it is fixed by the lens and how it is configured.</li>
+<li><strong>Depth of field (DoF)</strong> — the range, in front of and behind the perfect focus plane, over which the object still looks &quot;acceptably&quot; sharp. This is one of the parameters that matters most in practice.</li>
+<li><strong>Sensor size</strong> — the physical size of the sensor, in millimeters, obtained by multiplying pixel size (typically a few micrometers) by the number of pixels.</li>
+<li><strong>Magnification</strong> — the ratio between the image size on the sensor and the size of the object in the real world. Below 1, the sensor sees less detail than the real scene; above 1, it is effectively zooming into a detail.</li>
+<li><strong>Resolution</strong> — the smallest distance between two points that the system can still tell apart as two separate points, rather than one blurred spot. It depends on both the lens and the sensor together, not on either one alone.</li>
+</ul>
+<p>None of these six parameters is independent. They are linked by precise relationships, and changing one changes the others automatically: move the object closer to the lens, and the field of view shrinks, magnification goes up, and depth of field goes down. Designing an optical system means knowing these relationships well enough to trade them off deliberately, not by trial and error.</p>
+<h2>The thin lens equation</h2>
+<p>To make the math tractable, basic optics relies on two simplifications:</p>
+<ul>
+<li><strong>Paraxial approximation</strong> — only rays entering the lens at a small angle to the optical axis (the imaginary line through the center of the system) are considered. Rays hitting the edges at steep angles are ignored, which keeps the geometry linear.</li>
+<li><strong>Thin lens approximation</strong> — the physical thickness of the lens is treated as negligible, so the lens is modeled as a single plane rather than a solid object.</li>
+</ul>
+<p>With these two simplifications, you get the equation that everything else in this article builds on:</p>
+<pre><code class="hljs language-apache"><span class="hljs-attribute">1</span>/s&#x27; - <span class="hljs-number">1</span>/s = <span class="hljs-number">1</span>/f</code></pre>
+<p>where <code>s</code> is the object&#39;s position relative to the lens (negative by convention, since the object sits &quot;before&quot; the lens along the direction of light travel), <code>s&#39;</code> is the image position (positive), and <code>f</code> is the focal length of the lens.</p>
+<p>Two more terms worth keeping straight, because they show up constantly on lens datasheets: <strong>working distance</strong> is the distance between the object and the front of the lens, while <strong>back focal distance</strong> is the distance between the rear of the lens and the sensor. They live on opposite sides of the lens — do not confuse them.</p>
+<h2>Focal length</h2>
+<p>Rays entering a lens converge toward a single point after being bent by the glass. The distance between the lens and that point is the focal length. In a converging (positive) lens, the rays actually meet at a real focus. In a diverging (negative) lens, the rays spread apart after the lens, so there is no real focus — only a virtual one, the point the rays appear to come from if you trace them backward.</p>
+<p><img src="/assets/images/articles/focal-length.png" alt="Converging lens forming a real focus, diverging lens forming a virtual focus" loading="lazy"></p>
+<p>Every lens used in machine vision is, overall, a positive (converging) system: light always has to converge on the sensor plane, or no image forms at all. A lens can contain both positive and negative elements internally to correct optical aberrations, but the assembly as a whole is always converging.</p>
+<p>Focal length and field of view move in opposite directions: the longer the focal length, the narrower the field of view. That is exactly what happens when you zoom in on a camera — longer focal length, less of the scene in frame.</p>
+<p>One exception matters: when the object sits closer than roughly 10 times the focal length, the standard thin-lens equations stop being accurate. This is called <strong>macro mode</strong>, and it requires lenses specifically designed for close-range work.</p>
+<h2>Magnification and field of view</h2>
+<p>Formally, magnification is:</p>
+<pre><code class="hljs language-freedesktop"><span class="hljs-attr">M</span> <span class="hljs-operator">=</span> h&#x27; / h</code></pre>
+<p>where <code>h&#39;</code> is the image size on the sensor and <code>h</code> is the real object size. A 10 mm object producing a 5 mm image on the sensor gives M = 0.5.</p>
+<p>A related formula ties working distance directly to focal length and magnification:</p>
+<pre><code class="hljs language-abnf"><span class="hljs-attribute">s</span> <span class="hljs-operator">=</span> f(M - <span class="hljs-number">1</span>) / M</code></pre>
+<p>Given a lens&#39;s focal length and the magnification you need, this tells you exactly where to place the object — the calculation you do when sizing up a quality-control station: you know the part size, you know your sensor size, you compute the magnification you need, and from there you get the required working distance.</p>
+<p>There is also a naming convention worth knowing, because it tells you at a glance what a lens is designed for:</p>
+<ul>
+<li><strong>Macro and telecentric lenses</strong> are designed to work at distances comparable to their own focal length (&quot;finite conjugates&quot;), and are classified and sold by magnification — &quot;0.5X&quot;, &quot;1X&quot;, &quot;2X&quot;.</li>
+<li><strong>Fixed focal length lenses</strong> are designed for much larger working distances than their focal length (&quot;infinite conjugates&quot; — think of parallel sunlight rays), and are classified and sold by focal length — &quot;8mm&quot;, &quot;25mm&quot;, &quot;50mm&quot;.</li>
+</ul>
+<p>If a lens is listed as &quot;2X&quot; rather than &quot;50mm&quot;, you already know it belongs to the first family: built to work up close, on small details. A &quot;25mm&quot; lens belongs to the second family: built to work at a distance, like an ordinary photographic lens.</p>
+<h2>Mounts and flange focal distance</h2>
+<p>Before going further into the optics, there is a mechanical question that matters just as much: how does a lens physically attach to a camera? The distance between the mounting flange and the sensor — the <strong>flange focal distance</strong> — is part of every optical calculation above. Get it wrong, and the thin lens equation stops matching reality: the image will not land in focus where it should.</p>
+<table>
+<thead>
+<tr>
+<th>Mount</th>
+<th>Flange focal distance</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-mount</td>
+<td>17.526 mm</td>
+<td>The most common mount in industrial cameras. 1-inch diameter, 32 threads per inch.</td>
+</tr>
+<tr>
+<td>CS-mount</td>
+<td>12.526 mm</td>
+<td>5 mm shorter than C-mount. A C-mount lens on a CS-mount camera (or the reverse) puts the sensor at the wrong distance and the image will not be in focus.</td>
+</tr>
+<tr>
+<td>F-mount</td>
+<td>Bayonet (insert and twist)</td>
+<td>Developed by Nikon, used for larger sensors. Unlike the others, back focal distance is not adjustable on this mount.</td>
+</tr>
+<tr>
+<td>Mxx-mount (e.g. M42, M72)</td>
+<td>Variable</td>
+<td>A family of threaded mounts defined by diameter, thread pitch and flange focal distance — used for sensors even larger than F-mount.</td>
+</tr>
+</tbody></table>
+<p>When choosing a lens for a specific camera, the first mechanical question is always &quot;what mount does my camera use?&quot; — get the mount wrong and you either cannot physically attach the lens, or you attach it at the wrong distance and nothing downstream matters.</p>
+<p>Even within a correctly matched mount, real cameras rarely hit the nominal flange focal distance exactly — the protective glass covering the sensor has its own thickness, and light traveling through it shifts the effective focus point slightly. This is why lens manufacturers sell <strong>shim kits</strong>: thin spacers used, especially with telecentric lenses, to fine-tune the real distance to its optimal value. It is not a minor detail — on a telecentric lens, an error of a few tenths of a millimeter in back focal distance can noticeably change the measured magnification, which matters a great deal if the lens is being used for dimensional measurement rather than just &quot;seeing&quot; the part.</p>
+<h2>Sensor formats</h2>
+<p>Two reference tables come up constantly when specifying a vision system: one for <strong>line scan</strong> sensors (which capture the image one row of pixels at a time — typical of production lines where the object moves under the camera), and one for <strong>area scan</strong> sensors (the more common kind, capturing a full image at once, like an ordinary camera).</p>
+<p><strong>Line scan sensors (single-row pixel length)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Resolution × pixel size</th>
+<th>Sensor length</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2048 px × 10 µm</td>
+<td>20.5 mm</td>
+</tr>
+<tr>
+<td>2048 px × 14 µm</td>
+<td>28.6 mm</td>
+</tr>
+<tr>
+<td>4096 px × 7 µm</td>
+<td>28.6 mm</td>
+</tr>
+<tr>
+<td>4096 px × 10 µm</td>
+<td>41 mm</td>
+</tr>
+<tr>
+<td>6144 px × 7 µm</td>
+<td>43 mm</td>
+</tr>
+<tr>
+<td>8192 px × 7 µm</td>
+<td>57.3 mm</td>
+</tr>
+<tr>
+<td>12288 px × 5 µm</td>
+<td>62 mm</td>
+</tr>
+</tbody></table>
+<p><strong>Area scan sensors (standard formats)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Width</th>
+<th>Height</th>
+<th>Diagonal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1/3″</td>
+<td>4.8 mm</td>
+<td>3.6 mm</td>
+<td>6.000 mm</td>
+</tr>
+<tr>
+<td>1/2.5″</td>
+<td>5.76 mm</td>
+<td>4.29 mm</td>
+<td>7.182 mm</td>
+</tr>
+<tr>
+<td>1/2″</td>
+<td>6.4 mm</td>
+<td>4.8 mm</td>
+<td>8.000 mm</td>
+</tr>
+<tr>
+<td>1/1.8″</td>
+<td>7.176 mm</td>
+<td>5.319 mm</td>
+<td>8.933 mm</td>
+</tr>
+<tr>
+<td>2/3″</td>
+<td>8.8 mm</td>
+<td>6.6 mm</td>
+<td>11.000 mm</td>
+</tr>
+<tr>
+<td>1″</td>
+<td>12.8 mm</td>
+<td>9.6 mm</td>
+<td>16.000 mm</td>
+</tr>
+<tr>
+<td>4/3″</td>
+<td>18.8 mm</td>
+<td>13.5 mm</td>
+<td>22.500 mm</td>
+</tr>
+<tr>
+<td>Full frame 35 mm</td>
+<td>36.0 mm</td>
+<td>24.0 mm</td>
+<td>43.300 mm</td>
+</tr>
+</tbody></table>
+<p>Worth flagging, because it trips up almost everyone starting out: these &quot;inch&quot; labels are historical, not physical. A &quot;1/3 inch&quot; sensor has a 6 mm diagonal, not 8.47 mm as a literal one-third-inch calculation would suggest. The naming dates back to 1950s vacuum-tube cameras, where the <em>outer diameter of the glass tube</em> was, roughly, one inch — while the usable light-sensitive area was much smaller than the tube itself. When solid-state CCD sensors arrived in the 1980s and 90s, manufacturers kept the &quot;inch&quot; naming for commercial compatibility, even though it no longer maps directly to any physical dimension. Never derive a sensor&#39;s real size from its inch label by direct calculation — always check the millimeter values in the datasheet.</p>
+<p>It is also worth knowing that two cameras with the same nominal &quot;format&quot; can still have meaningfully different sensors, because the width-to-height ratio can vary between models. When picking a lens for a specific camera, check the actual sensor dimensions in millimeters — never rely on the nominal format alone.</p>
+<h2>Aperture (F-number) and depth of field</h2>
+<p>This is the densest part of the topic, and also the most practical: how &quot;open&quot; or &quot;closed&quot; a lens is, and what that changes.</p>
+<h3>The F-number</h3>
+<p>A lens&#39;s aperture — how large the &quot;hole&quot; is that light passes through, exactly like the pupil of your eye dilating or contracting — is expressed as the F-number, defined under standard conditions as:</p>
+<pre><code class="hljs language-r"><span class="hljs-built_in">F</span><span class="hljs-operator">/</span><span class="hljs-comment"># = f / d</span></code></pre>
+<p>where <code>d</code> is the aperture diameter and <code>f</code> is the focal length. This is counter-intuitive at first: a <strong>higher</strong> F-number means a <strong>smaller</strong> aperture, because <code>d</code> sits in the denominator. F/16 is a much smaller opening than F/2.</p>
+<p>Standard values found on every lens are F/1.0, F/1.4, F/2, F/2.8, F/4, F/5.6, F/8, F/11, F/16, F/22. Each step up (smaller aperture) <strong>halves</strong> the amount of light entering the lens.</p>
+<p><img src="/assets/images/articles/aperture-fnumber.png" alt="Aperture size decreasing from F/2 to F/8 to F/16" loading="lazy"></p>
+<p>For macro or telecentric lenses (the finite-conjugate family described above), a corrected variant is used, the <strong>working F-number</strong>:</p>
+<pre><code class="hljs language-awk">wF<span class="hljs-regexp">/# = (1 + M) × F/</span><span class="hljs-comment">#</span></code></pre>
+<p>The correction accounts for the fact that, when the object is close (as it is with these lenses), magnification itself changes how &quot;closed&quot; the aperture effectively behaves.</p>
+<h3>Depth of field</h3>
+<p>Depth of field can now be defined precisely: it is the range between the nearest and farthest point at which an object still looks acceptably in focus.</p>
+<p>There is a subtlety worth sitting with: physically, there is exactly one plane in object space that is perfectly conjugated to the sensor plane — one single plane that produces a mathematically perfect image. Everything else called &quot;depth of field&quot; is really a question of <em>acceptability</em>, not perfection: how much blur counts as &quot;still acceptable&quot; depends entirely on the application. A precision dimensional check (measuring a part to within a hundredth of a millimeter) demands far more sharpness than a generic visual inspection (just checking a label is present and legible).</p>
+<p><img src="/assets/images/articles/depth-of-field.png" alt="Depth of field as the zone around a single perfectly focused plane" loading="lazy"></p>
+<p>A practical formula for estimating depth of field:</p>
+<pre><code class="hljs language-inform7">DoF <span class="hljs-comment">[mm]</span> = wF/# × p<span class="hljs-comment">[µm]</span> × k / M²</code></pre>
+<p>where <code>p</code> is the sensor&#39;s pixel size in micrometers, <code>M</code> is the lens magnification, and <code>k</code> is a dimensionless, application-dependent factor — typically <strong>0.008</strong> for dimensional-measurement applications (where sharpness matters most) and <strong>0.015</strong> for defect-inspection applications (where somewhat more tolerance is acceptable).</p>
+<p><strong>Worked example.</strong> Lens magnification M = 0.25X, working F-number wF/# = 8, sensor pixel size p = 5.5 µm, defect-inspection application so k = 0.015.</p>
+<ol>
+<li>M² = 0.25 × 0.25 = 0.0625</li>
+<li>numerator: wF/# × p × k = 8 × 5.5 × 0.015 = 0.66</li>
+<li>DoF = 0.66 / 0.0625 = 10.56 mm ≈ <strong>10.5 mm</strong></li>
+</ol>
+<p>A quick honesty note on units: the pixel size in that formula is in micrometers, while the result is stated directly in millimeters — a jump of three orders of magnitude that the formula does not spell out explicitly. In practice, the constant <code>k</code> almost certainly folds in a dimensional conversion factor along with an empirical criterion for acceptable blur, calibrated from real-world testing rather than derived from first principles. That does not make the formula wrong — the numbers check out — but it is worth knowing it is an engineering shortcut, not a first-principles derivation, so you do not try to re-derive it from scratch and assume you made an error when your own math does not reproduce it cleanly.</p>
+<p>On which F-number to pick: F/8 is a common sweet spot. Smaller apertures (higher F-numbers, like F/16 or F/22) start to suffer from <strong>diffraction</strong> — a wave-optics effect where light spreads out as the opening gets very small, which paradoxically hurts sharpness even as depth of field keeps increasing. Larger apertures (lower F-numbers, like F/1.4 or F/2) are more prone to <strong>optical aberrations and distortion</strong>, imperfections inherent to any lens design that become more visible when using the full aperture.</p>
+<p>The underlying trade-off is worth internalizing: small aperture (high F-number) needs more light but gives more depth of field and fewer aberrations; large aperture (low F-number) needs less light but gives less depth of field and more aberrations/distortion. There is no universally &quot;correct&quot; aperture — F/8 is a reasonable default, but the right choice always depends on how much light you actually have and how much depth of field the application needs relative to peak sharpness.</p>
+<h2>Four more terms worth knowing</h2>
+<p>A handful of concepts get mentioned constantly around industrial optics without always being explained in full:</p>
+<ul>
+<li><strong>MTF (Modulation Transfer Function)</strong> — the standard way to objectively measure how &quot;sharp&quot; a lens is, across different levels of detail. Instead of saying a lens is &quot;sharp&quot; in general terms, MTF tells you numerically how well the system reproduces contrast between increasingly fine lines — it is the tool manufacturers actually use to compare lens quality rigorously.</li>
+<li><strong>Telecentricity</strong> — a normal (&quot;entocentric&quot;) lens makes objects look smaller as they move farther away, exactly like human perspective vision. A <strong>telecentric</strong> lens is specifically designed to remove this effect within a certain distance range: an object measures the same size in the image regardless of exactly where it sits within the depth of field. That is why telecentric lenses are the standard choice for precision dimensional measurement, where a small positioning error must not translate into a measurement error.</li>
+<li><strong>Pericentric optics</strong> — a less common third family, designed to image the internal surfaces of a hollow object (the inside of a tube, for example) from a slightly angled rather than a straight-on view.</li>
+<li><strong>Distortion</strong> — a geometric deformation of the image relative to reality: straight lines in the real scene appear curved in the image (barrel distortion curving outward, pincushion distortion curving inward). It is a defect that matters for measurement applications and, when necessary, gets corrected in software, because it directly affects the accuracy of any dimensional measurement taken from the image.</li>
+</ul>
+<h2>How it all fits together</h2>
+<ol>
+<li><strong>Focal length (f)</strong>, together with object distance, determines where the image forms (the thin lens equation) and how large the <strong>field of view (FoV)</strong> is.</li>
+<li>The ratio between image size and real object size defines <strong>magnification (M)</strong>, which in turn sets the <strong>working distance (WD)</strong> a given lens needs.</li>
+<li><strong>Aperture diameter</strong>, relative to focal length, gives the <strong>F-number</strong> — which controls both how much light enters and, together with magnification and pixel size, how large the <strong>depth of field (DoF)</strong> is.</li>
+<li>All of this has to reconcile with the mechanics: the <strong>mount</strong> and the correct <strong>back focal distance</strong> determine whether the plane where the image &quot;should&quot; form actually coincides with the physical sensor plane.</li>
+<li>Finally, how well all of this translates into a genuinely useful image also depends on <strong>resolution, MTF, telecentricity and distortion</strong> — factors that go beyond the basic parameters but matter just as much in a real system.</li>
+</ol>
+<p>Two threads are worth following further if you only pick two: telecentricity and MTF. They are the concepts most often mentioned only in passing, yet they are central to any real industrial application involving measurement or quality control — understanding them well is what makes a lens datasheet actually legible.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/articles/loggermanager-qdebug-redirect-article-en/">
+        <span class="post-nav__label">← Previous article</span>
+        <span class="post-nav__title">Redirecting Qt qDebug to a file without recompiling: the LoggerManager class</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/matrix-multiplication-optimization-part-1/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">Optimizing matrix multiplication in C++ — Part 1: what the loop order actually buys you</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

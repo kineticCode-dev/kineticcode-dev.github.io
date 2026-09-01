@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cómo iniciar automáticamente un programa en Windows — Kinetic Code</title>
+  <meta name="description" content="¿Tienes un programa que quieres que se abra automáticamente cada vez que enciendes el ordenador? En esta breve guía veremos cómo hacerlo de forma rápida y sencilla usando una herramienta integrada en Windows llamada Programador de tareas.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/articles/windows-autostart-article/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/windows-autostart-article/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/windows-autostart-article/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/windows-autostart-article/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/windows-autostart-article/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/windows-autostart-article/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/windows-autostart-article/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Cómo iniciar automáticamente un programa en Windows — Kinetic Code">
+  <meta property="og:description" content="¿Tienes un programa que quieres que se abra automáticamente cada vez que enciendes el ordenador? En esta breve guía veremos cómo hacerlo de forma rápida y sencilla usando una herramienta integrada en Windows llamada Programador de tareas.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/articles/windows-autostart-article/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Cómo iniciar automáticamente un programa en Windows","description":"¿Tienes un programa que quieres que se abra automáticamente cada vez que enciendes el ordenador? En esta breve guía veremos cómo hacerlo de forma rápida y sencilla usando una herramienta integrada en Windows llamada Programador de tareas.","datePublished":"2026-07-18","inLanguage":"es","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/" aria-current="page">Artículos</a>
+        <a href="/es/learning-paths/">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/windows-autostart-article/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/windows-autostart-article/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/windows-autostart-article/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/windows-autostart-article/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/windows-autostart-article/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-3);color:var(--chart-3)">Ingeniería de Software</span>
+        <h1>Cómo iniciar automáticamente un programa en Windows</h1>
+        <p class="article-hero__excerpt">¿Tienes un programa que quieres que se abra automáticamente cada vez que enciendes el ordenador? En esta breve guía veremos cómo hacerlo de forma rápida y sencilla usando una herramienta integrada en Windows llamada Programador de tareas.</p>
+        <div class="article-hero__meta">
+          <span>18 jul 2026</span>
+          <span>·</span>
+          <span>1 min de lectura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h1>Índice</h1>
+<ol>
+<li><a href="#introduction">Introducción</a></li>
+<li><a href="#step-by-step-guide">Guía paso a paso</a></li>
+<li><a href="#conclusion">Conclusión</a></li>
+</ol>
+<hr>
+<h2>Introducción</h2>
+<p>A veces, sobre todo si has desarrollado tu propio software o usas una aplicación concreta a diario, es muy útil que arranque automáticamente al iniciar sesión en Windows. Para conseguirlo no hace falta instalar ningún software externo: Windows ya trae una herramienta perfecta lista para usar, el Programador de tareas (Task Scheduler).</p>
+<h2>Guía paso a paso</h2>
+<p>Sigue estos sencillos pasos para configurar el inicio automático de tu programa:</p>
+<ol>
+<li><strong>Abre el Programador de tareas</strong>: abre el menú Inicio de Windows y busca &quot;Programador de tareas&quot; (Task Scheduler). Haz clic para abrir la aplicación.</li>
+<li><strong>Crea una tarea básica</strong>: fíjate en el panel de la derecha de la ventana y haz clic en <strong>&quot;Crear tarea básica...&quot;</strong>.</li>
+<li><strong>Ponle nombre a la tarea</strong>: dale a la tarea un nombre claro (por ejemplo, &quot;Iniciar mi software Qt&quot;) y haz clic en <strong>Siguiente</strong>.</li>
+<li><strong>Elige el desencadenador</strong>: como desencadenador, selecciona <strong>&quot;Al iniciar sesión&quot;</strong> (o &quot;Al iniciarse el equipo&quot;, si lo prefieres) y haz clic en <strong>Siguiente</strong>.</li>
+<li><strong>Elige la acción</strong>: selecciona <strong>&quot;Iniciar un programa&quot;</strong> como acción y haz clic en <strong>Siguiente</strong>.</li>
+<li><strong>Selecciona tu programa</strong>: haz clic en <strong>&quot;Examinar...&quot;</strong> y busca el archivo ejecutable original (normalmente un archivo <code>.exe</code>) de tu programa. Selecciónalo y haz clic en <strong>Siguiente</strong>.</li>
+<li><strong>Finaliza</strong>: revisa la configuración y haz clic en <strong>Finalizar</strong>.</li>
+</ol>
+<p>¡Y ya está! Tu programa ya está programado para iniciarse automáticamente.</p>
+<h2>Conclusión</h2>
+<p>Usar el Programador de tareas de Windows es una forma segura y limpia de gestionar los programas que arrancan junto con el ordenador. Si más adelante cambias de opinión, siempre puedes volver a la lista del Programador de tareas para eliminar o modificar esta tarea.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/articles/personal-expense-trackerp3/">
+        <span class="post-nav__label">← Artículo anterior</span>
+        <span class="post-nav__title">Construyendo un Rastreador de Gastos Personales desde Cero: Arquitectura y Diseño de la Base de Datos (Parte 3)</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/articles/securing-supabase-in-open-source-world/">
+        <span class="post-nav__label">Artículo siguiente →</span>
+        <span class="post-nav__title">Asegurar Supabase en un mundo open source</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/articles/">← Volver a todos los artículos</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

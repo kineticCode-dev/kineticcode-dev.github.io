@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projet : cycle de vie complet d'un worker — démarrer, mettre en pause, reprendre, arrêter — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code</title>
+  <meta name="description" content="Le multithreading en C++ avec Qt — Module 4 — Projet">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-04-article-3-projet-cycle-de-vie-worker/">
+  <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-04-article-3-projet-cycle-de-vie-worker/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-04-article-3-projet-cycle-de-vie-worker/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Projet : cycle de vie complet d'un worker — démarrer, mettre en pause, reprendre, arrêter — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code">
+  <meta property="og:description" content="Le multithreading en C++ avec Qt — Module 4 — Projet">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-04-article-3-projet-cycle-de-vie-worker/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/">Articles</a>
+        <a href="/fr/learning-paths/" aria-current="page">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <a href="/fr/learning-paths/multithreading-cpp/module-04-article-3-projet-cycle-de-vie-worker/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/fr/learning-paths/multithreading-cpp/">Multithreading en C++ : de la théorie à une machine à états fonctionnelle</a> · Module 4 — Communication sécurisée entre threads : connexions Qt et annulation coopérative
+        </div>
+        <span class="eyebrow">Projet · Leçon 16 sur 22</span>
+        <h1>Projet : cycle de vie complet d'un worker — démarrer, mettre en pause, reprendre, arrêter</h1>
+        <p class="article-hero__excerpt">Le multithreading en C++ avec Qt — Module 4 — Projet</p>
+        <div class="article-hero__meta"><span>16 min de lecture</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Tu peux trouver tout le code source <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">ici</a></p>
+<h1>Projet : cycle de vie complet d&#39;un worker — démarrer, mettre en pause, reprendre, arrêter</h1>
+<p>Construisons une application Qt Widgets avec un worker persistant — le même pattern <code>moveToThread()</code> que tu connais depuis le Module 1 — qui exécute un traitement par étapes (200 étapes, chacune avec un petit calcul CPU-bound suivi d&#39;une courte pause configurable), pilotable avec quatre commandes depuis la fenêtre : <strong>Start</strong>, <strong>Pause</strong>, <strong>Resume</strong>, <strong>Stop</strong>. En plus de cela, deux contrôles dédiés démontrent <code>QMetaObject::invokeMethod</code> dans ses deux variantes principales : l&#39;une pour changer à chaud la vitesse d&#39;exécution, l&#39;autre pour interroger de manière synchrone l&#39;étape courante.</p>
+<p><strong>Prérequis</strong> : Qt 6 avec le composant <strong>Widgets</strong>, aucune dépendance supplémentaire par rapport aux modules précédents.</p>
+<h2>Étape 1 — Le squelette du projet</h2>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.16</span>)
+<span class="hljs-keyword">project</span>(worker_lifecycle_demo LANGUAGES CXX)
+
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">17</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD_REQUIRED <span class="hljs-keyword">ON</span>)
+<span class="hljs-keyword">set</span>(CMAKE_AUTOMOC <span class="hljs-keyword">ON</span>)
+
+<span class="hljs-keyword">find_package</span>(Qt6 REQUIRED COMPONENTS Widgets)
+
+<span class="hljs-keyword">add_executable</span>(worker_lifecycle_demo
+    main.cpp
+    mainwindow.h
+    mainwindow.cpp
+    cyclicworker.h
+    cyclicworker.cpp
+)
+
+<span class="hljs-keyword">target_link_libraries</span>(worker_lifecycle_demo PRIVATE Qt6::Widgets)</code></pre>
+<p>Aucune surprise ici : c&#39;est la même forme que d&#39;habitude. La substance du jour se trouve entièrement dans l&#39;architecture interne de <code>CyclicWorker</code>.</p>
+<h2>Étape 2 — Le worker : la déclaration, et une distinction qui compte plus que toute autre ligne de ce projet</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QObject&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QMutex&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QWaitCondition&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QString&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;atomic&gt;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">CyclicWorker</span> : <span class="hljs-keyword">public</span> QObject {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">CyclicWorker</span><span class="hljs-params">(QObject *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+
+    <span class="hljs-function">Q_INVOKABLE <span class="hljs-type">void</span> <span class="hljs-title">setInterval</span><span class="hljs-params">(<span class="hljs-type">int</span> milliseconds)</span></span>;
+    <span class="hljs-function">Q_INVOKABLE <span class="hljs-type">int</span> <span class="hljs-title">currentStep</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span>;
+
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">totalSteps</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>{ <span class="hljs-keyword">return</span> TOTAL_STEPS; }
+
+    <span class="hljs-comment">// NOT slots, on purpose.</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pause</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">resume</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">stop</span><span class="hljs-params">()</span></span>;
+
+<span class="hljs-keyword">public</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span></span>;
+
+signals:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">progress</span><span class="hljs-params">(<span class="hljs-type">int</span> step, <span class="hljs-type">int</span> totalSteps)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">stateChanged</span><span class="hljs-params">(<span class="hljs-type">const</span> QString &amp;state)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">finished</span><span class="hljs-params">()</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-type">static</span> <span class="hljs-keyword">constexpr</span> <span class="hljs-type">int</span> TOTAL_STEPS = <span class="hljs-number">200</span>;
+
+    <span class="hljs-keyword">mutable</span> QMutex m_mutex;
+    QWaitCondition m_pauseCondition;
+
+    <span class="hljs-type">bool</span> m_paused = <span class="hljs-literal">false</span>;
+    <span class="hljs-type">int</span> m_currentStep = <span class="hljs-number">0</span>;
+    <span class="hljs-type">int</span> m_intervalMs = <span class="hljs-number">40</span>;
+
+    std::atomic&lt;<span class="hljs-type">bool</span>&gt; m_stop{<span class="hljs-literal">false</span>};
+};</code></pre>
+<p>Arrête-toi sur la division entre <code>pause()</code>/<code>resume()</code>/<code>stop()</code>, déclarées comme des méthodes publiques ordinaires, et <code>start()</code>, la seule déclarée <code>public slots</code>. Ce n&#39;est pas un caprice stylistique : c&#39;est la leçon la plus importante de tout ce projet, et pour bien te la raconter, je dois d&#39;abord te montrer l&#39;erreur que j&#39;ai commise en le construisant.</p>
+<h3>La version erronée que j&#39;ai écrite en premier (et le deadlock qui s&#39;en est suivi)</h3>
+<p>Ma première ébauche reliait pause, reprise et arrêt exactement comme tu t&#39;y attendrais depuis les Modules 1 et 2 — trois signaux dans la fenêtre, reliés via <code>connect()</code> à trois slots du worker :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-comment">//--- WRONG VERSION, do not use it ---</span>
+<span class="hljs-built_in">connect</span>(<span class="hljs-keyword">this</span>, &amp;MainWindow::requestPause, m_worker, &amp;CyclicWorker::pause);
+<span class="hljs-built_in">connect</span>(<span class="hljs-keyword">this</span>, &amp;MainWindow::requestResume, m_worker, &amp;CyclicWorker::resume);
+<span class="hljs-built_in">connect</span>(<span class="hljs-keyword">this</span>, &amp;MainWindow::requestStop, m_worker, &amp;CyclicWorker::stop);</code></pre>
+<p>Ça compilait sans erreur. Ça exécutait la séquence Start → Pause → Resume sans problème apparent. Mais au moment où mon test automatisé appuyait sur « Pause » puis, avec le worker encore endormi, appuyait sur « Stop », l&#39;application entière se bloquait pour toujours — aucun crash, aucun message, simplement figée, exactement le symptôme silencieux d&#39;un deadlock que le Module 2 t&#39;a appris à reconnaître.</p>
+<p>La cause, une fois trouvée, est éclatante — et c&#39;est un corollaire direct des deux articles précédents de ce module mis ensemble : pendant que le worker est en pause, sa <code>start()</code> est bloquée à l&#39;intérieur de <code>m_pauseCondition.wait(&amp;m_mutex)</code>. Cet appel <strong>n&#39;est pas un tour de boucle d&#39;événements</strong> : c&#39;est un blocage au niveau du système d&#39;exploitation, le thread est littéralement suspendu là, il n&#39;exécute pas <code>exec()</code>, il ne traite aucune file d&#39;événements. Un signal <code>requestStop()</code> connecté avec une <code>QueuedConnection</code> (automatique, car l&#39;émetteur et le destinataire sont sur des threads différents) dépose fidèlement son événement dans la file du worker — mais personne ne viendra jamais le lire, car le thread qui devrait le faire est arrêté à l&#39;intérieur d&#39;un <code>wait()</code> que personne, à son tour, ne réveille. C&#39;est exactement la même famille de problème que le piège de <code>deleteLater()</code> que tu as vu au Module 1 : un événement déposé dans une file que personne ne traitera jamais, parce que son thread propriétaire ne tourne pas.</p>
+<h3>La correction : des appels directs, comme pour le buffer partagé du Module 2</h3>
+<p>La solution, avec le recul, était déjà écrite dans le Module 2, seulement je ne l&#39;avais pas reconnue comme applicable ici aussi. Tu te souviens des méthodes de production, de consommation et de fermeture du buffer partagé ? Ce n&#39;étaient pas des slots : c&#39;étaient des méthodes publiques ordinaires, appelées <strong>directement</strong> depuis des threads différents, sûres non pas parce qu&#39;elles passaient par la méta-machine des signaux et slots, mais parce que chaque ligne qu&#39;elles touchaient était déjà protégée par son propre <code>QMutex</code> interne. Exactement la même logique s&#39;applique à <code>pause()</code>, <code>resume()</code> et <code>stop()</code> d&#39;aujourd&#39;hui : elles sont sûres à appeler directement depuis le thread GUI, sur un objet qui vit sur un autre thread, parce que la seule chose qu&#39;elles touchent est protégée par <code>m_mutex</code> ou atomique (<code>m_stop</code>) — elles n&#39;ont pas besoin de la boucle d&#39;événements du worker pour s&#39;exécuter en sécurité, et c&#39;est justement pour cela qu&#39;<strong>elles fonctionnent même quand cette boucle d&#39;événements ne tourne pas</strong>, comme pendant la pause.</p>
+<p><code>start()</code>, au contraire, doit rester un slot atteint via <code>connect()</code> — car contrairement à pause/resume/stop, elle <strong>doit vraiment s&#39;exécuter sur le thread géré par le QThread</strong>, pas sur celui de l&#39;appelant : c&#39;est l&#39;intégralité du corps du travail du worker, pas seulement un changement de drapeau. Un appel direct à <code>m_worker-&gt;start()</code> depuis le thread GUI exécuterait la totalité du cycle de 200 étapes <strong>sur le thread GUI lui-même</strong> — exactement le gel que le Module 1 t&#39;a appris à soigner dès le premier jour.</p>
+<h2>Étape 3 — Le worker : start(), pause(), resume(), stop()</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;cyclicworker.h&quot;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QThread&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QCoreApplication&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;algorithm&gt;</span></span>
+
+CyclicWorker::<span class="hljs-built_in">CyclicWorker</span>(QObject *parent) : <span class="hljs-built_in">QObject</span>(parent) {}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CyclicWorker::start</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-function">emit <span class="hljs-title">stateChanged</span><span class="hljs-params">(<span class="hljs-string">&quot;Running&quot;</span>)</span></span>;
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> step = <span class="hljs-number">1</span>; step &lt;= TOTAL_STEPS; ++step) {
+        <span class="hljs-keyword">if</span> (m_stop.<span class="hljs-built_in">load</span>()) <span class="hljs-keyword">break</span>;
+
+        {
+            <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+            <span class="hljs-keyword">while</span> (m_paused &amp;&amp; !m_stop.<span class="hljs-built_in">load</span>()) {
+                m_pauseCondition.<span class="hljs-built_in">wait</span>(&amp;m_mutex);
+            }
+        }
+        <span class="hljs-keyword">if</span> (m_stop.<span class="hljs-built_in">load</span>()) <span class="hljs-keyword">break</span>;
+
+        <span class="hljs-keyword">volatile</span> <span class="hljs-type">long</span> <span class="hljs-type">long</span> accumulator = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">200000</span>; ++i) {
+            accumulator += i % <span class="hljs-number">7</span>;
+        }
+
+        <span class="hljs-type">int</span> waitMs;
+        {
+            <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+            m_currentStep = step;
+            waitMs = m_intervalMs;
+        }
+
+        <span class="hljs-function">emit <span class="hljs-title">progress</span><span class="hljs-params">(step, TOTAL_STEPS)</span></span>;
+        QThread::<span class="hljs-built_in">msleep</span>(<span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>&gt;(waitMs));
+
+        QCoreApplication::<span class="hljs-built_in">processEvents</span>();
+    }
+
+    <span class="hljs-function">emit <span class="hljs-title">stateChanged</span><span class="hljs-params">(m_stop.load() ? <span class="hljs-string">&quot;Stopped&quot;</span> : <span class="hljs-string">&quot;Completed&quot;</span>)</span></span>;
+    <span class="hljs-function">emit <span class="hljs-title">finished</span><span class="hljs-params">()</span></span>;
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CyclicWorker::pause</span><span class="hljs-params">()</span> </span>{
+    {
+        <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+        m_paused = <span class="hljs-literal">true</span>;
+    }
+    <span class="hljs-function">emit <span class="hljs-title">stateChanged</span><span class="hljs-params">(<span class="hljs-string">&quot;Paused&quot;</span>)</span></span>;
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CyclicWorker::resume</span><span class="hljs-params">()</span> </span>{
+    {
+        <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+        m_paused = <span class="hljs-literal">false</span>;
+    }
+    m_pauseCondition.<span class="hljs-built_in">wakeOne</span>();
+    <span class="hljs-function">emit <span class="hljs-title">stateChanged</span><span class="hljs-params">(<span class="hljs-string">&quot;Running&quot;</span>)</span></span>;
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CyclicWorker::stop</span><span class="hljs-params">()</span> </span>{
+    m_stop.<span class="hljs-built_in">store</span>(<span class="hljs-literal">true</span>);
+
+    <span class="hljs-comment">// If the worker is asleep while paused, m_stop alone is not enough:</span>
+    <span class="hljs-comment">// it must be woken up, otherwise it will never re-check the flag.</span>
+    <span class="hljs-comment">// Same discipline as the shared buffer&#x27;s close() in Module 2.</span>
+    {
+        <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+        m_paused = <span class="hljs-literal">false</span>;
+    }
+    m_pauseCondition.<span class="hljs-built_in">wakeAll</span>();
+}</code></pre>
+<p>Le corps de la boucle devrait déjà t&#39;être familier : le contrôle du drapeau d&#39;arrêt en haut, le bloc de pause avec <code>while</code> et <code>wait()</code>, un petit calcul CPU-bound qui représente le « vrai travail » de chaque étape, et l&#39;émission de la progression. La dernière ligne, <code>QCoreApplication::processEvents()</code>, on l&#39;explique tout de suite dans l&#39;étape suivante.</p>
+<p>Regarde <code>stop()</code> avec attention, car c&#39;est l&#39;application directe de la leçon du Module 2 au problème d&#39;aujourd&#39;hui : écrire seulement <code>m_stop.store(true)</code> résoudrait le cas où le worker est <strong>actif</strong>, à l&#39;intérieur de sa propre boucle de travail — au prochain contrôle du drapeau, il sortirait proprement. Mais si le worker est à ce moment-là <strong>endormi dans <code>wait()</code></strong> parce qu&#39;il est en pause, cette seule écriture ne l&#39;atteint pas : il continuerait à dormir pour toujours, car personne ne l&#39;a réveillé pour qu&#39;il revérifie quoi que ce soit, drapeau d&#39;arrêt compris. <code>stop()</code> ne se limite donc pas à écrire le drapeau : elle force aussi <code>m_paused</code> à <code>false</code> et appelle <code>wakeAll()</code> — réveillant quiconque était en attente, qui à ce moment-là revérifiera la condition de son propre <code>while</code>, verra <code>m_stop</code> à <code>true</code>, et sortira proprement de la boucle d&#39;attente avant même de rentrer dans le corps du travail.</p>
+<h2>Étape 4 — setInterval() et currentStep() : la démo d&#39;invokeMethod, et pourquoi processEvents() est nécessaire</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CyclicWorker::setInterval</span><span class="hljs-params">(<span class="hljs-type">int</span> milliseconds)</span> </span>{
+    <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+    m_intervalMs = std::<span class="hljs-built_in">clamp</span>(milliseconds, <span class="hljs-number">0</span>, <span class="hljs-number">2000</span>);
+}
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">CyclicWorker::currentStep</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>{
+    <span class="hljs-function">QMutexLocker <span class="hljs-title">locker</span><span class="hljs-params">(&amp;m_mutex)</span></span>;
+    <span class="hljs-keyword">return</span> m_currentStep;
+}</code></pre>
+<p>Rien de surprenant dans l&#39;implémentation : deux méthodes <code>Q_INVOKABLE</code>, protégées par le même mutex que le reste de l&#39;état. Le point intéressant est dans <strong>comment</strong> la fenêtre les appellera dans un instant — avec <code>QMetaObject::invokeMethod</code>, pas avec un <code>connect()</code>. Et cela nous ramène à cette ligne isolée à la fin de la boucle de <code>start()</code>, <code>QCoreApplication::processEvents()</code>.</p>
+<p>Aussi bien <code>Qt::QueuedConnection</code> que <code>Qt::BlockingQueuedConnection</code> pour <code>invokeMethod</code> fonctionnent en déposant un événement dans la file du thread destinataire, et cet événement n&#39;est exécuté que lorsque la boucle d&#39;événements de ce thread arrive à le traiter. Mais <code>start()</code> est <strong>elle-même</strong> un unique et long slot qui occupe le thread du worker du début à la fin de la boucle — pendant qu&#39;elle tourne, ce thread <strong>n&#39;exécute pas <code>exec()</code></strong> au sens où tu l&#39;entends habituellement : il exécute le corps de <code>start()</code>, qui a elle-même été invoquée <em>par</em> un événement traité par la boucle d&#39;événements. Tant que <code>start()</code> ne retourne pas, la boucle d&#39;événements du worker ne revient pas à son propre cycle de réception — ce qui signifie que tout nouvel événement arrivant entre-temps (un appel <code>invokeMethod</code> vers <code>setInterval()</code> ou <code>currentStep()</code>, par exemple) resterait en file, non traité, jusqu&#39;à la fin des 200 étapes. Pour une <code>Qt::QueuedConnection</code>, ce ne serait qu&#39;un retard gênant ; pour une <code>Qt::BlockingQueuedConnection</code>, ce serait un <strong>blocage de la GUI pendant toute la durée du cycle</strong> — exactement le type de gel que ce cours entier t&#39;a appris à éviter, mais cette fois causé non pas par un calcul lourd directement sur la GUI, mais par un détail plus subtil sur la boucle d&#39;événements du worker.</p>
+<p><code>QCoreApplication::processEvents()</code>, appelée une fois par étape, est le remède : elle « pompe » manuellement la file d&#39;événements du thread courant, donnant une fenêtre d&#39;opportunité à tout événement en attente — y compris les <code>invokeMethod</code> vers cet objet même — d&#39;être traité avant de passer à l&#39;étape suivante. C&#39;est une technique documentée et légitime pour les slots longs qui doivent rester partiellement réactifs, mais il vaut la peine d&#39;être honnête sur ses limites : <strong>elle n&#39;aide absolument pas pendant la pause</strong>. À l&#39;intérieur de <code>wait()</code>, le thread est bloqué au niveau du système d&#39;exploitation, il n&#39;exécute aucun code Qt — il n&#39;y a aucun point où <code>processEvents()</code> pourrait être appelée, car le contrôle n&#39;est pas entre les mains de ton code à cet instant. Et c&#39;est précisément pour cette raison — pas par symétrie stylistique — que <code>pause()</code>, <code>resume()</code> et <code>stop()</code> restent des appels directs : ce sont le seul mécanisme qui atteint le worker dans <strong>chacun</strong> de ses états, pause comprise, tandis que <code>invokeMethod</code> vers ce worker ne fonctionne que parce que nous avons délibérément ouvert une fenêtre pour lui à l&#39;intérieur de la boucle active.</p>
+<h2>Étape 5 — L&#39;en-tête de la fenêtre</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QMainWindow&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QLabel&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QPushButton&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QProgressBar&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QListWidget&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QSpinBox&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QThread&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;cyclicworker.h&quot;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MainWindow</span> : <span class="hljs-keyword">public</span> QMainWindow {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">MainWindow</span><span class="hljs-params">(QWidget *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+    ~<span class="hljs-built_in">MainWindow</span>() <span class="hljs-keyword">override</span>;
+
+signals:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">requestStart</span><span class="hljs-params">()</span></span>;
+
+<span class="hljs-keyword">private</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">onStartClicked</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">onPauseClicked</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">onResumeClicked</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">onStopClicked</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">onApplySpeedClicked</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">onQueryProgressClicked</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updateProgress</span><span class="hljs-params">(<span class="hljs-type">int</span> step, <span class="hljs-type">int</span> totalSteps)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updateState</span><span class="hljs-params">(<span class="hljs-type">const</span> QString &amp;state)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">onFinished</span><span class="hljs-params">()</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">log</span><span class="hljs-params">(<span class="hljs-type">const</span> QString &amp;message)</span></span>;
+
+    QLabel *m_stateLabel;
+    QProgressBar *m_progressBar;
+    QPushButton *m_startButton;
+    QPushButton *m_pauseButton;
+    QPushButton *m_resumeButton;
+    QPushButton *m_stopButton;
+    QSpinBox *m_speedSpinBox;
+    QPushButton *m_applySpeedButton;
+    QPushButton *m_queryButton;
+    QLabel *m_queryResultLabel;
+    QListWidget *m_log;
+
+    QThread *m_thread;
+    CyclicWorker *m_worker;
+};</code></pre>
+<p>Remarque qu&#39;il n&#39;y a qu&#39;un seul signal, <code>requestStart()</code> — cohérent avec tout ce que tu viens de voir à l&#39;Étape 2 : c&#39;est la seule commande qui a vraiment besoin de passer par la boucle d&#39;événements, car c&#39;est la seule qui doit faire exécuter du code <strong>sur le thread du worker</strong> plutôt que de simplement modifier son état interne.</p>
+<h2>Étape 6 — Le constructeur : mettre en place le worker, sans le démarrer tout de suite</h2>
+<pre><code class="hljs language-cpp">    m_thread = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QThread</span>(<span class="hljs-keyword">this</span>);
+    m_worker = <span class="hljs-keyword">new</span> <span class="hljs-built_in">CyclicWorker</span>();   <span class="hljs-comment">// NO parent: moveToThread() requires it</span>
+    m_worker-&gt;<span class="hljs-built_in">moveToThread</span>(m_thread);
+
+    <span class="hljs-built_in">connect</span>(<span class="hljs-keyword">this</span>, &amp;MainWindow::requestStart, m_worker, &amp;CyclicWorker::start);
+
+    <span class="hljs-built_in">connect</span>(m_worker, &amp;CyclicWorker::progress, <span class="hljs-keyword">this</span>, &amp;MainWindow::updateProgress);
+    <span class="hljs-built_in">connect</span>(m_worker, &amp;CyclicWorker::stateChanged, <span class="hljs-keyword">this</span>, &amp;MainWindow::updateState);
+    <span class="hljs-built_in">connect</span>(m_worker, &amp;CyclicWorker::finished, <span class="hljs-keyword">this</span>, &amp;MainWindow::onFinished);
+
+    <span class="hljs-built_in">connect</span>(m_startButton, &amp;QPushButton::clicked, <span class="hljs-keyword">this</span>, &amp;MainWindow::onStartClicked);
+    <span class="hljs-built_in">connect</span>(m_pauseButton, &amp;QPushButton::clicked, <span class="hljs-keyword">this</span>, &amp;MainWindow::onPauseClicked);
+    <span class="hljs-built_in">connect</span>(m_resumeButton, &amp;QPushButton::clicked, <span class="hljs-keyword">this</span>, &amp;MainWindow::onResumeClicked);
+    <span class="hljs-built_in">connect</span>(m_stopButton, &amp;QPushButton::clicked, <span class="hljs-keyword">this</span>, &amp;MainWindow::onStopClicked);
+    <span class="hljs-built_in">connect</span>(m_applySpeedButton, &amp;QPushButton::clicked, <span class="hljs-keyword">this</span>, &amp;MainWindow::onApplySpeedClicked);
+    <span class="hljs-built_in">connect</span>(m_queryButton, &amp;QPushButton::clicked, <span class="hljs-keyword">this</span>, &amp;MainWindow::onQueryProgressClicked);
+
+    m_thread-&gt;<span class="hljs-built_in">start</span>();</code></pre>
+<p>Remarque une différence délibérée par rapport aux Modules 1 et 2 : ici nous <strong>ne</strong> relions <strong>pas</strong> <code>QThread::started</code> directement à <code>start()</code>. Le worker, une fois le thread démarré, reste inactif — sa boucle d&#39;événements est déjà active et prête à recevoir des commandes (y compris les appels directs à <code>pause()</code>/<code>resume()</code>/<code>stop()</code>, qui comme tu le sais n&#39;en ont même pas besoin) — jusqu&#39;à ce que l&#39;utilisateur appuie réellement sur le bouton « Start ». C&#39;est l&#39;état « Idle » du diagramme ci-dessous, celui avant tout travail.</p>
+<h2>Étape 7 — Les slots de la fenêtre, y compris les deux démonstrations d&#39;invokeMethod</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::onStartClicked</span><span class="hljs-params">()</span> </span>{
+    m_startButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    m_pauseButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">true</span>);
+    m_stopButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">true</span>);
+    m_progressBar-&gt;<span class="hljs-built_in">setValue</span>(<span class="hljs-number">0</span>);
+    <span class="hljs-function">emit <span class="hljs-title">requestStart</span><span class="hljs-params">()</span></span>;
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::onPauseClicked</span><span class="hljs-params">()</span> </span>{
+    m_pauseButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    m_resumeButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">true</span>);
+    m_worker-&gt;<span class="hljs-built_in">pause</span>();       <span class="hljs-comment">// direct call</span>
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::onResumeClicked</span><span class="hljs-params">()</span> </span>{
+    m_resumeButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    m_pauseButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">true</span>);
+    m_worker-&gt;<span class="hljs-built_in">resume</span>();      <span class="hljs-comment">// direct call</span>
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::onStopClicked</span><span class="hljs-params">()</span> </span>{
+    m_pauseButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    m_resumeButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    m_stopButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    m_worker-&gt;<span class="hljs-built_in">stop</span>();        <span class="hljs-comment">// direct call, works even if the worker is paused</span>
+}</code></pre>
+<p>Et enfin les deux démonstrations promises depuis l&#39;introduction du module :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::onApplySpeedClicked</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-type">int</span> value = m_speedSpinBox-&gt;<span class="hljs-built_in">value</span>();
+    QMetaObject::<span class="hljs-built_in">invokeMethod</span>(m_worker, <span class="hljs-string">&quot;setInterval&quot;</span>, Qt::QueuedConnection,
+                               <span class="hljs-built_in">Q_ARG</span>(<span class="hljs-type">int</span>, value));
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::onQueryProgressClicked</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-type">int</span> value = <span class="hljs-number">-1</span>;
+    QMetaObject::<span class="hljs-built_in">invokeMethod</span>(m_worker, <span class="hljs-string">&quot;currentStep&quot;</span>, Qt::BlockingQueuedConnection,
+                               <span class="hljs-built_in">Q_RETURN_ARG</span>(<span class="hljs-type">int</span>, value));
+    m_queryResultLabel-&gt;<span class="hljs-built_in">setText</span>(
+        <span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;current step: %1 / %2&quot;</span>).<span class="hljs-built_in">arg</span>(value).<span class="hljs-built_in">arg</span>(m_worker-&gt;<span class="hljs-built_in">totalSteps</span>()));
+}</code></pre>
+<p>Le premier est fire-and-forget : le thread GUI poste la commande et poursuit immédiatement, sans attendre de confirmation — parfait pour un changement de configuration qui n&#39;a pas besoin d&#39;être synchrone. Le second, en revanche, utilise <code>Qt::BlockingQueuedConnection</code> avec <code>Q_RETURN_ARG</code> : le thread GUI s&#39;arrête réellement jusqu&#39;à ce que <code>currentStep()</code> ait exécuté sur le thread du worker et ait renvoyé une valeur — que nous pouvons donc afficher immédiatement dans l&#39;étiquette, avec la certitude qu&#39;il s&#39;agit de la vraie donnée de cet instant, pas d&#39;une valeur périmée. Les deux fonctionnent sans gel perceptible de la GUI grâce au <code>QCoreApplication::processEvents()</code> inséré dans la boucle de <code>start()</code> à l&#39;Étape 4, qui donne au worker, entre chaque étape, l&#39;occasion de traiter précisément ces deux commandes.</p>
+<h2>Étape 8 — Le destructeur : la même discipline que le Module 2, appliquée ici</h2>
+<pre><code class="hljs language-cpp">MainWindow::~<span class="hljs-built_in">MainWindow</span>() {
+    m_worker-&gt;<span class="hljs-built_in">stop</span>();   <span class="hljs-comment">// direct call: reaches the worker even while paused</span>
+
+    m_thread-&gt;<span class="hljs-built_in">quit</span>();
+    m_thread-&gt;<span class="hljs-built_in">wait</span>();
+
+    <span class="hljs-keyword">delete</span> m_worker;
+}</code></pre>
+<p>Trois lignes, mais chacune accomplit un travail précis, et c&#39;est le même ordre déjà vu dans le projet guidé du Module 2 : d&#39;abord nous nous assurons que le worker ne puisse jamais rester endormi en attente (<code>stop()</code>, qui comme tu le sais force <code>m_paused</code> à <code>false</code> et appelle <code>wakeAll()</code> avant même d&#39;écrire complètement le drapeau d&#39;arrêt), <strong>puis</strong> nous demandons au thread de s&#39;arrêter avec <code>quit()</code>, <strong>puis</strong> nous attendons avec <code>wait()</code> qu&#39;il l&#39;ait vraiment fait. Si tu inversais l&#39;ordre — <code>quit()</code> avant <code>stop()</code> — et que le worker était à ce moment-là endormi en pause, le thread n&#39;aurait jamais l&#39;occasion de sortir de sa propre boucle pour atteindre le point où la demande de <code>quit()</code> est effectivement honorée, et <code>wait()</code> bloquerait la fermeture de la fenêtre pour toujours.</p>
+<h2>Étape 9 — Compile, exécute, et observe le cycle de vie complet</h2>
+<pre><code class="hljs language-bash">cmake -S . -B build
+cmake --build build
+./build/worker_lifecycle_demo</code></pre>
+<p>Appuie sur « Start » : la barre de progression commence à avancer, une étape à la fois, et l&#39;étiquette d&#39;état affiche « Running ». Appuie sur « Pause » à mi-parcours : l&#39;avancement s&#39;arrête immédiatement, l&#39;étiquette passe à « Paused » — et si tu observes l&#39;utilisation CPU du processus pendant qu&#39;il est en pause, tu la verras descendre presque à zéro, la preuve directe que le worker dort à l&#39;intérieur de <code>wait()</code> au lieu de revérifier le drapeau dans une boucle active qui gaspillerait un cœur entier à ne rien faire. Appuie sur « Resume » : l&#39;avancement continue exactement là où il s&#39;était arrêté. Essaie aussi les deux contrôles d&#39;<code>invokeMethod</code> : change l&#39;intervalle avec le spin box et appuie sur « Appliquer » pendant que le worker s&#39;exécute — tu verras la vitesse d&#39;avancement de la barre changer dès l&#39;étape suivante, preuve que la commande est bien arrivée ; appuie sur « Interroger l&#39;étape » et observe que l&#39;étiquette se met à jour immédiatement avec l&#39;étape exacte, lue de manière synchrone depuis le thread du worker. Enfin, appuie sur « Stop » — essaie de le faire aussi bien pendant que le worker s&#39;exécute que pendant qu&#39;il est en pause, pour voir de tes propres yeux que dans les deux cas la fermeture est propre et immédiate, jamais un blocage. Ferme la fenêtre : l&#39;application se termine à l&#39;instant, quel qu&#39;ait été l&#39;état du worker à ce moment-là.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-04/20-worker-lifecycle-start-pause-stop.png" alt="Worker lifecycle diagram: which command triggers each transition, and how it reaches the worker" loading="lazy"></p>
+<p>Le diagramme résume tout le parcours que tu viens de construire : chaque transition est déclenchée par un clic sur la GUI, mais le mécanisme par lequel elle atteint le worker change selon ce qui est nécessaire — un signal queued pour <code>start()</code> (qui doit s&#39;exécuter sur le bon thread), des appels directs pour pause/reprise/arrêt (qui doivent fonctionner même quand la boucle d&#39;événements du worker ne tourne pas).</p>
+<h2>Ce que tu viens de te démontrer à toi-même</h2>
+<p>Tu as construit un worker avec un cycle de vie complet et contrôlable — pas seulement « démarre et se termine tout seul » comme dans les modules précédents, mais démarrable, mettable en pause, reprenable et arrêtable sur demande, dans n&#39;importe quelle combinaison, sans jamais un blocage. Tu as vu, avec un vrai deadlock reproduit puis résolu, pourquoi le choix entre « connexion queued » et « appel direct » n&#39;est pas une question de style mais dépend d&#39;un fait précis : si le thread destinataire a, à ce moment-là, sa propre boucle d&#39;événements libre de tourner ou non. Tu as utilisé <code>QMetaObject::invokeMethod</code> dans ses deux variantes principales, en comprenant pourquoi la variante bloquante aurait pu geler ta GUI si tu n&#39;avais pas compris — et résolu — la raison pour laquelle un unique slot long peut affamer la boucle d&#39;événements de son propre thread.</p>
+<p>Ce n&#39;est pas un hasard si le deadlock raconté dans cet article est né précisément au point de rencontre entre deux concepts qui semblaient déjà acquis — la queued connection du Module 1, la wait condition du Module 2 — appliqués ensemble dans un contexte nouveau : c&#39;est presque toujours là, à l&#39;intersection entre deux outils que tu connais bien individuellement, que se nichent les bugs les plus instructifs.</p>
+<hr>
+<p><em>Le code source complet de ce projet est disponible dans le dépôt qui accompagne ce cours, dans le dossier <code>project-F-worker-lifecycle</code>.</em></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/learning-paths/multithreading-cpp/module-04-article-2-invokemethod-et-annulation-cooperative/">
+        <span class="post-nav__label">← Leçon précédente</span>
+        <span class="post-nav__title">QMetaObject::invokeMethod et annulation coopérative : appeler et arrêter un thread sans risque</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/learning-paths/multithreading-cpp/module-05-article-1-qrunnable-qthreadpool/">
+        <span class="post-nav__label">Leçon suivante →</span>
+        <span class="post-nav__title">QRunnable et QThreadPool : un pool de tâches, pas un thread par tâche</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/learning-paths/multithreading-cpp/">← Retour au parcours</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

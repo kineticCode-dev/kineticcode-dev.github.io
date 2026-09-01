@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quando la memoria condivisa morde: race condition, data race e il thread unico di Qt — Multithreading in C++: dalla teoria al motore a stati — Kinetic Code</title>
+  <meta name="description" content="Multithreading in C++ con Qt — Modulo 0">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-00-articolo-2-race-condition-e-thread-unico-qt/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-00-articolo-2-race-condition-e-thread-unico-qt/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-00-articolo-2-race-condition-e-thread-unico-qt/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Quando la memoria condivisa morde: race condition, data race e il thread unico di Qt — Multithreading in C++: dalla teoria al motore a stati — Kinetic Code">
+  <meta property="og:description" content="Multithreading in C++ con Qt — Modulo 0">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-00-articolo-2-race-condition-e-thread-unico-qt/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (it)" href="/it/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/it/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/it/">Home</a>
+        <a href="/it/articles/">Articoli</a>
+        <a href="/it/learning-paths/" aria-current="page">Corsi</a>
+        <a href="/it/about/">About</a>
+        <a href="/it/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Lingua">
+            IT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/learning-paths/multithreading-cpp/modulo-00-articolo-2-race-condition-e-thread-unico-qt/" aria-current="true"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/it/learning-paths/multithreading-cpp/">Multithreading in C++: dalla teoria al motore a stati</a> · Modulo 0 — Fondamenta
+        </div>
+        <span class="eyebrow">Teoria · Lezione 2 di 22</span>
+        <h1>Quando la memoria condivisa morde: race condition, data race e il thread unico di Qt</h1>
+        <p class="article-hero__excerpt">Multithreading in C++ con Qt — Modulo 0</p>
+        <div class="article-hero__meta"><span>9 min di lettura</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h1>Quando la memoria condivisa morde: race condition, data race e il thread unico di Qt</h1>
+<p>Nell&#39;articolo precedente abbiamo visto perché i thread esistono e perché conviene usarli: condividono memoria senza attrito, e questo li rende comodi ed efficienti. Ora arriva la parte scomoda della stessa storia, perché quella comodità ha un prezzo preciso: la stessa memoria condivisa che rende i thread utili è, esattamente, quella che li rende pericolosi. Non puoi semplicemente &quot;buttare thread&quot; sul tuo problema e sperare bene.</p>
+<h2>Race condition: quando il risultato dipende da chi arriva prima</h2>
+<p>Una <strong>race condition</strong> si verifica ogni volta che il risultato finale di un programma dipende dall&#39;ordine relativo — non controllato da te, deciso dallo scheduler — in cui più thread eseguono operazioni sugli stessi dati condivisi. Il caso di scuola è un contatore condiviso incrementato da più thread. L&#39;istruzione, in C++, sembra innocua e atomica solo perché sta su una riga sola:</p>
+<pre><code class="hljs language-cpp">counter++;</code></pre>
+<p>Ma &quot;sembra una sola operazione&quot; e &quot;è una sola operazione a livello di CPU&quot; sono due affermazioni diverse, e la seconda è falsa. A livello di istruzioni macchina, quell&#39;incremento si scompone tipicamente in tre passi: <strong>leggi</strong> il valore corrente dalla memoria in un registro; <strong>incrementa</strong> il valore dentro quel registro; <strong>scrivi</strong> il registro di nuovo in memoria. Finché un solo thread esegue questa sequenza per volta, nessun problema. Ma se due thread eseguono questi tre passi in modo interlacciato, può succedere questo:</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-00/04-race-condition-lost-update.png" alt="Race condition: a lost update" loading="lazy"></p>
+<p>Guarda con attenzione la sequenza: entrambi i thread leggono lo stesso valore iniziale (10) prima che uno dei due abbia avuto la possibilità di scrivere il proprio risultato. Ciascuno calcola correttamente &quot;il vecchio valore più uno&quot; nel proprio registro privato — i registri sono privati per thread, quindi qui non c&#39;è ancora conflitto. Il conflitto esplode al momento della scrittura: il Thread B scrive per ultimo, e il suo <code>11</code> sovrascrive l&#39;<code>11</code> scritto poco prima dal Thread A, che invece avrebbe dovuto produrre un <code>12</code> finale (due incrementi partiti da 10). Un intero incremento è scomparso nel nulla, senza errori, senza eccezioni, senza un solo messaggio di log che ti avvisi: il programma ha semplicemente calcolato un numero sbagliato. Questo fenomeno ha un nome preciso, <strong>lost update</strong> (aggiornamento perso), ed è probabilmente il bug di concorrenza più comune in assoluto.</p>
+<h2>Data race: cosa dice davvero lo standard C++</h2>
+<p>Vale la pena una distinzione tecnica precisa. Una <strong>race condition</strong> è il fenomeno generale appena descritto: il risultato dipende dall&#39;ordine di interleaving non controllato. Una <strong>data race</strong> è la definizione formale e più stretta che lo standard C++ dà a un caso specifico di race condition: due o più thread accedono alla stessa locazione di memoria, almeno uno di quegli accessi è una scrittura, e nessuno dei due accessi è sincronizzato rispetto all&#39;altro.</p>
+<p>Ecco il punto che sorprende quasi tutti la prima volta: lo standard C++ dice esplicitamente che <strong>una data race è undefined behavior</strong>. Non &quot;un bug&quot;, non &quot;un comportamento sbagliato ma prevedibile&quot; — <em>undefined behavior</em>, la stessa categoria di gravità di un accesso fuori dai limiti di un array. La conseguenza pratica è che il compilatore è legalmente autorizzato ad assumere che una data race non accada mai nel tuo programma, e a ottimizzare di conseguenza. Con le ottimizzazioni attive, il compilatore può decidere di tenere un contatore in un registro della CPU per l&#39;intera durata di un ciclo, scrivendolo in memoria una sola volta alla fine — perfettamente legittimo <em>se</em> nessun altro thread stesse leggendo o scrivendo quella variabile nel frattempo, ipotesi che il compilatore ha il diritto di dare per scontata proprio perché il codice, violando la sincronizzazione richiesta, ha già rotto il contratto con lo standard.</p>
+<p>Il risultato pratico è che lo stesso identico codice &quot;buggato&quot; può sembrare funzionare perfettamente in una build ottimizzata, e mostrare il suo vero comportamento solo in una build di debug — il che è un motivo di preoccupazione maggiore, non minore: un bug che &quot;sembra sparire&quot; con le ottimizzazioni non è affatto sparito, è solo diventato invisibile proprio nelle condizioni in cui più probabilmente lo avresti testato.</p>
+<h2>Sezione critica e mutua esclusione</h2>
+<p>Il rimedio concettuale si chiama <strong>sezione critica</strong>: un tratto di codice che accede a dati condivisi e che deve essere eseguito da un solo thread alla volta — non perché il codice sia lento o pericoloso, ma perché l&#39;accesso ai dati che tocca deve restare <strong>atomico</strong>, nel senso stretto del termine (dal greco &quot;che non si può tagliare&quot;): o è già successo per intero, o non è ancora iniziato, mai visto a metà. Garantire che una sezione critica sia rispettata da tutti i thread si chiama imporre la <strong>mutua esclusione</strong>, ed è esattamente il ruolo di un <strong>mutex</strong> (contrazione di <em>mutual exclusion</em>): lo strumento più elementare — e quello che userai per primo nel progetto pratico di questo modulo — per trasformare una sequenza di operazioni pericolosamente separabile in un blocco indivisibile agli occhi degli altri thread.</p>
+<h2>Perché Qt impone un thread unico per la GUI</h2>
+<p>Ecco un vincolo che, visto senza contesto, sembra un capriccio della libreria: Qt impone che <strong>tutti i widget della tua interfaccia grafica vengano creati e manipolati esclusivamente dal thread principale del programma</strong>, spesso chiamato &quot;GUI thread&quot;. Non è un&#39;invenzione arbitraria: eredita un vincolo che viene da molto più in basso nello stack software, dai toolkit grafici nativi del sistema operativo — su Windows il subsystem Win32/GDI, su Linux X11 o Wayland, su macOS Cocoa. Questi toolkit sono stati progettati attorno all&#39;assunzione che esista un unico &quot;message loop&quot; che riceve gli eventi dal sistema operativo (un click, la pressione di un tasto, una richiesta di ridisegno) e li smista uno alla volta, in sequenza, ai widget interessati. Permettere a thread diversi di manipolare contemporaneamente le stesse strutture grafiche native avrebbe richiesto sincronizzazione pesante a ogni livello del toolkit, con un costo enorme per un&#39;interfaccia che, in fondo, deve solo reagire a eventi umani — lenti, rispetto ai tempi della CPU. La scelta storica, quasi universale in tutti i toolkit grafici desktop, è stata: un solo thread può toccare la GUI, punto, e in cambio quel thread può restare semplice ed efficiente perché non deve mai preoccuparsi di essere interrotto a metà di un&#39;operazione da un altro thread che tocca la stessa finestra.</p>
+<p>Qt formalizza esplicitamente questo vincolo con il concetto di <strong>event loop</strong>: il thread principale, dopo aver creato le finestre, entra in un ciclo (<code>app.exec()</code>) che fa esattamente una cosa, all&#39;infinito, finché l&#39;applicazione non si chiude: aspetta il prossimo evento, lo processa <strong>fino al termine</strong>, poi torna ad aspettare il successivo. La parola chiave è &quot;fino al termine&quot;: se il codice che processa un evento decide di eseguire un calcolo che dura quattro secondi invece di quattro millisecondi, l&#39;event loop resta bloccato dentro quel singolo evento per quattro secondi interi, e durante quel tempo non può processare <strong>nessun altro evento</strong> — non un click, non un timer, nemmeno l&#39;evento che il sistema operativo manda periodicamente per verificare che l&#39;applicazione sia ancora &quot;viva&quot;.</p>
+<p><img src="/assets/images/learningpaths/multithreading-cpp/modulo-00/06-gui-thread-blocked.png" alt="The window freezes: the GUI thread is busy" loading="lazy"></p>
+<p>Questo è esattamente il fenomeno che vedremo dal vivo tra poco, ed è precisamente il problema che nel prossimo modulo risolveremo introducendo <code>QThread</code> e il pattern del worker object: spostare il calcolo lungo <em>fuori</em> dal thread che possiede l&#39;event loop della GUI, in modo che quest&#39;ultimo resti sempre libero di rispondere in pochi millisecondi. Non è un dettaglio implementativo di Qt: è una conseguenza diretta e inevitabile di tutto quello che hai appena letto, applicata al caso specifico di un&#39;interfaccia utente.</p>
+<h2>Quando conviene usare un thread (e quando no)</h2>
+<p>Prima di scrivere codice, vale la pena mettere per iscritto una bussola che tornerà utile per tutto il resto del percorso, perché &quot;un thread in più&quot; non è mai gratis e non è mai automaticamente la scelta giusta.</p>
+<p>La prima distinzione da fare è se il lavoro che vuoi affidare a un thread è <strong>CPU-bound</strong> o <strong>I/O-bound</strong>. Un lavoro è CPU-bound quando il collo di bottiglia è puramente di calcolo — la CPU è sempre occupata, senza pause, come il conteggio di numeri primi o un filtro di image processing applicato pixel per pixel. Un lavoro è I/O-bound quando invece il thread, per la maggior parte del tempo, non calcola affatto: sta <em>aspettando</em> — una risposta di rete, una lettura da disco, l&#39;acquisizione di un frame da una telecamera con il suo tempo fisico di esposizione. Per il lavoro CPU-bound, il beneficio del multithreading dipende strettamente da quanti core fisici hai davvero a disposizione (torna la legge di Amdahl dell&#39;articolo precedente: più thread di core fisici liberi non dà più velocità, dà solo più context switch). Per il lavoro I/O-bound, invece, anche su un solo core il multithreading ha senso, perché il thread che aspetta non sta &quot;sprecando&quot; un core — sta semplicemente lasciando che lo scheduler dia quel tempo a qualcun altro, tipicamente al thread della GUI, che nel frattempo resta reattivo.</p>
+<p>La seconda bussola è la <strong>granularità</strong>, già incontrata parlando di context switch: un thread che vive per meno tempo di quanto serva a crearlo, avviarlo, fargli contendere CPU con gli altri e poi distruggerlo, è un pessimo affare. È il motivo per cui, più avanti nel percorso, preferiremo un <strong>thread pool</strong> — dove i thread vengono creati una volta sola e riutilizzati per molti task — alla creazione di un thread nuovo per ogni singolo pezzetto di lavoro.</p>
+<p>E infine, la domanda più semplice e più spesso saltata: <strong>il tuo programma ha davvero bisogno di essere più veloce, o solo di restare reattivo?</strong> Sono due problemi diversi, con soluzioni diverse. Se il problema è la reattività della UI durante un&#39;operazione lunga ma isolata, basta <em>un</em> worker thread — non serve un thread pool né preoccuparsi di sfruttare tutti i core della macchina. Se invece il problema è &quot;questo calcolo richiede troppo tempo e voglio dividerlo per finire prima&quot;, allora sei nel territorio del vero parallelismo, con tutto quello che la legge di Amdahl ha già detto sui suoi limiti. Confondere questi due obiettivi è, nella pratica, la causa più comune di architetture di concorrenza inutilmente complicate per problemi che avrebbero richiesto una soluzione molto più semplice.</p>
+<h2>Dalla teoria alle mani sulla tastiera</h2>
+<p>Hai ora un vocabolario preciso — race condition, data race, sezione critica, mutua esclusione, event loop — e sai perché Qt ha fatto la scelta che ha fatto per la sua GUI. Manca solo una cosa: vederlo succedere davvero, con le tue mani sulla tastiera. È esattamente quello che facciamo nel prossimo articolo, con due piccoli progetti guidati — uno in C++ puro, senza Qt, e uno che ricrea dal vivo il freeze della finestra di cui abbiamo appena parlato.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/it/learning-paths/multithreading-cpp/modulo-00-articolo-1-cose-un-thread/">
+        <span class="post-nav__label">← Lezione precedente</span>
+        <span class="post-nav__title">Cos'è davvero un thread (e perché all'improvviso ti serve saperlo)</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ti va di offrirmi un caffè?</h3>
+          <p>Se questo contenuto ti è stato utile, puoi sostenere il progetto con una piccola donazione libera.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/it/learning-paths/multithreading-cpp/modulo-00-articolo-3-progetti-race-condition-e-freeze/">
+        <span class="post-nav__label">Lezione successiva →</span>
+        <span class="post-nav__title">Due dimostrazioni, non due racconti: la race condition e il freeze costruiti con le tue mani</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/it/learning-paths/multithreading-cpp/">← Torna al percorso</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tutti i contenuti sono opera dell'autore, verificati sul campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Guarda il codice su GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Scrivimi una mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/it/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Torna su</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

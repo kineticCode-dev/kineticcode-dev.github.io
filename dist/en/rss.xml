@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+  <title>Kinetic Code — Digital Engineering Craft</title>
+  <link>https://kineticcode-dev.github.io/en/</link>
+  <description>The technical journal of a mechatronics engineer: embedded systems, industrial automation and software, explained the way you would explain them out loud.</description>
+  <language>en</language>
+  <item>
+    <title>Optimizing matrix multiplication in C++ — Part 3: vectorization, the full reveal, and two honest surprises</title>
+    <link>https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-3/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-3/</guid>
+    <pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate>
+    <description>The final part of the series: hand-writing AVX2 + FMA vector instructions to squeeze four multiply-adds into one, the full five-stage comparison from 1.88 to 11.49 GFLOP/s, and two measured surprises — a power-of-two matrix size that runs 6.5x slower than its neighbors, and a 2.12x speedup that costs zero lines of code.</description>
+  </item>
+  <item>
+    <title>Optimizing matrix multiplication in C++ — Part 2: tiling, threads, and one honest surprise</title>
+    <link>https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-2/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-2/</guid>
+    <pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate>
+    <description>Part 2 of the hands-on performance engineering series: why splitting the matrices into small cache-sized tiles doesn't automatically pay off on its own, and how putting a second CPU core to work with a single OpenMP pragma pushes us to a measured 4.42x — all verified, all reproducible.</description>
+  </item>
+  <item>
+    <title>Optimizing matrix multiplication in C++ — Part 1: what the loop order actually buys you</title>
+    <link>https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-1/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-1/</guid>
+    <pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate>
+    <description>The first article in a hands-on series on performance engineering: why matrix multiplication is slow by default, how a computer's memory really works, and how reordering three for loops alone buys a 2.2x speedup — measured, not assumed.</description>
+  </item>
+  <item>
+    <title>Industrial optics fundamentals: what actually matters when you pick a lens</title>
+    <link>https://kineticcode-dev.github.io/en/articles/industrial-optics-fundamentals/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/industrial-optics-fundamentals/</guid>
+    <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+    <description>A practical primer on machine vision optics — field of view, working distance, depth of field, focal length, mounts, F-number, and the trade-offs that decide whether an inspection system actually works.</description>
+  </item>
+  <item>
+    <title>Redirecting Qt qDebug to a file without recompiling: the LoggerManager class</title>
+    <link>https://kineticcode-dev.github.io/en/articles/loggermanager-qdebug-redirect-article-en/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/loggermanager-qdebug-redirect-article-en/</guid>
+    <pubDate>Wed, 05 Aug 2026 00:00:00 GMT</pubDate>
+    <description>A crash in the field I could not diagnose, no way to recompile on the spot, and the C++/Qt class I wrote to catch logs at runtime — with every linking error I hit along the way.</description>
+  </item>
+  <item>
+    <title>Securing Supabase in an Open Source World</title>
+    <link>https://kineticcode-dev.github.io/en/articles/securing-supabase-in-open-source-world/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/securing-supabase-in-open-source-world/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>How to allow access to Supabase Database only to authorized account</description>
+  </item>
+  <item>
+    <title>How to Autostart a Program on Windows</title>
+    <link>https://kineticcode-dev.github.io/en/articles/windows-autostart-article/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/windows-autostart-article/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>Do you have a program that you want to open automatically every time you start your computer? In this short guide, we will see how to do it quickly and easily using a built-in Windows tool called Task Scheduler.</description>
+  </item>
+  <item>
+    <title>Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 3)</title>
+    <link>https://kineticcode-dev.github.io/en/articles/personal-expense-trackerp3/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/personal-expense-trackerp3/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>This article retraces the design and development process of a personal expense tracking web application. The goal isn't just to create a working tool, but to analyze every engineering decision and understand the 'why' behind our technological choices.</description>
+  </item>
+  <item>
+    <title>Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 2)</title>
+    <link>https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p2/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p2/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>This article retraces the design and development process of a personal expense tracking web application. The goal isn't just to create a working tool, but to analyze every engineering decision and understand the 'why' behind our technological choices.</description>
+  </item>
+  <item>
+    <title>Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 1)</title>
+    <link>https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p1/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p1/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>This article retraces the design and development process of a personal expense tracking web application. The goal isn't just to create a working tool, but to analyze every engineering decision and understand the 'why' behind our technological choices.</description>
+  </item>
+  <item>
+    <title>Demystifying C Libraries on Windows: How to Inspect and Profile Unknown .dll Files</title>
+    <link>https://kineticcode-dev.github.io/en/articles/demystifying-c-libraries-on-windows/</link>
+    <guid>https://kineticcode-dev.github.io/en/articles/demystifying-c-libraries-on-windows/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+    <description>A practical guide to inspecting and profiling unknown .dll files in Windows environments.</description>
+  </item>
+</channel></rss>

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 2) — Kinetic Code</title>
+  <meta name="description" content="This article retraces the design and development process of a personal expense tracking web application. The goal isn't just to create a working tool, but to analyze every engineering decision and understand the 'why' behind our technological choices.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p2/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/personal-expense-tracker-p2/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p2/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/personal-expense-tracker-p2/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/personal-expense-tracker-p2/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/personal-expense-tracker-p2/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p2/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 2) — Kinetic Code">
+  <meta property="og:description" content="This article retraces the design and development process of a personal expense tracking web application. The goal isn't just to create a working tool, but to analyze every engineering decision and understand the 'why' behind our technological choices.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/personal-expense-tracker-p2/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 2)","description":"This article retraces the design and development process of a personal expense tracking web application. The goal isn't just to create a working tool, but to analyze every engineering decision and understand the 'why' behind our technological choices.","datePublished":"2026-07-18","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/personal-expense-tracker-p2/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/personal-expense-tracker-p2/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/personal-expense-tracker-p2/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/personal-expense-tracker-p2/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/personal-expense-tracker-p2/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-4);color:var(--chart-4)">Projects</span>
+        <h1>Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 2)</h1>
+        <p class="article-hero__excerpt">This article retraces the design and development process of a personal expense tracking web application. The goal isn't just to create a working tool, but to analyze every engineering decision and understand the 'why' behind our technological choices.</p>
+        <div class="article-hero__meta">
+          <span>Jul 18, 2026</span>
+          <span>·</span>
+          <span>4 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Welcome back! In <strong>Part 1</strong>, we covered the architectural choices and set up our database using Supabase. In this second part, we will dive into developing the frontend using <strong>Flutter</strong>. We&#39;ll set up the project, connect it to our cloud database, and start building out the user interface.</p>
+<p><a href="https://github.com/kineticCode-dev/03-webappTrackingSpeseDummy">Link to Github Repository</a></p>
+<h1>Table of Contents</h1>
+<ol>
+<li><a href="#project-setup-and-configuration">Project Setup and Configuration</a></li>
+<li><a href="#connecting-to-supabase">Connecting to Supabase</a></li>
+<li><a href="#designing-the-web-app-mockup">Designing the Web App Mockup</a></li>
+<li><a href="#web-compilation-and-local-testing">Web Compilation and Local Testing</a></li>
+<li><a href="#developing-the-insert-view">Developing the Insert View</a></li>
+</ol>
+<hr>
+<h2>Project Setup and Configuration</h2>
+<p>We are using Flutter to build a responsive web interface. If you don&#39;t have Flutter installed, you can find the instructions on the <a href="https://docs.flutter.dev/install">official documentation</a>.</p>
+<p>To generate the project skeleton specifically for the web, run the following command in your terminal:</p>
+<pre><code class="hljs language-bash">$ flutter create . --platform=web</code></pre>
+<p>By specifying <code>--platform=web</code>, we get a leaner project structure without the folders for Android, iOS, or Windows. </p>
+<p>Next, we need to install the official Supabase SDK for Flutter:</p>
+<pre><code class="hljs language-bash">$ flutter pub add supabase_flutter</code></pre>
+<p>To verify everything is working, let&#39;s run the app in Chrome:</p>
+<pre><code class="hljs language-bash">$ flutter run -d chrome</code></pre>
+<p>A Chrome window should automatically open displaying the default Flutter demo. Keep this window open—thanks to Flutter&#39;s <strong>hot reload</strong> feature, the page will automatically update as we save changes to our code.</p>
+<h2>Connecting to Supabase</h2>
+<p>Now let&#39;s see if our Flutter app can talk to Supabase. In Flutter, everything is a widget—buttons, text, and even alignment are all widgets. We&#39;ll modify the demo app to connect to our database and test inserting a category.</p>
+<p>First, grab your Supabase connection details. In your Supabase dashboard, go to the connection settings, select Flutter as your framework, and copy your <code>url</code> and <code>publishableKey</code>.</p>
+<p>Update your <code>main</code> function in Flutter to initialize Supabase on startup:</p>
+<pre><code class="hljs language-dart"><span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span>() <span class="hljs-keyword">async</span> {
+  <span class="hljs-comment">// Ensure Flutter engine is ready before using network calls</span>
+  <span class="hljs-title class_">WidgetsFlutterBinding</span>.<span class="hljs-title function_">ensureInitialized</span>();
+
+  <span class="hljs-comment">// Initialize Supabase with your project details</span>
+  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Supabase</span>.<span class="hljs-title function_">initialize</span>(
+    url: <span class="hljs-string">&#x27;YOUR_PROJECT_URL&#x27;</span>,
+    publishableKey: <span class="hljs-string">&#x27;YOUR_PUBLISHABLE_KEY&#x27;</span>,
+  );
+
+  <span class="hljs-comment">// Run the app</span>
+  <span class="hljs-title function_">runApp</span>(<span class="hljs-keyword">const</span> <span class="hljs-title class_">MyApp</span>());
+}</code></pre>
+<p><em>Note: Before writing to Supabase tables from the client side, ensure you configure Row Level Security (RLS) appropriately. For initial testing, you might temporarily disable RLS, but always secure your tables for production!</em></p>
+<p>Here is a simple widget to test writing to the database:</p>
+<pre><code class="hljs language-dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConnectionTestPage</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatefulWidget</span> </span>{
+  <span class="hljs-keyword">const</span> <span class="hljs-title class_">ConnectionTestPage</span>({<span class="hljs-keyword">super</span>.key});
+  <span class="hljs-meta">@override</span>
+  <span class="hljs-title class_">State</span>&lt;<span class="hljs-title class_">ConnectionTestPage</span>&gt; <span class="hljs-title function_">createState</span>() =&gt; <span class="hljs-title class_">_ConnectionTestPageState</span>();
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_ConnectionTestPageState</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">State</span>&lt;<span class="hljs-title">ConnectionTestPage</span>&gt; </span>{
+  <span class="hljs-built_in">bool</span> _isLoading = <span class="hljs-keyword">false</span>;
+  <span class="hljs-title class_">String</span> _resultMessage = <span class="hljs-string">&#x27;No test executed yet&#x27;</span>;
+
+  <span class="hljs-title class_">Future</span>&lt;<span class="hljs-keyword">void</span>&gt; <span class="hljs-title function_">_sendTestData</span>() <span class="hljs-keyword">async</span> {
+    <span class="hljs-title function_">setState</span>(() {
+      _isLoading = <span class="hljs-keyword">true</span>;
+      _resultMessage = <span class="hljs-string">&#x27;Sending data...&#x27;</span>;
+    });
+
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">await</span> <span class="hljs-title class_">Supabase</span>.instance.client
+          .<span class="hljs-title function_">from</span>(<span class="hljs-string">&#x27;tag&#x27;</span>)
+          .<span class="hljs-title function_">insert</span>({<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;flutter&#x27;</span>});
+
+      <span class="hljs-title function_">setState</span>(() {
+        _resultMessage = <span class="hljs-string">&#x27;Success! Connection and write working.&#x27;</span>;
+      });
+    } <span class="hljs-keyword">catch</span> (error) {
+      <span class="hljs-title function_">setState</span>(() {
+        _resultMessage = <span class="hljs-string">&#x27;Error during send: <span class="hljs-subst">$error</span>&#x27;</span>;
+      });
+    } <span class="hljs-keyword">finally</span> {
+      <span class="hljs-title function_">setState</span>(() {
+        _isLoading = <span class="hljs-keyword">false</span>;
+      });
+    }
+  }
+
+  <span class="hljs-meta">@override</span>
+  <span class="hljs-title class_">Widget</span> <span class="hljs-title function_">build</span>(<span class="hljs-title class_">BuildContext</span> context) {
+    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Scaffold</span>(
+      appBar: <span class="hljs-title class_">AppBar</span>(title: <span class="hljs-keyword">const</span> <span class="hljs-title class_">Text</span>(<span class="hljs-string">&#x27;Supabase Connection Test&#x27;</span>)),
+      body: <span class="hljs-title class_">Center</span>(
+        child: <span class="hljs-title class_">Column</span>(
+          mainAxisAlignment: <span class="hljs-title class_">MainAxisAlignment</span>.center,
+          children: [
+            <span class="hljs-title class_">Text</span>(_resultMessage, style: <span class="hljs-keyword">const</span> <span class="hljs-title class_">TextStyle</span>(fontSize: <span class="hljs-number">18</span>), textAlign: <span class="hljs-title class_">TextAlign</span>.center),
+            <span class="hljs-keyword">const</span> <span class="hljs-title class_">SizedBox</span>(height: <span class="hljs-number">20</span>),
+            _isLoading
+                ? <span class="hljs-keyword">const</span> <span class="hljs-title class_">CircularProgressIndicator</span>()
+                : <span class="hljs-title class_">ElevatedButton</span>(
+                    onPressed: _sendTestData,
+                    child: <span class="hljs-keyword">const</span> <span class="hljs-title class_">Text</span>(<span class="hljs-string">&#x27;Send Test Data&#x27;</span>),
+                  ),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre>
+<p>By clicking the button, a new &quot;flutter&quot; category will be added to our database!</p>
+<h2>Web Compilation and Local Testing</h2>
+<p>To build the app for production on the web, run:</p>
+<pre><code class="hljs language-bash">$ flutter build web --release</code></pre>
+<p>This generates <code>index.html</code> and the necessary JavaScript files in the <code>build/web</code> directory.</p>
+<p>To test how the web app looks on your mobile phone (provided it&#39;s on the same WiFi network), you can start a simple local server from the <code>build/web</code> directory:</p>
+<pre><code class="hljs language-bash">$ python -m http.server 8080</code></pre>
+<p>Then, open your phone&#39;s browser and navigate to your computer&#39;s local IP address (e.g., <code>http://192.168.1.50:8080</code>).</p>
+<h2>Wrapping Up Part 2</h2>
+<p>In this episode, we successfully bootstrapped our Flutter web application and established a direct, working connection to our Supabase backend. We can now securely read and write data to our cloud database straight from the frontend, effectively removing the need for a custom API middleman.</p>
+<p><em><strong>What’s Next in Part 3?</strong></em> Now that the technical plumbing is in place, we are ready to focus on the user experience. In the next article, we will bring our app to life by exploring the UI mockups, building out the data entry screens (Insert View), and laying the groundwork for our interactive Dashboard View. Stay tuned!</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/articles/personal-expense-tracker-p1/">
+        <span class="post-nav__label">← Previous article</span>
+        <span class="post-nav__title">Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 1)</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/personal-expense-trackerp3/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">Building a Personal Expense Tracker from Scratch: Architecture and Database Design (Part 3)</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

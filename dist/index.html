@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=/en/">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/">
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem("kc-lang");
+        var supported = ["it","en","es","fr","de"];
+        var nav = (navigator.language || "en").slice(0, 2).toLowerCase();
+        var target = stored && supported.indexOf(stored) !== -1 ? stored : (supported.indexOf(nav) !== -1 ? nav : "en");
+        location.replace("/" + target + "/");
+      } catch (e) {
+        location.replace("/en/");
+      }
+    })();
+  </script>
+  <title>Kinetic Code</title>
+</head>
+<body>
+  <p>Redirecting to <a href="/en/">https://kineticcode-dev.github.io/en/</a>...</p>
+</body>
+</html>

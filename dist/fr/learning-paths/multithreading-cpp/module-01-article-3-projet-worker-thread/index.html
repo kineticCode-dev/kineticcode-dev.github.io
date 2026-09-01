@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projet : soigner le freeze pour de bon, en déplaçant le calcul sur un worker thread — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code</title>
+  <meta name="description" content="Multithreading en C++ avec Qt — Module 1 — Projet">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-01-article-3-projet-worker-thread/">
+  <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-01-article-3-projet-worker-thread/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-01-article-3-projet-worker-thread/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Projet : soigner le freeze pour de bon, en déplaçant le calcul sur un worker thread — Multithreading en C++ : de la théorie à une machine à états fonctionnelle — Kinetic Code">
+  <meta property="og:description" content="Multithreading en C++ avec Qt — Module 1 — Projet">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-01-article-3-projet-worker-thread/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/">Articles</a>
+        <a href="/fr/learning-paths/" aria-current="page">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <span class="is-disabled"><span>Italiano</span><span class="lang-switch__tag">IT</span></span>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <a href="/fr/learning-paths/multithreading-cpp/module-01-article-3-projet-worker-thread/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/fr/learning-paths/multithreading-cpp/">Multithreading en C++ : de la théorie à une machine à états fonctionnelle</a> · Module 1 — QThread : les deux modèles et l'architecture Event Loop de Qt
+        </div>
+        <span class="eyebrow">Projet · Leçon 6 sur 22</span>
+        <h1>Projet : soigner le freeze pour de bon, en déplaçant le calcul sur un worker thread</h1>
+        <p class="article-hero__excerpt">Multithreading en C++ avec Qt — Module 1 — Projet</p>
+        <div class="article-hero__meta"><span>8 min de lecture</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Tu peux trouver tout le code source <a href="https://github.com/kineticCode-dev/MultithreadingLearningPath/tree/main">ici</a></p>
+<h1>Projet : soigner le freeze pour de bon, en déplaçant le calcul sur un worker thread</h1>
+<p>Reprenons exactement le projet du freeze du module précédent. Même fenêtre, même battement, même calcul de nombres premiers identique — seul change <em>où</em> il s&#39;exécute. Si tu as encore ouvert le dossier de travail de ce projet, tu peux repartir de là ; sinon, crée un nouveau dossier et suis les étapes depuis zéro : cela reste de toute façon quelques minutes de travail.</p>
+<h2>Étape 1 — Le squelette du projet</h2>
+<p><code>CMakeLists.txt</code>, identique dans sa forme à celui du projet précédent (aucune surprise : nous ne changeons pas le système de build, seulement l&#39;architecture interne du programme) :</p>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.16</span>)
+<span class="hljs-keyword">project</span>(worker_thread_demo LANGUAGES CXX)
+
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">17</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD_REQUIRED <span class="hljs-keyword">ON</span>)
+<span class="hljs-keyword">set</span>(CMAKE_AUTOMOC <span class="hljs-keyword">ON</span>)
+
+<span class="hljs-keyword">find_package</span>(Qt6 REQUIRED COMPONENTS Widgets)
+
+<span class="hljs-keyword">add_executable</span>(worker_thread_demo
+    main.cpp
+    mainwindow.h
+    mainwindow.cpp
+    primecalculator.h
+    primecalculator.cpp
+)
+
+<span class="hljs-keyword">target_link_libraries</span>(worker_thread_demo PRIVATE Qt6::Widgets)</code></pre>
+<p>La seule nouveauté est que le calcul lourd vit maintenant dans son propre fichier séparé — <code>primecalculator.h</code>/<code>.cpp</code> — plutôt qu&#39;à l&#39;intérieur de <code>MainWindow</code>. Ce n&#39;est pas un caprice stylistique : c&#39;est la conséquence directe de ce que nous avons vu dans les articles précédents. Le worker doit être une classe à part, distincte de <code>MainWindow</code>, précisément parce que c&#39;est elle (et elle seule) que nous allons déplacer sur un autre thread.</p>
+<h2>Étape 2 — Le worker : logique pure, aucune idée de « thread » en son sein</h2>
+<p>Crée <code>primecalculator.h</code> :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QObject&gt;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">PrimeCalculator</span> : <span class="hljs-keyword">public</span> QObject {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">PrimeCalculator</span><span class="hljs-params">(QObject *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">setLimit</span><span class="hljs-params">(<span class="hljs-type">long</span> <span class="hljs-type">long</span> limit)</span></span>;
+
+<span class="hljs-keyword">public</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span></span>;
+
+signals:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">progress</span><span class="hljs-params">(<span class="hljs-type">int</span> percentage)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">finished</span><span class="hljs-params">(<span class="hljs-type">long</span> <span class="hljs-type">long</span> primesFound, qint64 msElapsed)</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-type">long</span> <span class="hljs-type">long</span> m_limit = <span class="hljs-number">4&#x27;000&#x27;000</span>;
+};</code></pre>
+<p>Arrête-toi un instant sur <code>setLimit()</code> : ce <strong>n&#39;est pas</strong> un slot, c&#39;est une méthode publique ordinaire. La raison, nous l&#39;avons vue dans l&#39;article précédent : nous l&#39;appellerons depuis le thread GUI, mais <strong>avant</strong> de démarrer le thread géré — à ce moment précis, il n&#39;y a encore aucune concurrence en cours (le worker n&#39;exécute rien sur aucun thread), donc régler directement une variable membre est tout à fait sûr. Si tu l&#39;appelais <em>après</em> avoir démarré le thread, en revanche, tu écrirais <code>m_limit</code> depuis un thread pendant que <code>start()</code> la lit potentiellement depuis un autre — de nouveau, exactement la data race que tu reconnais désormais par cœur.</p>
+<p>Maintenant <code>primecalculator.cpp</code> — le corps du calcul est exactement le même algorithme que dans le projet précédent, avec l&#39;ajout d&#39;un signal de progression périodique :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;primecalculator.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QElapsedTimer&gt;</span></span>
+
+PrimeCalculator::<span class="hljs-built_in">PrimeCalculator</span>(QObject *parent) : <span class="hljs-built_in">QObject</span>(parent) {}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">PrimeCalculator::setLimit</span><span class="hljs-params">(<span class="hljs-type">long</span> <span class="hljs-type">long</span> limit)</span> </span>{
+    m_limit = limit;
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">PrimeCalculator::start</span><span class="hljs-params">()</span> </span>{
+    QElapsedTimer stopwatch;
+    stopwatch.<span class="hljs-built_in">start</span>();
+
+    <span class="hljs-type">long</span> <span class="hljs-type">long</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-type">long</span> <span class="hljs-type">long</span> nextProgressThreshold = m_limit / <span class="hljs-number">20</span>; <span class="hljs-comment">// one update every 5%</span>
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">long</span> <span class="hljs-type">long</span> n = <span class="hljs-number">2</span>; n &lt; m_limit; ++n) {
+        <span class="hljs-type">bool</span> isPrime = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">long</span> <span class="hljs-type">long</span> d = <span class="hljs-number">2</span>; d * d &lt;= n; ++d) {
+            <span class="hljs-keyword">if</span> (n % d == <span class="hljs-number">0</span>) { isPrime = <span class="hljs-literal">false</span>; <span class="hljs-keyword">break</span>; }
+        }
+        <span class="hljs-keyword">if</span> (isPrime) ++count;
+
+        <span class="hljs-keyword">if</span> (n &gt;= nextProgressThreshold) {
+            <span class="hljs-type">int</span> percentage = <span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-type">int</span>&gt;((n * <span class="hljs-number">100</span>) / m_limit);
+            <span class="hljs-function">emit <span class="hljs-title">progress</span><span class="hljs-params">(percentage)</span></span>;
+            nextProgressThreshold += m_limit / <span class="hljs-number">20</span>;
+        }
+    }
+
+    <span class="hljs-function">emit <span class="hljs-title">finished</span><span class="hljs-params">(count, stopwatch.elapsed())</span></span>;
+}</code></pre>
+<p>Le signal <code>progress</code> est la première véritable démonstration de communication du worker vers le reste du programme <strong>pendant</strong> le calcul, pas seulement à la fin — et c&#39;est un <code>emit</code> inoffensif à écrire ici parce que, comme tu le sais depuis l&#39;article précédent, Qt le livrera en file d&#39;attente au bon thread sans que tu aies besoin de faire quoi que ce soit de plus.</p>
+<h2>Étape 3 — L&#39;en-tête de la fenêtre : ajoute thread, worker, et le signal-messager</h2>
+<p>Crée (ou modifie, si tu repars du projet précédent) <code>mainwindow.h</code> :</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> once</span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QMainWindow&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QLabel&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QPushButton&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QProgressBar&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QTimer&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QThread&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QStatusBar&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;primecalculator.h&quot;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MainWindow</span> : <span class="hljs-keyword">public</span> QMainWindow {
+    Q_OBJECT
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">MainWindow</span><span class="hljs-params">(QWidget *parent = <span class="hljs-literal">nullptr</span>)</span></span>;
+    ~<span class="hljs-built_in">MainWindow</span>() <span class="hljs-keyword">override</span>;
+
+signals:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">requestComputation</span><span class="hljs-params">()</span></span>;
+
+<span class="hljs-keyword">private</span> slots:
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">onButtonClicked</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updateHeartbeat</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updateProgress</span><span class="hljs-params">(<span class="hljs-type">int</span> percentage)</span></span>;
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">computationFinished</span><span class="hljs-params">(<span class="hljs-type">long</span> <span class="hljs-type">long</span> result, qint64 msElapsed)</span></span>;
+
+<span class="hljs-keyword">private</span>:
+    QLabel *m_labelHeartbeat;
+    QLabel *m_labelInstructions;
+    QPushButton *m_startButton;
+    QProgressBar *m_progressBar;
+    QTimer *m_heartbeatTimer;
+    <span class="hljs-type">int</span> m_heartbeatCount = <span class="hljs-number">0</span>;
+
+    QThread *m_thread;
+    PrimeCalculator *m_worker;
+};</code></pre>
+<p>Le signal <code>requestComputation()</code>, déclaré ici dans <code>MainWindow</code>, est le « messager » dont nous parlions dans l&#39;article précédent : <code>MainWindow</code> n&#39;appellera jamais directement <code>m_worker-&gt;start()</code> (ce serait un appel de fonction ordinaire, exécuté sur le thread appelant — faux, et de surcroît dangereux s&#39;il touchait aux données du worker). Elle émettra à la place ce signal, connecté au slot du worker : la livraison en sécurité, comme toujours, c&#39;est Qt qui s&#39;en charge.</p>
+<h2>Étape 4 — Le constructeur : c&#39;est ici que se fait toute la connexion</h2>
+<p>Dans <code>mainwindow.cpp</code>, le corps de la fenêtre (labels, bouton, barre de progression, battement) est identique dans sa forme au projet précédent, avec l&#39;ajout d&#39;une <code>QProgressBar</code>. La partie nouvelle, celle qui mérite qu&#39;on s&#39;y attarde, est la connexion du worker :</p>
+<pre><code class="hljs language-cpp">    <span class="hljs-comment">// --- Setting up the worker thread ------------------------------</span>
+    m_thread = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QThread</span>(<span class="hljs-keyword">this</span>);          <span class="hljs-comment">// stays in the GUI thread: it&#x27;s a QObject like any other</span>
+    m_worker = <span class="hljs-keyword">new</span> <span class="hljs-built_in">PrimeCalculator</span>();      <span class="hljs-comment">// NO parent: otherwise moveToThread() fails</span>
+    m_worker-&gt;<span class="hljs-built_in">setLimit</span>(<span class="hljs-number">4&#x27;000&#x27;000</span>);         <span class="hljs-comment">// safe: the thread hasn&#x27;t started yet</span>
+
+    m_worker-&gt;<span class="hljs-built_in">moveToThread</span>(m_thread);      <span class="hljs-comment">// from here on, its slots run in the managed thread</span>
+
+    <span class="hljs-built_in">connect</span>(<span class="hljs-keyword">this</span>, &amp;MainWindow::requestComputation, m_worker, &amp;PrimeCalculator::start);
+    <span class="hljs-built_in">connect</span>(m_worker, &amp;PrimeCalculator::progress, <span class="hljs-keyword">this</span>, &amp;MainWindow::updateProgress);
+    <span class="hljs-built_in">connect</span>(m_worker, &amp;PrimeCalculator::finished, <span class="hljs-keyword">this</span>, &amp;MainWindow::computationFinished);
+
+    <span class="hljs-built_in">connect</span>(m_startButton, &amp;QPushButton::clicked, <span class="hljs-keyword">this</span>, &amp;MainWindow::onButtonClicked);
+
+    m_thread-&gt;<span class="hljs-built_in">start</span>();   <span class="hljs-comment">// started once, stays alive for the whole life of the window</span></code></pre>
+<p>Suis l&#39;ordre avec attention, parce qu&#39;il n&#39;est pas arbitraire : tu construis d&#39;abord le worker <strong>sans parent</strong>, puis tu règles son état initial (encore sûr, le thread n&#39;est pas parti), <strong>ensuite</strong> tu le déplaces avec <code>moveToThread()</code>, <strong>ensuite</strong> tu connectes les signaux (les connexions fonctionnent correctement quel que soit le moment où tu les fais, mais les connecter avant de démarrer le thread est une bonne habitude : tu évites la possibilité, lointaine mais conceptuellement gênante, que le thread démarre et termine son travail avant même que tu aies connecté qui doit en recevoir le résultat), et c&#39;est seulement à la fin que tu appelles <code>m_thread-&gt;start()</code>. À partir de ce moment, le thread géré est vivant, en attente — sa boucle d&#39;événements tourne, mais ne fait rien tant qu&#39;aucun signal n&#39;arrive à traiter.</p>
+<h2>Étape 5 — Les slots de la fenêtre</h2>
+<pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::onButtonClicked</span><span class="hljs-params">()</span> </span>{
+    m_startButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">false</span>);
+    m_progressBar-&gt;<span class="hljs-built_in">setValue</span>(<span class="hljs-number">0</span>);
+    <span class="hljs-built_in">statusBar</span>()-&gt;<span class="hljs-built_in">showMessage</span>(<span class="hljs-string">&quot;Computing in the background...&quot;</span>);
+    <span class="hljs-function">emit <span class="hljs-title">requestComputation</span><span class="hljs-params">()</span></span>;
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::updateHeartbeat</span><span class="hljs-params">()</span> </span>{
+    m_heartbeatCount++;
+    m_labelHeartbeat-&gt;<span class="hljs-built_in">setText</span>(<span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Heartbeat: %1&quot;</span>).<span class="hljs-built_in">arg</span>(m_heartbeatCount));
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::updateProgress</span><span class="hljs-params">(<span class="hljs-type">int</span> percentage)</span> </span>{
+    m_progressBar-&gt;<span class="hljs-built_in">setValue</span>(percentage);
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">MainWindow::computationFinished</span><span class="hljs-params">(<span class="hljs-type">long</span> <span class="hljs-type">long</span> result, qint64 msElapsed)</span> </span>{
+    m_progressBar-&gt;<span class="hljs-built_in">setValue</span>(<span class="hljs-number">100</span>);
+    m_startButton-&gt;<span class="hljs-built_in">setEnabled</span>(<span class="hljs-literal">true</span>);
+    <span class="hljs-built_in">statusBar</span>()-&gt;<span class="hljs-built_in">showMessage</span>(
+        <span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;Done: %1 primes found in %2 ms. The heartbeat above never stopped.&quot;</span>)
+            .<span class="hljs-built_in">arg</span>(result).<span class="hljs-built_in">arg</span>(msElapsed));
+}</code></pre>
+<p>Remarque <code>onButtonClicked()</code> : il désactive le bouton avant d&#39;émettre la requête. Ce n&#39;est pas de la décoration — c&#39;est la première défense contre un problème réel : sans cette ligne, un clic répété pendant que le calcul précédent est encore en cours émettrait une seconde <code>requestComputation()</code>, que Qt mettrait quand même en file d&#39;attente en toute sécurité (pas de crash), mais qui ferait exécuter <code>start()</code> une seconde fois, en séquence, sur le même worker, en ajoutant du travail au travail au lieu de le refuser ou de le remplacer. Gérer « que se passe-t-il si l&#39;utilisateur demande un nouveau travail pendant qu&#39;un autre est en cours » avec une véritable annulation est le sujet d&#39;un module ultérieur ; aujourd&#39;hui, nous nous limitons, à juste titre, à empêcher le problème à la racine en désactivant le bouton.</p>
+<h2>Étape 6 — Le destructeur : l&#39;arrêt propre</h2>
+<pre><code class="hljs language-cpp">MainWindow::~<span class="hljs-built_in">MainWindow</span>() {
+    m_thread-&gt;<span class="hljs-built_in">quit</span>();
+    m_thread-&gt;<span class="hljs-built_in">wait</span>();
+    <span class="hljs-keyword">delete</span> m_worker;
+}</code></pre>
+<p>Trois lignes qui valent tout le discours sur le cycle de vie tenu dans l&#39;article précédent : tu demandes à la boucle d&#39;événements du thread géré de s&#39;arrêter, tu attends qu&#39;elle l&#39;ait vraiment fait, et c&#39;est seulement alors que tu détruis le worker avec un <code>delete</code> ordinaire — sûr, parce qu&#39;après <code>wait()</code>, aucun autre thread ne peut plus le toucher.</p>
+<h2>Étape 7 — Compile, exécute, et observe ce qui ne se produit PLUS</h2>
+<pre><code class="hljs language-bash">cmake -S . -B build
+cmake --build build
+./build/worker_thread_demo</code></pre>
+<p>Appuie sur le bouton. Observe la barre de progression avancer par à-coups (les signaux <code>progress</code> qui arrivent du worker) tandis que, simultanément, le battement en haut continue de monter sans la moindre hésitation — pas une interruption, pas un ralentissement perceptible, rien. Essaie aussi de redimensionner ou de déplacer la fenêtre pendant que le calcul est en cours : elle répond normalement, chose impensable dans le projet précédent pendant ce même calcul identique.</p>
+<p>Si tu veux voir le contraste de façon encore plus nette, garde les deux projets ouverts et exécute exactement le même nombre de nombres premiers à chercher dans les deux, l&#39;un après l&#39;autre : la différence n&#39;est pas dans la durée du calcul — qui est identique, parce que le CPU doit de toute façon faire le même travail — mais dans la <em>réactivité de la fenêtre</em> pendant ce temps. Ici, nous n&#39;avons rien accéléré (un seul thread de calcul, exactement comme avant), nous avons seulement déplacé ce calcul hors du chemin de la boucle d&#39;événements qui doit s&#39;occuper de la fenêtre.</p>
+<h2>Ce que tu viens de te démontrer à toi-même</h2>
+<p>Tu as construit, de tes propres mains et en comprenant chaque ligne, le pattern qui résout structurellement le problème sur lequel ce cours s&#39;est ouvert. Tu as vu la différence pratique entre l&#39;objet <code>QThread</code> et le thread qu&#39;il gère, tu as déplacé un worker avec <code>moveToThread()</code> et vérifié que ses slots s&#39;exécutent réellement là où tu t&#39;y attends, tu as communiqué dans les deux directions à travers des signaux sans écrire un seul mutex, et tu as géré un arrêt propre sans fuite. Dans le prochain module, nous introduisons <code>QMutex</code> et ses parents — parce que le jour où ton worker devra partager des données mutables avec d&#39;autres threads simultanément (pas seulement échanger des messages via des signaux, ce qui aujourd&#39;hui t&#39;a mis à l&#39;abri de toute section critique), tu auras besoin de ces outils.</p>
+<hr>
+<p><em>Le code source complet de ce projet est disponible dans le dépôt qui accompagne ce cours, dans le dossier <code>project-C-worker-thread</code>.</em></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/learning-paths/multithreading-cpp/module-01-article-2-boucles-devenements-et-cycle-de-vie/">
+        <span class="post-nav__label">← Leçon précédente</span>
+        <span class="post-nav__title">Deux boucles d'événements qui se parlent en sécurité : connexions queued et cycle de vie d'un worker thread</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/learning-paths/multithreading-cpp/module-02-article-1-qmutex-et-readwritelock/">
+        <span class="post-nav__label">Leçon suivante →</span>
+        <span class="post-nav__title">La section critique formalisée : QMutex, QMutexLocker et QReadWriteLock</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/learning-paths/multithreading-cpp/">← Retour au parcours</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>
