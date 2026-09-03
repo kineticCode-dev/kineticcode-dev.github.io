@@ -71,7 +71,7 @@
     "provider": "umami",
     "scriptUrl": "",
     "websiteId": "",
-    "note": "Vedi README.md sezione Analytics per la configurazione di Umami. Lasciare vuoto per disattivare il tracking."
+    "note": ""
   },
   "paypal": {
     "enabled": true,
@@ -80,6 +80,6 @@
     "currency": "EUR",
     "disableFunding": "venmo",
     "components": "hosted-buttons",
-    "note": "Vedi README.md sezione 'Pulsante di supporto (PayPal)'. Imposta enabled a false per rimuovere il pulsante da tutto il sito senza toccare il codice."
+    "note": ""
   }
 }

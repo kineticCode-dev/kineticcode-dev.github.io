@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Capitolo 0: Setup & Prerequisiti — Programma formativo Flutter (da zero a multipiattaforma: PC, Mobile, Web) — Kinetic Code</title>
+  <meta name="description" content="Fondamenta: Dart, il paradigma dichiarativo, e primo giro sulle tre piattaforme">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo0-setup/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo0-setup/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo0-setup/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Capitolo 0: Setup & Prerequisiti — Programma formativo Flutter (da zero a multipiattaforma: PC, Mobile, Web) — Kinetic Code">
+  <meta property="og:description" content="Fondamenta: Dart, il paradigma dichiarativo, e primo giro sulle tre piattaforme">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo0-setup/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (it)" href="/it/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/it/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/it/">Home</a>
+        <a href="/it/articles/">Articoli</a>
+        <a href="/it/learning-paths/" aria-current="page">Corsi</a>
+        <a href="/it/about/">About</a>
+        <a href="/it/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Lingua">
+            IT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/learning-paths/flutter/modulo0-articolo0-setup/" aria-current="true"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/it/learning-paths/flutter/">Programma formativo Flutter (da zero a multipiattaforma: PC, Mobile, Web)</a> · Modulo 0 — Fondamenta: Dart e primo giro sulle tre piattaforme
+        </div>
+        <span class="eyebrow">Teoria · Lezione 1 di 3</span>
+        <h1>Capitolo 0: Setup & Prerequisiti</h1>
+        <p class="article-hero__excerpt">Fondamenta: Dart, il paradigma dichiarativo, e primo giro sulle tre piattaforme</p>
+        <div class="article-hero__meta"><span>3 min di lettura</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h1>Capitolo 0 — Setup &amp; Prerequisiti</h1>
+<p>Prima di scrivere codice mettiamo in piedi l&#39;ambiente per bene, una volta sola, così da non incartarci a metà tutorial per un pezzo di infrastruttura mancante.</p>
+<h2>Software necessario</h2>
+<ul>
+<li><strong>Flutter SDK</strong> (canale <em>stable</em>): contiene sia Flutter che Dart, non vanno installati separatamente.</li>
+<li><strong>Git for Windows</strong>: serve al tool <code>flutter</code> per alcune operazioni interne, ed è comunque uno strumento che ti servirà comunque per gestire il codice del corso.</li>
+<li><strong>Un editor</strong>: VS Code con le estensioni &quot;Flutter&quot; e &quot;Dart&quot; (consigliato, è quello che uso negli esempi), oppure Android Studio se preferisci un IDE più pesante ma con l&#39;emulatore Android integrato più comodo da gestire.</li>
+<li><strong>Visual Studio 2022 Community</strong>, con il carico di lavoro <strong>&quot;Sviluppo di applicazioni desktop con C++&quot;</strong>: non è un errore di battitura e non andrai a scrivere C++, ma Flutter lo usa sotto al cofano per compilare il target desktop Windows (il motore di rendering è nativo, e per generare un eseguibile <code>.exe</code> serve la toolchain MSVC).</li>
+<li><strong>Google Chrome</strong>: è il browser di riferimento per il target web, sia per il run in sviluppo che per il debug.</li>
+<li><strong>Android Studio</strong>, con Android SDK e un emulatore configurato (o, in alternativa, un telefono Android fisico collegato via USB con il debug USB attivo).</li>
+</ul>
+<h2>Passo 1 — Installa Git for Windows</h2>
+<p>Scarica l&#39;installer da <a href="https://git-scm.com/download/win">git-scm.com</a> ed eseguilo lasciando le opzioni di default. Verifica l&#39;installazione aprendo <strong>PowerShell</strong> ed eseguendo:</p>
+<pre><code class="hljs language-powershell">git <span class="hljs-literal">--version</span></code></pre>
+<h2>Passo 2 — Scarica e installa Flutter SDK</h2>
+<p>Scarica lo zip del canale <em>stable</em> dalla pagina ufficiale di installazione di Flutter per Windows. Estrailo in una cartella semplice, <strong>senza spazi nel percorso e fuori da <code>Program Files</code></strong> — è una raccomandazione precisa del team Flutter, perché alcuni tool della toolchain hanno problemi con percorsi che contengono spazi o richiedono permessi elevati. Una scelta tipica è:</p>
+<pre><code class="hljs language-avrasm"><span class="hljs-symbol">C:</span>\src\flutter</code></pre>
+<h2>Passo 3 — Aggiungi Flutter al PATH</h2>
+<p>Apri il menu Start, cerca &quot;Modifica le variabili d&#39;ambiente relative al sistema&quot;, apri <strong>Variabili d&#39;ambiente</strong>, seleziona la variabile <strong>Path</strong> dell&#39;utente, e aggiungi una nuova voce:</p>
+<pre><code class="hljs language-avrasm"><span class="hljs-symbol">C:</span>\src\flutter\bin</code></pre>
+<p>Chiudi e riapri PowerShell (il PATH viene ricaricato solo in una nuova finestra), poi verifica:</p>
+<pre><code class="hljs language-powershell">flutter <span class="hljs-literal">--version</span></code></pre>
+<h2>Passo 4 — Il comando più importante: flutter doctor</h2>
+<pre><code class="hljs language-powershell">flutter doctor</code></pre>
+<p><code>flutter doctor</code> è un check di sistema completo: ti dice cosa manca per ciascuna piattaforma target (Android toolchain, Chrome, Visual Studio, editor collegato) con una spunta verde o una croce rossa accanto a ogni voce. <strong>Non proseguire finché almeno le voci &quot;Flutter&quot;, &quot;Windows Version&quot;, &quot;Visual Studio&quot; e &quot;Chrome&quot; non sono verdi.</strong></p>
+<h2>Passo 5 — Installa Visual Studio 2022 con il carico C++</h2>
+<p>Scarica <strong>Visual Studio 2022 Community</strong> (gratuito) dal sito Microsoft. Durante l&#39;installazione, nella schermata dei &quot;Carichi di lavoro&quot;, spunta <strong>&quot;Sviluppo di applicazioni desktop con C++&quot;</strong>. È l&#39;unico pezzo che serve dall&#39;intera suite: non ti servono altri componenti.</p>
+<h2>Passo 6 — Installa Android Studio e configura un emulatore</h2>
+<p>Scarica e installa Android Studio da questo <a href="https://developer.android.com/studio">link</a>, apri il <strong>setup guidato</strong> al primo avvio (installa automaticamente Android SDK e uno strumento di gestione emulatori). Poi apri Android Studio appena installato e dal menu <strong>More Actions → Virtual Device Manager</strong>, crea un nuovo dispositivo virtuale (un profilo tipo Pixel con una versione Android recente va benissimo).</p>
+<p><img src="/assets/images/learningpaths/flutter/modulo0/vdm.png" alt="Virtual Device Manager" loading="lazy"></p>
+<p>Poi clicca su SDK Manager e segui la <a href="https://docs.flutter.dev/platform-integration/android/setup">guida</a> ufficiale per il setup dell&#39;ambiente Android.</p>
+<p>Torna in PowerShell e accetta le licenze Android richieste da Flutter:</p>
+<pre><code class="hljs language-powershell">flutter doctor <span class="hljs-literal">--android-licenses</span></code></pre>
+<p>Rispondi <code>y</code> a tutte le richieste.</p>
+<h2>Passo 7 — Abilita esplicitamente i target desktop e web</h2>
+<pre><code class="hljs language-powershell">flutter config <span class="hljs-literal">--enable-windows-desktop</span>
+flutter config <span class="hljs-literal">--enable-web</span>
+
+flutter devicesflutter </code></pre>
+<p>Se tutto è a posto, <code>flutter devices</code> dovrebbe elencarti almeno &quot;Windows (desktop)&quot; e &quot;Chrome (web)&quot; — l&#39;emulatore Android comparirà solo quando lo avremo avviato, nel progetto guidato.</p>
+<p>Lancia nel terminale</p>
+<pre><code class="hljs language-powershell">flutter doctor </code></pre>
+<p>Per verificare che tutto sia installato e riconosciuto correttamente
+<img src="/assets/images/learningpaths/flutter/modulo0/doctor.png" alt="doctor" loading="lazy"></p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:minmax(200px,300px) 1fr;--post-nav-next-col:2;"><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ti va di offrirmi un caffè?</h3>
+          <p>Se questo contenuto ti è stato utile, puoi sostenere il progetto con una piccola donazione libera.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/it/learning-paths/flutter/modulo0-articolo1-le-basi-di-dart/">
+        <span class="post-nav__label">Lezione successiva →</span>
+        <span class="post-nav__title">Capitolo 1: le basi di Dart</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/it/learning-paths/flutter/">← Torna al percorso</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tutti i contenuti sono opera dell'autore, verificati sul campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Guarda il codice su GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Scrivimi una mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/it/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Torna su</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

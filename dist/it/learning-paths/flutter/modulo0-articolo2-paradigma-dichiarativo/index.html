@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Capitolo 2: il paradigma dichiarativo e l'albero dei widget — Programma formativo Flutter (da zero a multipiattaforma: PC, Mobile, Web) — Kinetic Code</title>
+  <meta name="description" content="Fondamenta: Dart, il paradigma dichiarativo, e primo giro sulle tre piattaforme">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo2-paradigma-dichiarativo/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo2-paradigma-dichiarativo/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo2-paradigma-dichiarativo/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Capitolo 2: il paradigma dichiarativo e l'albero dei widget — Programma formativo Flutter (da zero a multipiattaforma: PC, Mobile, Web) — Kinetic Code">
+  <meta property="og:description" content="Fondamenta: Dart, il paradigma dichiarativo, e primo giro sulle tre piattaforme">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo2-paradigma-dichiarativo/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (it)" href="/it/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/it/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/it/">Home</a>
+        <a href="/it/articles/">Articoli</a>
+        <a href="/it/learning-paths/" aria-current="page">Corsi</a>
+        <a href="/it/about/">About</a>
+        <a href="/it/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Lingua">
+            IT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/learning-paths/flutter/modulo0-articolo2-paradigma-dichiarativo/" aria-current="true"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <span class="is-disabled"><span>English</span><span class="lang-switch__tag">EN</span></span>
+          <span class="is-disabled"><span>Español</span><span class="lang-switch__tag">ES</span></span>
+          <span class="is-disabled"><span>Français</span><span class="lang-switch__tag">FR</span></span>
+          <span class="is-disabled"><span>Deutsch</span><span class="lang-switch__tag">DE</span></span>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          <a href="/it/learning-paths/flutter/">Programma formativo Flutter (da zero a multipiattaforma: PC, Mobile, Web)</a> · Modulo 0 — Fondamenta: Dart e primo giro sulle tre piattaforme
+        </div>
+        <span class="eyebrow">Progetto · Lezione 3 di 3</span>
+        <h1>Capitolo 2: il paradigma dichiarativo e l'albero dei widget</h1>
+        <p class="article-hero__excerpt">Fondamenta: Dart, il paradigma dichiarativo, e primo giro sulle tre piattaforme</p>
+        <div class="article-hero__meta"><span>9 min di lettura</span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <h1>Capitolo 2 — Il paradigma dichiarativo e l&#39;albero dei widget</h1>
+<h2>Descrivere invece di comandare</h2>
+<p>Immagina di dover raccontare a qualcuno come dev&#39;essere una stanza, in due modi diversi. Nel primo modo, gli dai una sequenza di comandi da eseguire in ordine: &quot;sposta il tavolo di due metri a sinistra, poi cambia il colore della sedia in rosso, poi aggiungi una lampada&quot;. Ogni comando modifica qualcosa che esisteva già. Nel secondo modo, gli consegni semplicemente una fotografia di come la stanza deve apparire <em>adesso</em>, e lui la ricostruisce da zero confrontandola con quella di prima, cambiando solo ciò che serve davvero.</p>
+<p>Flutter lavora nel secondo modo. Non hai oggetti grafici persistenti che vai a modificare uno per uno quando qualcosa cambia — hai una funzione, <code>build()</code>, che <strong>descrive da zero, ogni volta che viene chiamata, come dovrebbe apparire l&#39;interfaccia in questo preciso istante</strong>, dato lo stato attuale del programma.</p>
+<pre><code class="hljs language-dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Hello</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatelessWidget</span> </span>{
+  <span class="hljs-keyword">final</span> <span class="hljs-title class_">String</span> name;
+  <span class="hljs-keyword">const</span> <span class="hljs-title class_">Hello</span>({<span class="hljs-keyword">super</span>.key, <span class="hljs-keyword">required</span> <span class="hljs-keyword">this</span>.name});
+
+  <span class="hljs-meta">@override</span>
+  <span class="hljs-title class_">Widget</span> <span class="hljs-title function_">build</span>(<span class="hljs-title class_">BuildContext</span> context) {
+    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Text</span>(<span class="hljs-string">&#x27;Ciao, <span class="hljs-subst">$name</span>!&#x27;</span>);
+  }
+}</code></pre>
+<p>Quel <code>build()</code> non &quot;aggiorna&quot; il testo quando <code>name</code> cambia — viene semplicemente <strong>richiamato di nuovo</strong>, e restituisce una nuova descrizione della UI. Flutter, dietro le quinte, confronta questa nuova descrizione con quella precedente (un processo che si chiama <em>diffing</em>) e applica al rendering reale solo le differenze minime necessarie. Tu non tocchi mai direttamente un oggetto grafico: descrivi, e basta.</p>
+<h2>Stateless vs Stateful: dove vive la mutabilità</h2>
+<p>Se tutto fosse immutabile e ridescritto da zero, però, non potresti mai avere un contatore che aumenta o un campo di testo che si aggiorna mentre digiti. Qui entra la distinzione fondamentale tra i due tipi di widget:</p>
+<ul>
+<li><strong><code>StatelessWidget</code></strong>: non ha memoria propria. Riceve dei parametri (come <code>name</code> nell&#39;esempio sopra) e la sua UI dipende <strong>esclusivamente</strong> da quei parametri — se vuoi che cambi, deve cambiare chi lo istanzia da fuori.</li>
+<li><strong><code>StatefulWidget</code></strong>: ha un oggetto <code>State</code> associato che <em>può</em> cambiare nel tempo, e quando cambia chiama <code>setState(() { ... })</code> per dire esplicitamente a Flutter &quot;il mio stato interno è cambiato, richiama <code>build()</code> per me&quot;.</li>
+</ul>
+<pre><code class="hljs language-dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatefulWidget</span> </span>{ <span class="hljs-keyword">const</span> <span class="hljs-title class_">Counter</span>({<span class="hljs-keyword">super</span>.key}); 
+<span class="hljs-meta">@override</span> 
+<span class="hljs-title class_">State</span>&lt;<span class="hljs-title class_">Counter</span>&gt; <span class="hljs-title function_">createState</span>() =&gt; <span class="hljs-title class_">_CounterState</span>(); 
+} 
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_CounterState</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">State</span>&lt;<span class="hljs-title">Counter</span>&gt; </span>{ 
+<span class="hljs-built_in">int</span> _value = <span class="hljs-number">0</span>; <span class="hljs-comment">// This is the mutable state: it lives in the State object, not in the widget </span>
+
+<span class="hljs-keyword">void</span> <span class="hljs-title function_">_increment</span>() { 
+<span class="hljs-title function_">setState</span>(() { 
+_value++; <span class="hljs-comment">// Changing the state inside setState() triggers a new build() </span>
+}); }
+
+<span class="hljs-meta">@override</span>
+<span class="hljs-title class_">Widget</span> <span class="hljs-title function_">build</span>(<span class="hljs-title class_">BuildContext</span> context) { 
+<span class="hljs-keyword">return</span> <span class="hljs-title class_">Column</span>( 
+children: [ <span class="hljs-title class_">Text</span>(<span class="hljs-string">&#x27;Value: <span class="hljs-subst">$_value</span>&#x27;</span>),
+ <span class="hljs-title class_">ElevatedButton</span>(
+ onPressed: _increment, 
+ child: <span class="hljs-keyword">const</span> <span class="hljs-title class_">Text</span>(<span class="hljs-string">&#x27;Increment&#x27;</span>), 
+         ),
+        ],
+    );
+    }
+}</code></pre>
+<p>Il punto concettuale da fissare bene: il <em>widget</em> (<code>Contatore</code>) è ricreato da zero a ogni <code>build()</code> — è leggero, immutabile, quasi &quot;usa e getta&quot;. Lo <em>stato</em> (<code>_ContatoreState</code>) invece <strong>persiste</strong> tra una ricostruzione e l&#39;altra, ed è l&#39;unico posto dove è lecito tenere dati mutabili. Widget &quot;usa e getta&quot; più State persistente è la coppia concettuale su cui è costruito tutto Flutter, e tornerà identica quando nel Modulo 2 parleremo di gestione dello stato su scala più grande — è la stessa idea, solo condivisa tra più parti della UI invece che chiusa in un singolo widget.</p>
+<h2>Perché questo modello ti dà tre piattaforme gratis</h2>
+<p>Un dettaglio architetturale che vale la pena rendere esplicito prima di vederlo in azione: Flutter non si appoggia ai componenti grafici nativi del sistema operativo. Disegna <strong>ogni singolo pixel da sé</strong>, tramite il proprio motore grafico (Skia, o il più recente Impeller), sia che il target sia una finestra Windows, uno schermo Android, o un <code>&lt;canvas&gt;</code> nel browser. È precisamente il motivo per cui lo stesso identico albero di widget produce un risultato visivamente identico su tutte e tre le piattaforme — non c&#39;è un livello di traduzione verso toolkit nativi diversi che introduce incoerenze. Il prezzo di questa scelta architetturale è che Flutter non &quot;sembra&quot; mai automaticamente un&#39;app nativa al 100%; il guadagno è la coerenza totale che stiamo per toccare con mano nel progetto guidato.</p>
+<hr>
+<h1>Progetto Guidato — &quot;Hello Flutter&quot; su Windows, Mobile e Web</h1>
+<p>Questo è il primo progetto pratico del percorso, ed è scritto in stile tutorial: ogni passo è qualcosa che fai tu, materialmente, nel terminale e nell&#39;editor. Non incollare i blocchi di codice da un file già pronto — scrivili a mano nell&#39;editor, anche quando ti sembrano banali. </p>
+<h2>Passo 1 — Crea il progetto</h2>
+<p>Apri PowerShell in una cartella ed esegui:</p>
+<pre><code class="hljs language-powershell">flutter create hello_flutter
+<span class="hljs-built_in">cd</span> hello_flutter</code></pre>
+<p>Questo comando genera uno scheletro di progetto completo, già configurato per tutti i target (desktop, mobile, web) — vale la pena aprire la struttura di cartelle che ha creato e guardarla un attimo prima di proseguire:</p>
+<pre><code class="hljs language-powershell"><span class="hljs-built_in">dir</span></code></pre>
+<p>Noterai cartelle come <code>lib/</code> (dove scriverai quasi tutto il tuo codice Dart), <code>android/</code>, <code>windows/</code>, <code>web/</code> (la configurazione specifica di ogni piattaforma target — la toccherai raramente, ma è bene sapere che esiste), e <code>pubspec.yaml</code> (il file di manifest del progetto: dipendenze, versione, asset — è il file che descrive di cosa il tuo progetto ha bisogno per essere costruito).</p>
+<h2>Passo 2 — Primo run: desktop Windows</h2>
+<p>Con il terminale ancora dentro <code>hello_flutter</code>, lancia:</p>
+<pre><code class="hljs language-powershell">flutter run <span class="hljs-literal">-d</span> windows</code></pre>
+<p>La prima build sarà un po&#39; lenta (sta compilando tutto il motore Flutter e la toolchain nativa per la prima volta) — le successive saranno molto più rapide. Quando la finestra si apre, dovresti vedere un&#39;app con un contatore e un pulsante con un&#39;icona &quot;+&quot;. Cliccalo qualche volta e osserva il numero che sale: è il progetto template standard di Flutter, e lo smontiamo pezzo per pezzo tra un attimo.</p>
+<p>Mentre l&#39;app è ancora in esecuzione, prova questa cosa, perché è uno dei motivi per cui sviluppare in Flutter è piacevole: torna nell&#39;editor, cambia una stringa qualsiasi nel file <code>lib/main.dart</code> (per esempio il titolo dell&#39;AppBar), salva il file, e torna nel terminale dove <code>flutter run</code> è ancora attivo — premi il tasto <code>r</code>. Questo è l&#39;<strong>hot reload</strong>: la modifica appare nell&#39;app in meno di un secondo, <strong>senza riavviarla e senza perdere lo stato corrente</strong> (il contatore resta al valore che avevi raggiunto). È la caratteristica di sviluppo più preziosa di tutto il framework, e la userai in continuazione da qui in avanti.</p>
+<p>Quando hai finito di osservare, ferma l&#39;app con <code>q</code> nel terminale.</p>
+<p><img src="/assets/images/learningpaths/flutter/modulo0/demo-windows.png" alt="demo windows" loading="lazy"></p>
+<h2>Passo 3 — Secondo run: emulatore Android</h2>
+<p>Avvia l&#39;emulatore che hai creato in Android Studio (dal Virtual Device Manager), poi verifica che Flutter lo veda:</p>
+<pre><code class="hljs language-powershell">flutter devices</code></pre>
+<p>Dovresti vedere una riga con il nome del tuo emulatore. A quel punto:</p>
+<pre><code class="hljs language-powershell">flutter run</code></pre>
+<p>Senza specificare <code>-d</code>, Flutter ti chiede su quale dispositivo tra quelli disponibili vuoi lanciare l&#39;app (se ne trova solo uno attivo, parte direttamente su quello). Potrebbe impiegarci qualche minuti, una volta finita osserva la stessa identica app, stavolta dentro l&#39;emulatore Android — stessa logica, stessa struttura visiva, stesso codice sorgente <strong>immutato</strong>. Prova di nuovo l&#39;hot reload con <code>r</code>: funziona esattamente allo stesso modo anche qui.</p>
+<p><img src="/assets/images/learningpaths/flutter/modulo0/android-demo.png" alt="Android Demo" loading="lazy"></p>
+<h2>Passo 4 — Terzo run: web</h2>
+<p>Ferma l&#39;app precedente (<code>q</code>), poi lancia:</p>
+<pre><code class="hljs language-powershell">flutter run <span class="hljs-literal">-d</span> chrome</code></pre>
+<p>Si aprirà una finestra Chrome con la stessa identica app, stavolta come pagina web. Qui vale la pena aprire gli strumenti sviluppatore di Chrome (F12) e dare un&#39;occhiata veloce a cosa sta girando — vedrai che Flutter web, di default in modalità sviluppo, disegna su un <code>&lt;canvas&gt;</code> HTML, non genera markup HTML tradizionale: è coerente con quello che abbiamo detto nel capitolo precedente sul motore di rendering proprio di Flutter.</p>
+<p><img src="/assets/images/learningpaths/flutter/modulo0/demo-web.png" alt="demo web" loading="lazy"></p>
+<h2>Passo 5 — Leggi il codice che hai appena visto girare</h2>
+<p>Apri <code>lib/main.dart</code> nell&#39;editor. Non modificarlo ancora, prima leggilo tutto e prova a riconoscere i pezzi che abbiamo discusso nei capitoli precedenti:</p>
+<ul>
+<li><code>void main() =&gt; runApp(const MyApp());</code> — il punto di ingresso del programma, dove <code>runApp</code> è la chiamata che consegna il widget radice al motore di rendering di Flutter e avvia il ciclo di disegno.</li>
+<li><code>class MyApp extends StatelessWidget</code> — il widget radice dell&#39;applicazione, che tipicamente configura solo il tema e la home page, senza stato proprio.</li>
+<li><code>class MyHomePage extends StatefulWidget</code> — qui riconosci lo <code>StatefulWidget</code> del capitolo precedente.</li>
+<li>Dentro <code>_MyHomePageState</code>, il campo <code>int _counter = 0;</code> e il metodo <code>_incrementCounter()</code> che chiama <code>setState()</code> — è esattamente il pattern del <code>Contatore</code> che abbiamo scritto insieme nel Capitolo 2, solo con nomi diversi.</li>
+<li>Il <code>build()</code> che restituisce uno <code>Scaffold</code> (il layout base di una schermata in stile Material, con barra superiore e corpo), dentro cui trovi un <code>Center</code>, una <code>Column</code>, dei <code>Text</code> — i mattoncini di layout di cui parleremo in dettaglio nel Modulo 1.</li>
+</ul>
+<h2>Passo 6 — Piccola modifica guidata</h2>
+<p>Ora tocca a te modificare qualcosa, non solo leggere. Dentro <code>_MyHomePageState</code>, subito sotto la dichiarazione di <code>_counter</code>, aggiungi un secondo campo di stato:</p>
+<pre><code class="hljs language-dart"><span class="hljs-built_in">int</span> _counter = <span class="hljs-number">0</span>;
+<span class="hljs-built_in">int</span> _decrements = <span class="hljs-number">0</span>;   <span class="hljs-comment">// add this line</span></code></pre>
+<p>Poi, subito dopo il metodo <code>_incrementCounter()</code>, scrivi un metodo gemello:</p>
+<pre><code class="hljs language-dart"><span class="hljs-keyword">void</span> <span class="hljs-title function_">_decrementCounter</span>() {
+  <span class="hljs-title function_">setState</span>(() {
+    _counter--;
+    _decrements++;
+  });
+}</code></pre>
+<p>Infine, dentro il <code>build()</code>, nella <code>Column</code> che contiene già il <code>Text</code> del contatore, aggiungi un secondo pulsante — trova il <code>floatingActionButton</code> dello <code>Scaffold</code> (è il pulsante circolare con la <code>+</code>) e, subito sopra la chiusura dello <code>Scaffold</code>, aggiungi un secondo <code>FloatingActionButton</code> avvolto in una <code>Row</code>, così da avere due pulsanti affiancati (<code>onPressed: _decrementCounter</code>, <code>child: const Icon(Icons.remove)</code>).</p>
+<p>Non ti do il diff completo apposta: prova a incastrarlo tu nella struttura esistente, guardando come è fatto il pulsante <code>+</code> già presente e ricalcandone la forma. Se qualcosa non compila, l&#39;errore del compilatore Dart ti dice quasi sempre esattamente la riga e il problema — leggilo per intero prima di modificare a caso, è un&#39;abitudine che ti risparmierà tempo per tutto il resto del percorso.</p>
+<p>Quando funziona, rilancia con <code>r</code> (hot reload) su uno qualsiasi dei tre target e verifica che il pulsante &quot;-&quot; faccia effettivamente scendere il contatore.</p>
+<p>Il codice sorgente potrai trovarlo <a href="https://github.com/kineticCode-dev/FlutterLearningPath">qui</a></p>
+<h2>Cosa hai appena dimostrato a te stesso</h2>
+<p>Hai scritto un widget stateful con più di un campo di stato, hai collegato un secondo evento utente a una seconda chiamata di <code>setState()</code>, e hai visto lo stesso codice sorgente, senza una singola riga di condizionale specifico per piattaforma, girare identico su Windows desktop, mobile e web. Nel prossimo modulo prendiamo questo stesso meccanismo e lo scaliamo a un&#39;app vera, con più schermate e navigazione — ma la logica di fondo, widget leggeri più stato persistente, resta esattamente questa.</p>
+<hr>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px);"><a class="post-nav__link post-nav__link--prev" href="/it/learning-paths/flutter/modulo0-articolo1-le-basi-di-dart/">
+        <span class="post-nav__label">← Lezione precedente</span>
+        <span class="post-nav__title">Capitolo 1: le basi di Dart</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ti va di offrirmi un caffè?</h3>
+          <p>Se questo contenuto ti è stato utile, puoi sostenere il progetto con una piccola donazione libera.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/it/learning-paths/flutter/">← Torna al percorso</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tutti i contenuti sono opera dell'autore, verificati sul campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Guarda il codice su GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Scrivimi una mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/it/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Torna su</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>
