@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asynchronous motors, servomotors and inverters: what really changes for the person writing the software — Kinetic Code</title>
+  <meta name="description" content="A practical guide to the most common motors on industrial machines — asynchronous, servo, stepper — and what the PLC actually sees of each of them.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/05-motori-e-azionamenti/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/05-motori-e-azionamenti/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/05-motori-e-azionamenti/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Asynchronous motors, servomotors and inverters: what really changes for the person writing the software — Kinetic Code">
+  <meta property="og:description" content="A practical guide to the most common motors on industrial machines — asynchronous, servo, stepper — and what the PLC actually sees of each of them.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/05-motori-e-azionamenti/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Asynchronous motors, servomotors and inverters: what really changes for the person writing the software","description":"A practical guide to the most common motors on industrial machines — asynchronous, servo, stepper — and what the PLC actually sees of each of them.","datePublished":"2026-09-01","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/05-motori-e-azionamenti/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/05-motori-e-azionamenti/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/05-motori-e-azionamenti/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/05-motori-e-azionamenti/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/05-motori-e-azionamenti/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrial Automation</span>
+        <h1>Asynchronous motors, servomotors and inverters: what really changes for the person writing the software</h1>
+        <p class="article-hero__excerpt">A practical guide to the most common motors on industrial machines — asynchronous, servo, stepper — and what the PLC actually sees of each of them.</p>
+        <div class="article-hero__meta">
+          <span>Sep 01, 2026</span>
+          <span>·</span>
+          <span>6 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>When you read a line like <code>Q1.2 Motor_Conveyor_Run</code> in the I/O list, coming from software the temptation is to think of the motor as a boolean actuator, just a bit bigger than an LED: turn it on, it spins; turn it off, it stops. It&#39;s an abstraction that works for a simple conveyor belt, and fails miserably as soon as the machine needs to position something precisely, or control the applied torque, or synchronize several axes with each other. In this article we sort out the three types of motor you&#39;ll encounter most often, and above all understand what changes, from the point of view of what you actually program.</p>
+<h2>The three-phase asynchronous motor: the simple, rugged workhorse</h2>
+<p>It&#39;s by far the most widespread motor in industry, and probably the first one you&#39;ll see when you open a panel: three windings fed by a three-phase voltage shifted by 120 degrees, generating a rotating magnetic field in the stator. This field &quot;drags&quot; the rotor along, which spins slightly slower than the field itself (hence the name &quot;asynchronous&quot;: the speed difference, called <em>slip</em>, is what generates torque). It&#39;s a rugged, cheap, practically maintenance-free motor, but in its simplest form it has a real drawback for a controls engineer: <strong>connected directly to the grid, it spins at a fixed speed</strong>, determined by the grid frequency (50Hz in Europe) and the motor&#39;s number of poles. It isn&#39;t meant to be &quot;positioned&quot; precisely: it&#39;s meant to spin, full stop.</p>
+<p>This is where the <strong>inverter</strong>, also called a <strong>VFD</strong> (<em>Variable Frequency Drive</em>), comes in: a power electronics device that, instead of connecting the motor directly to the grid at a fixed 50Hz, first rectifies the AC current into DC and then reconstructs it into a new AC wave at variable frequency (and therefore speed), generated electronically through fast-switching components (IGBTs). By varying the frequency, the inverter directly varies the motor&#39;s rotation speed, and in many applications it also allows fine torque regulation and controlled acceleration/deceleration ramps — a far-from-trivial detail when you need to stop a loaded conveyor without the product on top sliding forward from inertia.</p>
+<p>From your software&#39;s point of view, an asynchronous motor driven by an inverter almost always talks to the PLC over a fieldbus (we&#39;ll dedicate an article to this) with a handful of key parameters: a run/stop command, a speed reference (often expressed as a percentage of maximum speed, or directly in Hz), and a status feedback telling you whether the motor is actually turning, whether there&#39;s an alarm, and sometimes the real-time current draw — a valuable value, because an abnormal current is often the first symptom of a mechanical problem (a bearing starting to seize, a belt that&#39;s too tight) well before it turns into an outright failure.</p>
+<p><img src="/assets/images/articles/motor-control-chain.svg" alt="Signal chain from a PLC output through a VFD or servo drive to the motor, with optional encoder feedback loop" loading="lazy"></p>
+<h2>The servomotor: when you need to know exactly where you are</h2>
+<p>If an asynchronous motor with an inverter gives you control over speed, the <strong>servomotor</strong> gives you control over <strong>position</strong>. That&#39;s an important conceptual leap. A servomotor is, almost always, a permanent-magnet synchronous motor paired with an <strong>encoder</strong> (you already met these in the previous article) mounted directly on the shaft, and a dedicated drive that closes a <strong>closed-loop</strong> control system: the drive continuously compares the position requested by the PLC with the one read from the encoder, and corrects the current delivered to the motor in real time to cancel the error. It&#39;s the same conceptual principle as a PID controller you&#39;ve probably already met in other contexts — but here applied physically to a motor shaft, dozens or hundreds of times per second.</p>
+<p>This precision control comes at a price, both literally (servomotors and their drives cost much more than an asynchronous motor with an inverter) and in complexity: where an asynchronous motor only needs a run/speed command, a servo axis typically requires a full set of motion parameters — maximum acceleration, deceleration, jerk (the rate of change of acceleration, which if too abrupt generates unwanted mechanical vibration) — and is often driven not with simple bits but with a real positioning protocol (standard technology functions such as those defined by the PLCopen Motion Control profile, which you&#39;ll find implemented in practically every modern PLC through functions like <code>MC_MoveAbsolute</code> or <code>MC_MoveVelocity</code>).</p>
+<p>Where do you find servomotors in the field? Wherever accurate, repeatable positioning is needed: cutting axes, Cartesian robots, labeling systems that must apply a label at exactly the same spot on thousands of consecutive parts, lifting rods that must stop at a precise height without oscillation.</p>
+<h2>The stepper motor: cheap precision, but (almost) never with feedback</h2>
+<p>A third family, more common in small positioning tasks and prototyping (you&#39;ll also encounter it often in 3D printing, if you&#39;ve already tinkered with that) but also present in light industrial applications, is the <strong>stepper motor</strong>. The principle differs from both of the previous ones: the rotor advances in discrete &quot;jumps&quot; (steps, precisely) in response to sequential electrical pulses applied to the stator windings. By counting the pulses sent, in theory you know exactly how much the motor has rotated, <strong>with no need for a feedback encoder</strong> — it&#39;s open-loop control.</p>
+<p>The structural flaw, and the reason you won&#39;t find it on critical axes of heavy industrial machines, is that if the motor encounters a load greater than the torque it has available at that instant, it &quot;loses steps&quot;: it keeps receiving pulses but the rotor doesn&#39;t faithfully follow them, and the system silently loses sync between &quot;how many steps I sent&quot; and &quot;where the shaft actually is&quot; — an error that, without a verification encoder, the control system has no way of noticing until something visibly goes wrong downstream.</p>
+<h2>A mental checklist to orient yourself in the field</h2>
+<p>When you see a motor on a machine, the questions that help you classify it quickly are: does it need to position itself precisely, or just spin at a certain speed? Just speed — almost certainly asynchronous with an inverter. Precise, repeatable positioning with variable loads — almost certainly a servomotor. Simple positioning, light and predictable loads, limited budget — probably a stepper. And in all three cases, the common thread stays the same as always: the PLC never &quot;sees&quot; the motor directly, it always sees an electronic intermediary — inverter or drive — that translates your digital commands into a real electrical waveform on the motor winding.</p>
+<p>In the next article we stay in the mechanical world, but change subject: how the motion generated by these motors physically gets where it needs to go, through belts, chains, ball screws, and linear guides.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/articles/04-sensori-di-prossimita-e-presenza/">
+        <span class="post-nav__label">← Previous article</span>
+        <span class="post-nav__title">Inductive, capacitive, photoelectric, encoder: four different ways to let a machine see</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/06-trasmissione-meccanica-del-moto/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">Belts, chains and ball screws: how a motor's motion really gets where it needs to go</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

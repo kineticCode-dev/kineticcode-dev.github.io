@@ -1,0 +1,61 @@
+<svg viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" result="noise" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4.5"/>
+    </filter>
+  </defs>
+  <rect width="900" height="560" fill="#faf6ec"/>
+  <text x="450" y="46" text-anchor="middle" font-size="26" fill="#3a3a3a">Anatomy of an industrial machine</text>
+
+  <!-- Mechanics -->
+  <g filter="url(#sketchy)">
+    <rect x="60" y="90" width="220" height="130" rx="10" fill="#f2b8a8" stroke="#3a3a3a" stroke-width="2.5"/>
+  </g>
+  <text x="170" y="140" text-anchor="middle" font-size="20" fill="#3a3a3a">Mechanics</text>
+  <text x="170" y="165" text-anchor="middle" font-size="13" fill="#3a3a3a">frame, motion,</text>
+  <text x="170" y="183" text-anchor="middle" font-size="13" fill="#3a3a3a">transmission</text>
+
+  <!-- Electrical panel -->
+  <g filter="url(#sketchy)">
+    <rect x="340" y="90" width="220" height="130" rx="10" fill="#a8c5e8" stroke="#3a3a3a" stroke-width="2.5"/>
+  </g>
+  <text x="450" y="140" text-anchor="middle" font-size="20" fill="#3a3a3a">Electrical panel</text>
+  <text x="450" y="165" text-anchor="middle" font-size="13" fill="#3a3a3a">PLC, power,</text>
+  <text x="450" y="183" text-anchor="middle" font-size="13" fill="#3a3a3a">protection</text>
+
+  <!-- Pneumatics/Hydraulics -->
+  <g filter="url(#sketchy)">
+    <rect x="620" y="90" width="220" height="130" rx="10" fill="#d0b8e8" stroke="#3a3a3a" stroke-width="2.5"/>
+  </g>
+  <text x="730" y="140" text-anchor="middle" font-size="20" fill="#3a3a3a">Pneumatics /</text>
+  <text x="730" y="163" text-anchor="middle" font-size="20" fill="#3a3a3a">Hydraulics</text>
+  <text x="730" y="188" text-anchor="middle" font-size="13" fill="#3a3a3a">force, motion</text>
+
+  <!-- Sensors -->
+  <g filter="url(#sketchy)">
+    <rect x="200" y="320" width="220" height="130" rx="10" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="2.5"/>
+  </g>
+  <text x="310" y="370" text-anchor="middle" font-size="20" fill="#3a3a3a">Sensors</text>
+  <text x="310" y="395" text-anchor="middle" font-size="13" fill="#3a3a3a">eyes and ears</text>
+  <text x="310" y="413" text-anchor="middle" font-size="13" fill="#3a3a3a">of the machine</text>
+
+  <!-- PLC brain -->
+  <g filter="url(#sketchy)">
+    <rect x="480" y="320" width="220" height="130" rx="10" fill="#f0dca0" stroke="#3a3a3a" stroke-width="2.5"/>
+  </g>
+  <text x="590" y="370" text-anchor="middle" font-size="20" fill="#3a3a3a">PLC logic</text>
+  <text x="590" y="395" text-anchor="middle" font-size="13" fill="#3a3a3a">the brain that</text>
+  <text x="590" y="413" text-anchor="middle" font-size="13" fill="#3a3a3a">ties it together</text>
+
+  <!-- Arrows (sketchy lines) -->
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2" fill="none">
+    <path d="M170 220 C 170 270, 250 280, 300 320"/>
+    <path d="M450 220 C 450 260, 500 280, 560 320"/>
+    <path d="M730 220 C 730 270, 650 280, 620 320"/>
+    <path d="M420 385 L 480 385"/>
+  </g>
+
+  <text x="450" y="510" text-anchor="middle" font-size="14" fill="#3a3a3a">Every subsystem talks to the PLC through the I/O list —</text>
+  <text x="450" y="532" text-anchor="middle" font-size="14" fill="#3a3a3a">that list is the map of the whole machine.</text>
+</svg>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pneumatique, deuxième épisode : les électrovannes, où un bit de l'automate devient de l'air en mouvement — Kinetic Code</title>
+  <meta name="description" content="Comment fonctionnent les électrovannes pneumatiques 3/2 et 5/2, la symbolique ISO 1219, et comment l'automate commande vraiment un vérin.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/articles/08-pneumatica-valvole/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/08-pneumatica-valvole/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Pneumatique, deuxième épisode : les électrovannes, où un bit de l'automate devient de l'air en mouvement — Kinetic Code">
+  <meta property="og:description" content="Comment fonctionnent les électrovannes pneumatiques 3/2 et 5/2, la symbolique ISO 1219, et comment l'automate commande vraiment un vérin.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/articles/08-pneumatica-valvole/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pneumatique, deuxième épisode : les électrovannes, où un bit de l'automate devient de l'air en mouvement","description":"Comment fonctionnent les électrovannes pneumatiques 3/2 et 5/2, la symbolique ISO 1219, et comment l'automate commande vraiment un vérin.","datePublished":"2026-09-01","inLanguage":"fr","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/" aria-current="page">Articles</a>
+        <a href="/fr/learning-paths/">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/08-pneumatica-valvole/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/08-pneumatica-valvole/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/08-pneumatica-valvole/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/08-pneumatica-valvole/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/08-pneumatica-valvole/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automatisation Industrielle</span>
+        <h1>Pneumatique, deuxième épisode : les électrovannes, où un bit de l'automate devient de l'air en mouvement</h1>
+        <p class="article-hero__excerpt">Comment fonctionnent les électrovannes pneumatiques 3/2 et 5/2, la symbolique ISO 1219, et comment l'automate commande vraiment un vérin.</p>
+        <div class="article-hero__meta">
+          <span>01 sept. 2026</span>
+          <span>·</span>
+          <span>6 min de lecture</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Dans l&#39;article précédent, nous avons suivi l&#39;air comprimé du compresseur jusqu&#39;au seuil de la machine, propre, sec et à pression régulée. Nous arrivons maintenant au composant qui relie vraiment ton logiciel au monde physique de la pneumatique : l&#39;<strong>électrovanne</strong> (<em>solenoid valve</em>). C&#39;est l&#39;exact équivalent pneumatique du contacteur que tu as rencontré en parlant de l&#39;armoire électrique : une sortie automate à basse puissance (24VDC) commande une bobine, qui à son tour agit sur un mécanisme capable de gérer un débit d&#39;air bien plus important que ce qu&#39;un signal électrique seul pourrait jamais faire.</p>
+<h2>Comment ça fonctionne à l&#39;intérieur : un tiroir qui se déplace</h2>
+<p>Pour simplifier, à l&#39;intérieur d&#39;une électrovanne se trouve un petit élément mobile — une pointeau ou un petit piston, appelé <em>tiroir</em> ou <em>spool</em> — qui, en se déplaçant de quelques millimètres à l&#39;intérieur du corps de la vanne, ouvre ou ferme différents canaux internes, reliant ou déconnectant les voies d&#39;air. Quand la bobine électrique est excitée, elle génère un champ magnétique qui attire un noyau métallique relié au tiroir, le déplaçant de la position de repos vers la position de travail. Quand la bobine est désexcitée, un élément de rappel — presque toujours un ressort mécanique, ou dans certains cas la pression de l&#39;air elle-même dirigée de façon appropriée (les distributeurs dits à commande pneumatique, ou <em>pilotés</em>) — ramène le tiroir à la position de repos.</p>
+<p>Ce comportement — repos/travail — est exactement ce que décrit la nomenclature standard des distributeurs, que nous pouvons maintenant décoder : quand tu lis <strong>&quot;distributeur 3/2&quot;</strong> ou <strong>&quot;distributeur 5/2&quot;</strong>, le premier chiffre indique combien d&#39;<strong>orifices</strong> (points de raccordement physiques : alimentation, utilisation, échappement) possède le distributeur, le second chiffre indique combien de <strong>positions</strong> peut prendre le tiroir.</p>
+<h2>Le distributeur 3/2 : le choix pour les vérins à simple effet</h2>
+<p>Un <strong>distributeur 3/2</strong> a trois orifices — typiquement désignés par les lettres <strong>P</strong> (alimentation, <em>pressure</em>), <strong>A</strong> (utilisation, vers l&#39;actionneur) et <strong>R</strong> (échappement, <em>release</em>, vers l&#39;atmosphère) — et deux positions. En position de repos, il relie A à R (l&#39;utilisation est purgée, sans pression) ; quand la bobine est excitée, il relie P à A (l&#39;utilisation reçoit de l&#39;air sous pression), fermant en même temps R.</p>
+<p>Cette configuration est parfaite pour piloter un <strong>vérin à simple effet</strong> : un vérin qui reçoit de l&#39;air comprimé d&#39;un seul côté, et revient en position de repos via un ressort mécanique interne quand l&#39;air est coupé. L&#39;automate ne doit gérer qu&#39;un seul bit : exciter la bobine pour faire sortir le vérin, la désexciter pour qu&#39;il revienne (par gravité ou par le ressort de rappel).</p>
+<p><img src="/assets/images/articles/valve-symbols-3-2-5-2.svg" alt="Comparison between a 3/2-way valve for single-acting cylinders and a 5/2-way valve for double-acting cylinders, with ISO 1219 style symbols" loading="lazy"></p>
+<h2>Le distributeur 5/2 : le choix le plus courant, pour les vérins à double effet</h2>
+<p>Beaucoup plus répandu dans l&#39;industrie est le <strong>distributeur 5/2</strong> : cinq orifices (une alimentation P, deux utilisations A et B, deux échappements distincts, souvent désignés R et S) et deux positions. Dans une position, il relie P à A et B à l&#39;échappement ; dans l&#39;autre position (inversée), il relie P à B et A à l&#39;échappement. Le résultat pratique : tu as toujours deux lignes de travail, l&#39;une poussant le vérin dans un sens et l&#39;autre le poussant dans le sens opposé, <strong>toutes deux activement sous pression à tour de rôle</strong> — jamais une poussée de ressort, toujours de l&#39;air.</p>
+<p>C&#39;est la configuration typique pour les <strong>vérins à double effet</strong>, où l&#39;air comprimé pousse le piston dans les deux directions (une chambre pour la sortie, une pour la rentrée), sans avoir besoin d&#39;aucun ressort mécanique interne. L&#39;avantage pratique est double : la course de retour est aussi activement contrôlée que celle de sortie (utile si une force est également nécessaire dans le mouvement de rentrée, pas seulement de sortie), et le vérin peut être monté dans n&#39;importe quelle orientation — horizontale, verticale, à l&#39;envers — sans dépendre de la gravité ou d&#39;un ressort pour terminer sa course de retour.</p>
+<p>Du point de vue du câblage vers l&#39;automate, un distributeur 5/2 à <strong>bobine simple</strong> (où un ressort mécanique ramène le tiroir en position de repos quand la bobine se désexcite) se commande exactement comme un 3/2 : un seul bit de sortie, un seul état &quot;vrai&quot; pour la sortie et &quot;faux&quot; pour le repos. Mais il existe aussi une variante très répandue, le <strong>5/2 à double bobine</strong> (<em>bistable</em>) : il n&#39;a aucun ressort de rappel, et le tiroir conserve sa position même quand les deux bobines sont désexcitées — un détail à l&#39;impact pratique énorme, dont nous parlons dans un instant.</p>
+<h2>Monostable vs bistable : un choix aux conséquences réelles sur la sécurité</h2>
+<p>Si un distributeur est <strong>monostable</strong> (avec une seule bobine et un rappel par ressort), il a un état de repos bien défini : dès que la tension est coupée — même à cause d&#39;une panne, d&#39;une urgence, ou simplement parce que l&#39;automate passe en stop — le tiroir revient toujours à la même position prédéfinie, et avec lui le vérin va dans une position connue et prévisible. Ce comportement est souvent, délibérément, exploité pour la sécurité : si le vérin d&#39;une pince doit <em>toujours</em> s&#39;ouvrir en cas d&#39;urgence pour libérer un opérateur, on choisit un distributeur monostable dont le ressort ramène le distributeur à l&#39;état &quot;pince ouverte&quot; par construction, indépendamment du logiciel.</p>
+<p>Un distributeur <strong>bistable</strong>, en revanche, conserve la dernière position commandée même en l&#39;absence d&#39;alimentation — propriété précieuse quand un actionneur doit &quot;rester où il était&quot; pendant une coupure (par exemple, un actionneur qui maintient serrée une pièce lourde ne doit pas la relâcher brusquement juste parce que le courant a été coupé), mais qui exige du logiciel un raisonnement plus attentif sur l&#39;état réel de la machine au redémarrage : l&#39;automate, après une coupure de courant, ne peut pas supposer automatiquement dans quelle position se trouve un actionneur bistable — il doit le vérifier avec les capteurs de fin de course (nous en parlons dans le prochain article), pas avec la mémoire de sa dernière commande, qui entre-temps pourrait être complètement obsolète.</p>
+<h2>Les îlots de distributeurs : où l&#39;on trouve des dizaines d&#39;électrovannes regroupées</h2>
+<p>Dans la pratique industrielle réelle, tu trouveras rarement une électrovanne isolée : elles sont presque toujours regroupées dans un <strong>îlot de distributeurs</strong> (<em>valve island</em> ou <em>valve manifold</em>), un bloc compact qui partage une alimentation d&#39;air commune unique (souvent juste en aval de l&#39;unité FRL vue dans l&#39;article précédent) et, de plus en plus dans les machines modernes, une connexion électrique unique à l&#39;automate via un module de bus de terrain intégré directement sur l&#39;îlot lui-même — au lieu de câbler individuellement chaque bobine jusqu&#39;à l&#39;armoire avec un câble dédié. C&#39;est un avant-goût d&#39;un sujet que nous traiterons plus en détail en parlant des bus de terrain : économiser des dizaines ou des centaines de mètres de câble, en les remplaçant par un seul câble de bus, est l&#39;un des principaux moteurs derrière la décentralisation des E/S dans les machines modernes.</p>
+<p>Dans le prochain article, nous bouclons la boucle de la pneumatique en arrivant enfin au composant qui met vraiment l&#39;air en mouvement : les vérins, à simple et double effet, comment ils sont dimensionnés et comment lire une fiche technique réelle.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/articles/07-pneumatica-produzione-e-trattamento-aria/">
+        <span class="post-nav__label">← Article précédent</span>
+        <span class="post-nav__title">Pneumatique, premier épisode : d'où vient vraiment l'air comprimé qui fait bouger une machine</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/articles/09-pneumatica-cilindri-e-attuatori/">
+        <span class="post-nav__label">Article suivant →</span>
+        <span class="post-nav__title">Pneumatique, troisième épisode : vérins et actionneurs, où l'air devient enfin mouvement</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/articles/">← Retour à tous les articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

@@ -5,10 +5,6 @@
   <url><loc>https://kineticcode-dev.github.io/it/articles/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/dashboard/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/learning-paths/</loc></url>
-  <url><loc>https://kineticcode-dev.github.io/it/learning-paths/flutter/</loc></url>
-  <url><loc>https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo0-setup/</loc></url>
-  <url><loc>https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo1-le-basi-di-dart/</loc></url>
-  <url><loc>https://kineticcode-dev.github.io/it/learning-paths/flutter/modulo0-articolo2-paradigma-dichiarativo/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-00-articolo-1-cose-un-thread/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-00-articolo-2-race-condition-e-thread-unico-qt/</loc></url>
@@ -32,6 +28,18 @@
   <url><loc>https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-06-articolo-1-architettura-cattura-buffer-limitato/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-06-articolo-2-pool-elaborazione-cancellazione-completa/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/learning-paths/multithreading-cpp/modulo-06-articolo-3-progetto-pipeline-visione-capstone/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/12-bus-di-campo-e-architettura-io/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/11-sicurezza-funzionale/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/10-idraulica-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/09-pneumatica-cilindri-e-attuatori/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/08-pneumatica-valvole/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/07-pneumatica-produzione-e-trattamento-aria/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/06-trasmissione-meccanica-del-moto/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/05-motori-e-azionamenti/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/04-sensori-di-prossimita-e-presenza/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/03-sensoristica-industriale-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/02-il-quadro-elettrico/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/it/articles/01-anatomia-di-una-macchina-industriale/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/articles/matrix-multiplication-optimization-part-3/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/articles/matrix-multiplication-optimization-part-2/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/it/articles/matrix-multiplication-optimization-part-1/</loc></url>
@@ -71,6 +79,18 @@
   <url><loc>https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-06-article-1-architecture-capture-bounded-buffer/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-06-article-2-processing-pool-full-cancellation/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/en/learning-paths/multithreading-cpp/module-06-article-3-project-vision-pipeline-capstone/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/12-bus-di-campo-e-architettura-io/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/11-sicurezza-funzionale/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/10-idraulica-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/09-pneumatica-cilindri-e-attuatori/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/07-pneumatica-produzione-e-trattamento-aria/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/06-trasmissione-meccanica-del-moto/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/05-motori-e-azionamenti/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/04-sensori-di-prossimita-e-presenza/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/03-sensoristica-industriale-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/02-il-quadro-elettrico/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/en/articles/01-anatomia-di-una-macchina-industriale/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-3/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-2/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/en/articles/matrix-multiplication-optimization-part-1/</loc></url>
@@ -110,6 +130,18 @@
   <url><loc>https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-06-articulo-1-arquitectura-captura-buffer-limitado/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-06-articulo-2-pool-procesamiento-cancelacion-completa/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/es/learning-paths/multithreading-cpp/modulo-06-articulo-3-proyecto-pipeline-vision-capstone/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/12-bus-di-campo-e-architettura-io/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/11-sicurezza-funzionale/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/10-idraulica-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/09-pneumatica-cilindri-e-attuatori/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/08-pneumatica-valvole/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/07-pneumatica-produzione-e-trattamento-aria/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/06-trasmissione-meccanica-del-moto/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/05-motori-e-azionamenti/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/04-sensori-di-prossimita-e-presenza/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/03-sensoristica-industriale-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/02-il-quadro-elettrico/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/es/articles/01-anatomia-di-una-macchina-industriale/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/es/articles/matrix-multiplication-optimization-part-3/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/es/articles/matrix-multiplication-optimization-part-2/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/es/articles/matrix-multiplication-optimization-part-1/</loc></url>
@@ -149,6 +181,18 @@
   <url><loc>https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-06-article-1-architecture-capture-buffer-limite/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-06-article-2-pool-traitement-annulation-complete/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/fr/learning-paths/multithreading-cpp/module-06-article-3-projet-pipeline-vision-capstone/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/12-bus-di-campo-e-architettura-io/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/11-sicurezza-funzionale/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/10-idraulica-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/09-pneumatica-cilindri-e-attuatori/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/08-pneumatica-valvole/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/07-pneumatica-produzione-e-trattamento-aria/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/06-trasmissione-meccanica-del-moto/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/05-motori-e-azionamenti/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/04-sensori-di-prossimita-e-presenza/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/03-sensoristica-industriale-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/02-il-quadro-elettrico/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/fr/articles/01-anatomia-di-una-macchina-industriale/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-3/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-2/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/fr/articles/matrix-multiplication-optimization-part-1/</loc></url>
@@ -188,6 +232,18 @@
   <url><loc>https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-06-artikel-1-architektur-erfassung-begrenzter-puffer/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-06-artikel-2-verarbeitungspool-vollstaendige-abbruchbehandlung/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/de/learning-paths/multithreading-cpp/modul-06-artikel-3-projekt-vision-pipeline-capstone/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/12-bus-di-campo-e-architettura-io/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/11-sicurezza-funzionale/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/10-idraulica-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/09-pneumatica-cilindri-e-attuatori/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/08-pneumatica-valvole/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/07-pneumatica-produzione-e-trattamento-aria/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/06-trasmissione-meccanica-del-moto/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/05-motori-e-azionamenti/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/04-sensori-di-prossimita-e-presenza/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/03-sensoristica-industriale-le-basi/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/02-il-quadro-elettrico/</loc></url>
+  <url><loc>https://kineticcode-dev.github.io/de/articles/01-anatomia-di-una-macchina-industriale/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/de/articles/matrix-multiplication-optimization-part-3/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/de/articles/matrix-multiplication-optimization-part-2/</loc></url>
   <url><loc>https://kineticcode-dev.github.io/de/articles/matrix-multiplication-optimization-part-1/</loc></url>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PNP, NPN, numérique, analogique : le langage avec lequel les capteurs parlent à l'automate — Kinetic Code</title>
+  <meta name="description" content="Les bases des capteurs industriels : sorties PNP et NPN, signaux numériques et analogiques (4-20mA, 0-10V), et pourquoi confondre ces concepts est l'erreur de câblage la plus courante.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/articles/03-sensoristica-industriale-le-basi/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/03-sensoristica-industriale-le-basi/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/03-sensoristica-industriale-le-basi/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/03-sensoristica-industriale-le-basi/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/03-sensoristica-industriale-le-basi/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/03-sensoristica-industriale-le-basi/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/03-sensoristica-industriale-le-basi/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="PNP, NPN, numérique, analogique : le langage avec lequel les capteurs parlent à l'automate — Kinetic Code">
+  <meta property="og:description" content="Les bases des capteurs industriels : sorties PNP et NPN, signaux numériques et analogiques (4-20mA, 0-10V), et pourquoi confondre ces concepts est l'erreur de câblage la plus courante.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/articles/03-sensoristica-industriale-le-basi/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"PNP, NPN, numérique, analogique : le langage avec lequel les capteurs parlent à l'automate","description":"Les bases des capteurs industriels : sorties PNP et NPN, signaux numériques et analogiques (4-20mA, 0-10V), et pourquoi confondre ces concepts est l'erreur de câblage la plus courante.","datePublished":"2026-09-01","inLanguage":"fr","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/" aria-current="page">Articles</a>
+        <a href="/fr/learning-paths/">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/03-sensoristica-industriale-le-basi/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/03-sensoristica-industriale-le-basi/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/03-sensoristica-industriale-le-basi/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/03-sensoristica-industriale-le-basi/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/03-sensoristica-industriale-le-basi/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automatisation Industrielle</span>
+        <h1>PNP, NPN, numérique, analogique : le langage avec lequel les capteurs parlent à l'automate</h1>
+        <p class="article-hero__excerpt">Les bases des capteurs industriels : sorties PNP et NPN, signaux numériques et analogiques (4-20mA, 0-10V), et pourquoi confondre ces concepts est l'erreur de câblage la plus courante.</p>
+        <div class="article-hero__meta">
+          <span>01 sept. 2026</span>
+          <span>·</span>
+          <span>6 min de lecture</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>S&#39;il y a une erreur que, tôt ou tard, commet quiconque travaille sur le terrain — de l&#39;électricien au jeune diplômé en mécatronique, en passant par toi —, c&#39;est de câbler un capteur PNP là où il fallait un NPN, ou l&#39;inverse, et de passer vingt minutes à se demander pourquoi l&#39;automate ne voit absolument rien alors que la LED du capteur clignote joyeusement pour signaler qu&#39;il détecte quelque chose. Ce n&#39;est pas une erreur stupide : elle naît d&#39;un concept subtil, presque toujours mal expliqué, que je veux aujourd&#39;hui t&#39;expliquer une fois pour toutes.</p>
+<h2>Un capteur n&#39;est pas un interrupteur, mais il se comporte comme tel</h2>
+<p>Pars d&#39;une image simple : un capteur de proximité industriel — qu&#39;il soit inductif, capacitif ou photoélectrique, nous les verrons dans le prochain article — fait dans son essence exactement ce que fait un interrupteur mural : il ferme ou ouvre un contact électrique en réponse à quelque chose (dans le cas de l&#39;interrupteur, ta main ; dans le cas du capteur, la présence d&#39;un objet). La différence, c&#39;est que l&#39;interrupteur mural est un bout de métal que tu fermes toi-même mécaniquement, tandis que le capteur contient un petit circuit électronique qui <em>simule</em> la fermeture d&#39;un contact en utilisant un transistor comme interrupteur électronique.</p>
+<p>Et c&#39;est précisément là que naît la distinction PNP/NPN : elle dépend de <strong>quel côté du circuit le transistor du capteur met en relation avec la sortie</strong>.</p>
+<h2>PNP : le capteur &quot;offre&quot; le positif</h2>
+<p>Un capteur <strong>PNP</strong> (on dit aussi <em>sourcing</em>, &quot;qui fournit du courant&quot;) relie sa sortie au <strong>+24V</strong> de l&#39;alimentation lorsqu&#39;il est actif. En pratique, quand le capteur détecte l&#39;objet, tu trouves 24V sur la sortie par rapport à la masse. L&#39;entrée de l&#39;automate, de son côté, doit être configurée (ou plus souvent, sur les automates modernes, déjà câblée) pour reconnaître comme &quot;vrai&quot; un niveau haut sur l&#39;entrée, avec la référence 0V reliée en commun.</p>
+<h2>NPN : le capteur &quot;aspire&quot; vers la masse</h2>
+<p>Un capteur <strong>NPN</strong> (dit aussi <em>sinking</em>, &quot;qui absorbe du courant&quot;) fait exactement l&#39;inverse : lorsqu&#39;il est actif, il relie sa sortie au <strong>0V</strong> (masse). L&#39;entrée de l&#39;automate doit dans ce cas voir un niveau bas comme &quot;vrai&quot;, avec le +24V ramené en commun du côté opposé.</p>
+<p><img src="/assets/images/articles/pnp-vs-npn-wiring.svg" alt="Wiring comparison between a PNP sourcing sensor and an NPN sinking sensor connected to a PLC input" loading="lazy"></p>
+<p>Regarde bien le schéma : la différence physique se trouve entièrement là, dans quelle borne du capteur — celle du signal — est tirée à +24V ou à 0V quand le capteur commute. Si tu câbles un capteur PNP sur une entrée automate câblée pour recevoir du NPN (c&#39;est-à-dire avec le commun à +24V au lieu de 0V), le circuit ne se ferme tout simplement jamais dans le bon sens : l&#39;entrée ne voit aucune variation de niveau utile, et pour l&#39;automate le capteur &quot;n&#39;est jamais actif&quot;, même s&#39;il détecte physiquement l&#39;objet à la perfection et que sa LED le confirme.</p>
+<p><strong>Une règle pratique qui te fera gagner du temps sur le terrain :</strong> en Europe, pour des raisons historiques et normatives, la grande majorité des capteurs industriels et des automates est câblée en <strong>PNP</strong>. Sauf indication contraire dans la liste d&#39;E/S ou sur l&#39;étiquette du capteur, pars du principe qu&#39;il s&#39;agit de PNP — mais vérifie toujours, car dans le secteur automobile et dans de nombreuses installations d&#39;origine américaine ou asiatique on trouve encore beaucoup de NPN, et les deux mondes coexistent plus souvent qu&#39;on ne le pense, même au sein d&#39;une même machine.</p>
+<h2>Numérique vs analogique : une question différente de PNP/NPN</h2>
+<p>PNP et NPN concernent <em>comment</em> un signal numérique (allumé/éteint, présent/absent) est transporté électriquement. Mais tous les capteurs ne donnent pas une réponse binaire. Beaucoup — pense à un capteur de pression, de température, ou un transducteur de position linéaire — doivent communiquer une <strong>valeur continue</strong> : pas &quot;il y a de la pression&quot; mais &quot;la pression est de 3,7 bar&quot;. Pour cela, il faut des signaux <strong>analogiques</strong>, et dans le monde industriel on en trouve essentiellement deux types, presque toujours les mêmes où que tu ailles :</p>
+<p><strong>Courant 4-20mA.</strong> Le capteur fait circuler dans le circuit un courant proportionnel à la grandeur mesurée : 4mA correspond à la valeur minimale de l&#39;échelle (exemple : 0 bar), 20mA à la valeur maximale (exemple : 10 bar). C&#39;est le standard le plus répandu dans l&#39;industrie lourde, et la raison en est élégante d&#39;un point de vue technique : étant un signal en courant et non en tension, il ne subit pas les chutes de tension le long de câbles longs (un problème sérieux quand on parle de dizaines ou de centaines de mètres de câblage dans une usine), et il est immunisé contre la plupart des perturbations électromagnétiques qui affectent en revanche les signaux en tension. Remarque un détail astucieux de la norme : la valeur minimale n&#39;est pas 0mA mais 4mA. Cela permet à l&#39;automate de distinguer une valeur réellement nulle (4mA) d&#39;un câble coupé ou d&#39;un capteur déconnecté (0mA) : un défaut génère une valeur hors échelle reconnaissable au lieu d&#39;une erreur silencieuse qui ressemble à une donnée valide.</p>
+<p><strong>Tension 0-10V.</strong> Conceptuellement plus simple — le capteur génère une tension proportionnelle à la grandeur mesurée —, mais plus sensible aux perturbations et aux chutes de tension sur des câbles longs, donc typiquement réservée aux courtes distances, dans ou près de l&#39;armoire.</p>
+<p>Le module d&#39;entrée analogique de l&#39;automate, de son côté, convertit ce signal continu en un nombre numérique via un convertisseur analogique-numérique (CAN), qui te renvoie typiquement une valeur entière sur 12 ou 16 bits à remettre à l&#39;échelle dans ton code sur la grandeur physique réelle — c&#39;est là que dans ton programme tu écris ces fonctions de mise à l&#39;échelle qui transforment <code>raw_value</code> en <code>pressure_bar</code>, avec la formule linéaire qui relie les deux extrémités de l&#39;échelle.</p>
+<h2>NO et NF : l&#39;autre distinction qui compte</h2>
+<p>Une dernière paire de sigles que tu trouveras partout, et qui est totalement indépendante de PNP/NPN : <strong>NO</strong> (<em>Normally Open</em>, normalement ouvert) et <strong>NF</strong> (<em>Normally Closed</em>, normalement fermé, souvent noté NC en anglais). Ils décrivent l&#39;état du contact — ou de la sortie électronique équivalente — quand le capteur <em>n&#39;est pas</em> actif, c&#39;est-à-dire au repos. Un capteur NO ne laisse passer aucun signal tant qu&#39;il n&#39;a pas détecté l&#39;objet ; un capteur NF fait exactement l&#39;inverse : il laisse toujours passer un signal, sauf quand il détecte l&#39;objet (ou quand il tombe en panne, ce qui en fait un choix très courant dans les circuits de sécurité — si le câble est coupé, le circuit s&#39;ouvre et le système l&#39;interprète correctement comme une alarme, au lieu d&#39;un silence ambigu).</p>
+<p>Assemble tous ces sigles — PNP/NPN, NO/NF, numérique/analogique — et tu auras décodé la grande majorité des indications que tu trouves à côté d&#39;un capteur dans un catalogue ou une liste d&#39;E/S : <code>PNP NO digital</code>, <code>NPN NF digital</code>, <code>4-20mA analog</code>. Ce ne sont plus des sigles abstraits : ce sont des instructions de câblage précises, et tu sais désormais exactement quoi faire quand tu les lis.</p>
+<p>Dans le prochain article, nous entrons dans le détail des capteurs les plus courants que tu rencontreras physiquement sur le terrain : inductifs, capacitifs, photoélectriques et codeurs — comment ils fonctionnent à l&#39;intérieur, et quand on choisit un type plutôt qu&#39;un autre.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/articles/02-il-quadro-elettrico/">
+        <span class="post-nav__label">← Article précédent</span>
+        <span class="post-nav__title">L'armoire électrique expliquée à qui ne l'a jusqu'ici qu'entraperçue ouverte</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/articles/04-sensori-di-prossimita-e-presenza/">
+        <span class="post-nav__label">Article suivant →</span>
+        <span class="post-nav__title">Inductif, capacitif, photoélectrique, codeur : quatre façons différentes de faire voir les choses à une machine</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/articles/">← Retour à tous les articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

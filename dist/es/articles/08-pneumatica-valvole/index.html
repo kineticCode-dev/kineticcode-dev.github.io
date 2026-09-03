@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neumática, segunda entrega: las electroválvulas, donde un bit del PLC se convierte en aire en movimiento — Kinetic Code</title>
+  <meta name="description" content="Cómo funcionan las electroválvulas neumáticas 3/2 y 5/2, la simbología ISO 1219, y cómo el PLC realmente comanda un cilindro.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/articles/08-pneumatica-valvole/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/08-pneumatica-valvole/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Neumática, segunda entrega: las electroválvulas, donde un bit del PLC se convierte en aire en movimiento — Kinetic Code">
+  <meta property="og:description" content="Cómo funcionan las electroválvulas neumáticas 3/2 y 5/2, la simbología ISO 1219, y cómo el PLC realmente comanda un cilindro.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/articles/08-pneumatica-valvole/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Neumática, segunda entrega: las electroválvulas, donde un bit del PLC se convierte en aire en movimiento","description":"Cómo funcionan las electroválvulas neumáticas 3/2 y 5/2, la simbología ISO 1219, y cómo el PLC realmente comanda un cilindro.","datePublished":"2026-09-01","inLanguage":"es","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/" aria-current="page">Artículos</a>
+        <a href="/es/learning-paths/">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/08-pneumatica-valvole/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/08-pneumatica-valvole/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/08-pneumatica-valvole/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/08-pneumatica-valvole/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/08-pneumatica-valvole/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automatización Industrial</span>
+        <h1>Neumática, segunda entrega: las electroválvulas, donde un bit del PLC se convierte en aire en movimiento</h1>
+        <p class="article-hero__excerpt">Cómo funcionan las electroválvulas neumáticas 3/2 y 5/2, la simbología ISO 1219, y cómo el PLC realmente comanda un cilindro.</p>
+        <div class="article-hero__meta">
+          <span>01 sep 2026</span>
+          <span>·</span>
+          <span>6 min de lectura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>En el artículo anterior seguimos el aire comprimido desde el compresor hasta el umbral de la máquina, limpio, seco y con la presión regulada. Ahora llegamos al componente que realmente conecta tu software con el mundo físico de la neumática: la <strong>electroválvula</strong> (<em>solenoid valve</em>). Es el equivalente neumático exacto del contactor que encontraste al hablar del cuadro eléctrico: una salida del PLC de baja potencia (24VDC) comanda una bobina, que a su vez actúa sobre un mecanismo capaz de gestionar un caudal de aire mucho mayor de lo que una señal eléctrica por sí sola podría manejar jamás.</p>
+<h2>Cómo funciona por dentro: una aguja que se desplaza</h2>
+<p>Simplificando, dentro de una electroválvula hay un pequeño elemento móvil — una aguja o un pequeño pistón, llamado <em>corredera</em> o <em>spool</em> — que, desplazándose pocos milímetros dentro del cuerpo de la válvula, abre o cierra varios canales internos, conectando o desconectando las vías de aire. Cuando la bobina eléctrica se excita, genera un campo magnético que atrae un núcleo metálico conectado a la corredera, desplazándolo de la posición de reposo a la de trabajo. Cuando la bobina se desexcita, un elemento de retorno — casi siempre un muelle mecánico, o en algunos casos la propia presión del aire adecuadamente dirigida (las llamadas válvulas de mando neumático, o <em>pilotadas</em>) — devuelve la corredera a la posición de reposo.</p>
+<p>Este comportamiento — reposo/trabajo — es exactamente lo que describe la nomenclatura estándar de las válvulas, que ahora podemos descodificar: cuando lees <strong>&quot;válvula 3/2&quot;</strong> o <strong>&quot;válvula 5/2&quot;</strong>, el primer número indica cuántas <strong>vías</strong> (puertos físicos de conexión: alimentación, uso, escape) tiene la válvula, el segundo número indica cuántas <strong>posiciones</strong> puede adoptar la corredera.</p>
+<h2>La válvula 3/2: la elección para cilindros de simple efecto</h2>
+<p>Una <strong>válvula 3/2</strong> tiene tres vías — típicamente indicadas con las letras <strong>P</strong> (alimentación, <em>pressure</em>), <strong>A</strong> (uso, hacia el actuador) y <strong>R</strong> (escape, <em>release</em>, hacia la atmósfera) — y dos posiciones. En la posición de reposo conecta A con R (el uso está sin presión, descargado); cuando la bobina se excita, conecta P con A (el uso recibe aire a presión), cerrando al mismo tiempo R.</p>
+<p>Esta configuración es perfecta para pilotar un <strong>cilindro de simple efecto</strong>: un cilindro que recibe aire comprimido solo por un lado, y vuelve a la posición de reposo mediante un muelle mecánico interno cuando se retira el aire. El PLC solo tiene que gestionar un único bit: excitar la bobina para que el cilindro avance, desexcitarla para que vuelva (por gravedad o por el muelle de retorno).</p>
+<p><img src="/assets/images/articles/valve-symbols-3-2-5-2.svg" alt="Comparison between a 3/2-way valve for single-acting cylinders and a 5/2-way valve for double-acting cylinders, with ISO 1219 style symbols" loading="lazy"></p>
+<h2>La válvula 5/2: la elección más común, para cilindros de doble efecto</h2>
+<p>Mucho más extendida en la industria es la <strong>válvula 5/2</strong>: cinco vías (una alimentación P, dos usos A y B, dos escapes distintos, a menudo indicados como R y S) y dos posiciones. En una posición, conecta P con A y B con el escape; en la otra posición (invertida), conecta P con B y A con el escape. El resultado práctico: siempre tienes dos líneas de trabajo, una que empuja el cilindro en un sentido y otra que lo empuja en el sentido opuesto, <strong>ambas activamente presurizadas por turno</strong> — nunca un empuje del muelle, siempre del aire.</p>
+<p>Esta es la configuración típica para los <strong>cilindros de doble efecto</strong>, donde el aire comprimido empuja el pistón en ambas direcciones (una cámara para la extensión, otra para la retracción), sin necesidad de ningún muelle mecánico interno. La ventaja práctica es doble: la carrera de retorno está tan activamente controlada como la de ida (útil si se necesita fuerza también en el movimiento de retroceso, no solo de salida), y el cilindro puede colocarse en cualquier orientación — horizontal, vertical, boca abajo — sin depender de la gravedad o de un muelle para completar la carrera de retorno.</p>
+<p>Desde el punto de vista del cableado hacia el PLC, una válvula 5/2 con <strong>bobina única</strong> (en la que un muelle mecánico devuelve la corredera a la posición de reposo cuando la bobina se desexcita) se comanda exactamente como una 3/2: un único bit de salida, un único estado &quot;verdadero&quot; para la extensión y &quot;falso&quot; para el reposo. Pero existe también una variante muy extendida, la <strong>5/2 de doble bobina</strong> (<em>biestable</em>): no tiene ningún muelle de retorno, y la corredera mantiene su posición incluso cuando ambas bobinas están desexcitadas — un detalle con un impacto práctico enorme, del que hablamos a continuación.</p>
+<h2>Monoestable vs. biestable: una elección con consecuencias reales sobre la seguridad</h2>
+<p>Si una válvula es <strong>monoestable</strong> (con una sola bobina y retorno por muelle), tiene un estado de reposo bien definido: en cuanto se quita la tensión — incluso por una avería, una emergencia, o simplemente porque el PLC pasa a stop — la corredera vuelve siempre a la misma posición predefinida, y con ella el cilindro va a una posición conocida y predecible. Este comportamiento se aprovecha a menudo, deliberadamente, para la seguridad: si el cilindro de una pinza debe <em>abrirse siempre</em> en caso de emergencia para liberar a un operario, se elige una válvula monoestable cuyo muelle devuelve la válvula al estado &quot;pinza abierta&quot; por construcción, independientemente del software.</p>
+<p>Una válvula <strong>biestable</strong>, en cambio, mantiene la última posición comandada incluso sin alimentación — propiedad valiosa cuando un actuador necesita &quot;quedarse donde estaba&quot; durante una interrupción (por ejemplo, un actuador que sujeta una pieza pesada no debe soltarla de repente solo porque se ha ido la corriente), pero requiere del software un razonamiento más cuidadoso sobre el estado real de la máquina al reiniciar: el PLC, tras un corte de suministro, no puede asumir automáticamente en qué posición se encuentra un actuador biestable — debe verificarlo con los sensores de fin de carrera (hablamos de ellos en el próximo artículo), no con la memoria de su última orden, que mientras tanto podría estar completamente obsoleta.</p>
+<h2>Las islas de válvulas: donde encuentras decenas de electroválvulas agrupadas</h2>
+<p>En la práctica industrial real, raramente encontrarás una única electroválvula aislada: casi siempre están agrupadas en una <strong>isla de válvulas</strong> (<em>valve island</em> o <em>valve manifold</em>), un bloque compacto que comparte una única alimentación de aire común (a menudo justo aguas abajo de la unidad FRL vista en el artículo anterior) y, cada vez más en las máquinas modernas, una única conexión eléctrica al PLC mediante un módulo de bus de campo integrado directamente en la propia isla — en lugar de cablear individualmente cada bobina hasta el cuadro con un cable dedicado. Es un adelanto de un tema que trataremos con más calma al hablar de buses de campo: ahorrar decenas o cientos de metros de cable, sustituyéndolos por un único cable de bus, es uno de los motores principales detrás de la descentralización de la I/O en las máquinas modernas.</p>
+<p>En el próximo artículo cerramos el círculo de la neumática llegando finalmente al componente que realmente pone el aire en movimiento: los cilindros, de simple y doble efecto, cómo se dimensionan y cómo se lee una hoja de datos real.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/articles/07-pneumatica-produzione-e-trattamento-aria/">
+        <span class="post-nav__label">← Artículo anterior</span>
+        <span class="post-nav__title">Neumática, primera entrega: de dónde viene realmente el aire comprimido que mueve una máquina</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/articles/09-pneumatica-cilindri-e-attuatori/">
+        <span class="post-nav__label">Artículo siguiente →</span>
+        <span class="post-nav__title">Neumática, tercera entrega: cilindros y actuadores, donde el aire finalmente se convierte en movimiento</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/articles/">← Volver a todos los artículos</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

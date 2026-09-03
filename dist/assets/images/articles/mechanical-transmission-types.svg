@@ -1,0 +1,49 @@
+<svg viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="29"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+  </defs>
+  <rect width="900" height="560" fill="#faf6ec"/>
+  <text x="450" y="40" text-anchor="middle" font-size="24" fill="#3a3a3a">Turning rotation into motion</text>
+
+  <!-- Belt -->
+  <g filter="url(#sketchy)">
+    <rect x="50" y="80" width="380" height="200" rx="10" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="2.2"/>
+    <circle cx="130" cy="200" r="30" fill="none" stroke="#3a3a3a" stroke-width="2.5"/>
+    <circle cx="330" cy="200" r="30" fill="none" stroke="#3a3a3a" stroke-width="2.5"/>
+    <path d="M130 170 L330 170 M130 230 L330 230" stroke="#3a3a3a" stroke-width="2.5" fill="none"/>
+  </g>
+  <text x="240" y="110" text-anchor="middle" font-size="16" fill="#3a3a3a">Belt / pulley</text>
+  <text x="240" y="255" text-anchor="middle" font-size="12" fill="#3a3a3a">fast, quiet, some slip</text>
+
+  <!-- Chain -->
+  <g filter="url(#sketchy)">
+    <rect x="470" y="80" width="380" height="200" rx="10" fill="#f0dca0" stroke="#3a3a3a" stroke-width="2.2"/>
+    <circle cx="550" cy="200" r="30" fill="none" stroke="#3a3a3a" stroke-width="2.5"/>
+    <circle cx="750" cy="200" r="30" fill="none" stroke="#3a3a3a" stroke-width="2.5"/>
+    <path d="M550 170 L750 170 M550 230 L750 230" stroke="#3a3a3a" stroke-width="3" stroke-dasharray="5 4" fill="none"/>
+  </g>
+  <text x="660" y="110" text-anchor="middle" font-size="16" fill="#3a3a3a">Chain / sprocket</text>
+  <text x="660" y="255" text-anchor="middle" font-size="12" fill="#3a3a3a">no slip, heavy loads</text>
+
+  <!-- Ball screw -->
+  <g filter="url(#sketchy)">
+    <rect x="50" y="320" width="380" height="200" rx="10" fill="#f2b8a8" stroke="#3a3a3a" stroke-width="2.2"/>
+    <line x1="100" y1="420" x2="380" y2="420" stroke="#3a3a3a" stroke-width="4"/>
+    <path d="M110 400 L120 440 L130 400 L140 440 L150 400 L160 440 L170 400 L180 440 L190 400 L200 440 L210 400 L220 440 L230 400 L240 440 L250 400 L260 440 L270 400 L280 440 L290 400 L300 440 L310 400 L320 440 L330 400 L340 440 L350 400 L360 440" stroke="#3a3a3a" stroke-width="1.4" fill="none"/>
+    <rect x="270" y="395" width="50" height="50" rx="6" fill="#faf6ec" stroke="#3a3a3a" stroke-width="2"/>
+  </g>
+  <text x="240" y="350" text-anchor="middle" font-size="16" fill="#3a3a3a">Ball screw</text>
+  <text x="240" y="495" text-anchor="middle" font-size="12" fill="#3a3a3a">rotation to precise linear motion</text>
+
+  <!-- Linear guide -->
+  <g filter="url(#sketchy)">
+    <rect x="470" y="320" width="380" height="200" rx="10" fill="#d0b8e8" stroke="#3a3a3a" stroke-width="2.2"/>
+    <rect x="510" y="410" width="300" height="16" fill="#3a3a3a" opacity="0.7"/>
+    <rect x="600" y="390" width="70" height="46" rx="6" fill="#faf6ec" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="660" y="350" text-anchor="middle" font-size="16" fill="#3a3a3a">Linear guide</text>
+  <text x="660" y="495" text-anchor="middle" font-size="12" fill="#3a3a3a">carries load, keeps alignment</text>
+</svg>

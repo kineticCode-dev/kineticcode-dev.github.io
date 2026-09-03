@@ -1,0 +1,41 @@
+---
+title: "Hydraulik für alle, die aus der Pneumatik kommen: gleiche Logik, viel größere Kräfte"
+description: "Die Grundlagen der industriellen Hydraulik — Pumpen, Hydraulikmotoren, Ventile — und wann sie sich gegenüber der Pneumatik wirklich lohnt."
+date: "2026-09-01"
+category: "automazione"
+tags: ["Hydraulics", "Pneumatics", "Automation", "Fundamentals"]
+---
+
+Nach drei Artikeln zur Pneumatik könnte dir die Hydraulik auf den ersten Blick wie ein redundantes Kapitel erscheinen: Pumpen, Ventile, Zylinder — dieselben Namen, dieselben Konzepte, fast dasselbe Vokabular. Und das stimmt: Die konzeptionelle Architektur ist überraschend ähnlich. Aber die Wahl zwischen den beiden Welten ist nie zufällig, und zu verstehen, warum ein Konstrukteur die Hydraulik statt der Pneumatik wählt — oder umgekehrt —, gibt dir ein zusätzliches diagnostisches Werkzeug an die Hand, wenn du vor einer Maschine stehst, die du noch nie gesehen hast: Wenn du siehst, welche der beiden Technologien verwendet wurde, verstehst du sofort etwas über die Kraft- und Präzisionsanforderungen, die dieser Teil der Maschine erfüllen musste.
+
+## Der grundlegende Unterschied: ein Fluid, das sich komprimiert, eines, das es nicht tut
+
+Der physikalische Ausgangsunterschied ist einfach zu formulieren, hat aber tiefgreifende Folgen für alles andere: Luft ist ein Gas, **komprimierbar**; Hydrauliköl ist eine Flüssigkeit, unter normalen Betriebsbedingungen praktisch **inkompressibel**. Diese einzige Eigenschaft erklärt fast alle praktischen Unterschiede zwischen den beiden Systemen.
+
+Ein Pneumatiksystem verhält sich, gerade weil sich die Luft komprimiert, leicht "elastisch": Wenn du einer stillstehenden Pneumatikzylinderlast einen Widerstand aufbürdest, kann die Position der Kolbenstange um einen kleinen Betrag nachgeben, während sich die Luft in der Kammer weiter komprimiert, um die neue Last auszugleichen — ein Pneumatikzylinder ist unter variabler Last nie perfekt "starr". Ein Hydrauliksystem dagegen, da das Öl inkompressibel ist, verhält sich fast vollkommen starr: Belaste einen stillstehenden Hydraulikzylinder (mit geschlossenen Ventilen), und die Position gibt praktisch überhaupt nicht nach, weil es kein Flüssigkeitsvolumen gibt, das sich komprimieren könnte, um die Änderung aufzunehmen. Deshalb ist überall dort, wo eine feste, starre Positionierung unter schweren, variablen Lasten gebraucht wird — denk an die Formen einer Spritzgusspresse —, die Hydraulik fast immer die zwingende Wahl.
+
+![Comparison chart between pneumatics and hydraulics: working pressure, fluid type, force scale and typical applications](./img/pneumatics-vs-hydraulics.svg)
+
+## Die im Spiel befindlichen Drücke: eine andere Größenordnung
+
+Erinnerst du dich an den typischen Betriebsdruck der Pneumatik, rund 6-7 bar? Ein industrielles Hydrauliksystem arbeitet typischerweise zwischen **100 und 350 bar**, in manchen Anwendungen noch mehr. Wendet man dieselbe Formel F = P × A an, die wir bei den Pneumatikzylindern gesehen haben, versteht man sofort, warum: Bei gleicher Kolbenfläche (also gleichem Bauraum des Zylinders) erzeugt das Arbeiten bei einem 20- bis 50-fach höheren Druck eine 20- bis 50-fach höhere Kraft. Deshalb kann ein relativ kompakter Hydraulikzylinder Kräfte in der Größenordnung von Tonnen erzeugen, wo ein vergleichbar großer Pneumatikzylinder bei wenigen hundert Newton aufhören würde.
+
+## Die Hydraulikpumpe: das Herz des Systems, immer eingeschaltet
+
+Während ein Pneumatiksystem aus einem zentralen, von der gesamten Anlage geteilten Druckluftnetz schöpft, ist ein Hydrauliksystem fast immer **autonom und lokal für jede einzelne Maschine**: ein dediziertes Hydraulikaggregat (*power pack*), bestehend aus einem Öltank, einer von einem Elektromotor angetriebenen Pumpe und einem Block von Steuerventilen, alles direkt an der Maschine oder daneben montiert. Die in der Industrie am weitesten verbreitete Pumpe ist die **Zahnradpumpe** (günstig, robust, für mittlere Drücke geeignet) oder, für Anwendungen mit höherer Präzision und höheren Drücken, die **Axialkolbenpumpe**, die durch Verstellen der Neigung einer internen Schwenkscheibe variable Fördermengen liefern kann — ein elegantes mechanisches Detail, das es erlaubt, den Ölfluss und damit die Bewegungsgeschwindigkeit zu modulieren, ohne den Fluss mit einem Ventil drosseln zu müssen (eine Lösung, die Energie in Form von Wärme verschwenden würde).
+
+Ein betriebliches Detail, das man bei der Abnahme nie unterschätzen sollte: Anders als in der Pneumatik, wo überschüssige Luft einfach in die Atmosphäre abgelassen wird (daher das charakteristische Zischen), ist ein Hydrauliksystem ein **geschlossener Kreislauf**: Das Öl muss, nachdem es den Aktor bewegt hat, über eine dedizierte Rücklaufleitung zum Tank zurückkehren. Das bedeutet, dass jedes Hydraulikventil, anders als ein Pneumatikventil, immer einen expliziten Rückweg zum Tank braucht, und ein Ölleck ist nicht nur eine Verschwendung (wie es ein kleines Luftleck wäre), sondern eine konkrete Umweltverschmutzung, die sorgfältig behandelt werden muss — einer der Gründe, warum die vorbeugende Wartung an Hydrauliksystemen (regelmäßige Kontrolle von Dichtungen, Filtern, Ölstand und Ölqualität) viel strenger ist als in der Pneumatik.
+
+## Der Hydraulikmotor: wenn kontinuierliche Drehung mit hoher Kraft gebraucht wird
+
+Neben Linearzylindern — konzeptionell identisch mit den im vorherigen Artikel gesehenen Pneumatikzylindern, nur für viel höhere Drücke ausgelegt und mit robusteren Dichtungen — bietet die Hydraulik auch **Hydraulikmotoren**, das rotatorische Gegenstück zum Zylinder: Statt einen linearen Hub zu erzeugen, dreht das unter Druck stehende Öl kontinuierlich eine Welle und erzeugt dabei auch bei niedriger Drehzahl ein sehr hohes Drehmoment — eine wertvolle Eigenschaft bei Anwendungen wie Hubwinden oder Antrieben großer Zahnräder, bei denen ein äquivalenter Elektromotor eine viel sperrigere mechanische Untersetzung bräuchte, um dasselbe Drehmoment bei niedriger Geschwindigkeit zu erreichen.
+
+## Wie es von der SPS angesteuert wird: dieselbe Logik, andere Ventile
+
+Die gute Nachricht für dich, der du die Steuerungssoftware programmieren musst, ist, dass die Ansteuerung eines Hydrauliksystems von der SPS aus logisch genau demselben konzeptionellen Schema folgt wie die Pneumatik: Magnetventile (hier öfter **hydraulische Wegeventile** genannt, aber mit derselben ISO-1219-Symbolik und derselben Wege-/Stellungs-Nomenklatur, die du schon gelernt hast), angesteuert von digitalen SPS-Ausgängen, die den Fluidstrom zur einen oder anderen Kammer des Aktors leiten. Der wesentliche Unterschied, dem du in der Praxis begegnen wirst, ist, dass hochwertige Hydraulikanwendungen oft **Proportionalventile** verwenden, die nicht von einem einfachen Ein/Aus-Signal, sondern von einem analogen Signal (typischerweise 0-10V oder 4-20mA, dieselben Standards wie bei analogen Sensoren) angesteuert werden, was es erlaubt, die Ventilöffnung und damit Geschwindigkeit und Kraft des Aktors kontinuierlich zu modulieren — ein Feinsteuerungsniveau, das man in der Pneumatik aufgrund der geringen Kosten ihrer Komponenten seltener findet.
+
+## Wann man das eine, wann das andere wählt
+
+Eine praktische, vereinfachte, aber im Feld nützliche Regel: Wenn Geschwindigkeit, ein schneller Zyklus, begrenzte Kraft, Sauberkeit (kein mögliches Ölleck in Lebensmittel- oder Pharmaumgebung) gebraucht werden — Pneumatik. Wenn sehr hohe Kraft, Steifigkeit unter Last, feine und kontinuierliche Geschwindigkeitskontrolle auch unter schweren Lasten gebraucht werden — Hydraulik. Es ist nicht selten, ja sogar die Norm, beide Technologien auf derselben Maschine zu finden: Pneumatik für schnelle, leichte Hilfsfunktionen (Greifer, Auswerfer), Hydraulik für das Hauptorgan, das die eigentliche Arbeitskraft erzeugen muss — denk an eine Presse, bei der die Form von einem großen Hydraulikzylinder bewegt wird, während das Auswerfen des fertigen Werkstücks einem kleinen Pneumatikzylinder überlassen wird.
+
+Im nächsten Artikel verlassen wir Leistung und Kraft für ein ebenso kritisches, aber andersartiges Thema: die funktionale Sicherheit, und die spezifische Art — sehr anders, als du normalerweise über Software denkst —, in der die Industrie sie entwirft.

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anatomy of an industrial machine: what you're really looking at on the shop floor — Kinetic Code</title>
+  <meta name="description" content="A map of the sub-systems that make up an industrial machine, for anyone coming from software who needs to learn to read it as a whole.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/01-anatomia-di-una-macchina-industriale/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/01-anatomia-di-una-macchina-industriale/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/01-anatomia-di-una-macchina-industriale/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/01-anatomia-di-una-macchina-industriale/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/01-anatomia-di-una-macchina-industriale/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/01-anatomia-di-una-macchina-industriale/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/01-anatomia-di-una-macchina-industriale/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Anatomy of an industrial machine: what you're really looking at on the shop floor — Kinetic Code">
+  <meta property="og:description" content="A map of the sub-systems that make up an industrial machine, for anyone coming from software who needs to learn to read it as a whole.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/01-anatomia-di-una-macchina-industriale/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Anatomy of an industrial machine: what you're really looking at on the shop floor","description":"A map of the sub-systems that make up an industrial machine, for anyone coming from software who needs to learn to read it as a whole.","datePublished":"2026-09-01","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/01-anatomia-di-una-macchina-industriale/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/01-anatomia-di-una-macchina-industriale/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/01-anatomia-di-una-macchina-industriale/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/01-anatomia-di-una-macchina-industriale/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/01-anatomia-di-una-macchina-industriale/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrial Automation</span>
+        <h1>Anatomy of an industrial machine: what you're really looking at on the shop floor</h1>
+        <p class="article-hero__excerpt">A map of the sub-systems that make up an industrial machine, for anyone coming from software who needs to learn to read it as a whole.</p>
+        <div class="article-hero__meta">
+          <span>Sep 01, 2026</span>
+          <span>·</span>
+          <span>6 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>There&#39;s a moment, the first time you walk onto the shop floor for a commissioning job, when you realize that the code you wrote at home, on your PC, with its nice simulation environment, is only a small slice of what&#39;s in front of you. The PLC you&#39;re about to program is locked in a metal cabinet the size of a refrigerator, wired with hundreds of meters of cable to motors that weigh hundreds of kilograms, to pneumatic cylinders hissing compressed air, to sensors the size of a finger that have to say with absolute certainty whether a part is there or not. All of this together — moving, breathing, sometimes making a noise that puts you a little on edge — is the machine. And the software you write is just the nervous system of a much bigger body.</p>
+<p>This first article doesn&#39;t go into the technical detail of any single component — we&#39;ll get there, one at a time, in the next ones. Instead, it&#39;s here to build the map: if you already know where everything sits and why it sits there, every detail you learn later will have a precise place to slot into, instead of remaining an isolated fact you read somewhere.</p>
+<h2>The machine as a system, not a sum of parts</h2>
+<p>When a machine builder (the OEM, &quot;Original Equipment Manufacturer&quot;, a term you&#39;ll hear constantly) designs a machine, they think of it as a system that has to transform something: raw material into finished product, a rough part into a machined one, scattered components into an assembly. To do this, the machine needs four fundamental capabilities, and each corresponds to a physical sub-system:</p>
+<p><strong>Move.</strong> Something has to push, lift, rotate, translate. This is the mechanical and electromechanical part: motors, belts, bearings, screws, guides. It&#39;s the machine&#39;s muscular and skeletal system.</p>
+<p><strong>Generate force in an alternative way.</strong> Not everything is worth moving with an electric motor. To clamp a part, push it, close a gripper, it&#39;s often much simpler and cheaper to use compressed air (pneumatics) or, for really large forces, pressurized oil (hydraulics). We&#39;ll dedicate several articles to this, because it&#39;s a huge world and, if you come from pure software, almost entirely new.</p>
+<p><strong>Sense.</strong> The machine has to know what&#39;s happening: has a part arrived? Is a cylinder fully out or fully in? Is the air pressure sufficient? This is the job of sensors — the machine&#39;s eyes, ears, and sense of touch.</p>
+<p><strong>Decide and coordinate.</strong> All the information gathered by the sensors has to turn into commands for the actuators (motors, valves, cylinders), following a logical sequence and, above all, safely. This is the job of the PLC and everything around it in the electrical panel.</p>
+<p>Look at the diagram below: it&#39;s the map you&#39;ll keep in your head for this whole series of articles.</p>
+<p><img src="/assets/images/articles/machine-anatomy-overview.svg" alt="Anatomy of an industrial machine, showing mechanics, electrical panel, pneumatics/hydraulics, sensors and PLC logic as connected blocks" loading="lazy"></p>
+<p>Notice one important thing in the diagram: every block converges on the PLC. That&#39;s not a stylistic detail. It&#39;s literally what happens in reality: sooner or later, every piece of information a sensor generates and every command an actuator receives passes through a terminal, a cable, an input or an output of the PLC. That&#39;s why, when you show up for commissioning with &quot;the I/O list&quot; in hand, that list isn&#39;t a dry set of acronyms — it&#39;s the translation, into bits and registers, of everything the machine is physically capable of doing and sensing.</p>
+<h2>Why the I/O list is the machine&#39;s real map</h2>
+<p>Whoever writes the PLC software for machines designed by someone else usually receives two things: the functional specifications (what the machine has to do, in what sequence) and the I/O list (input/output — every sensor wired to an input, every actuator wired to an output, with its exact electrical address). If you look at that list with the right eyes, you&#39;re actually reading the machine&#39;s complete physical inventory.</p>
+<p>A typical line might be:</p>
+<pre><code class="hljs language-apache"><span class="hljs-attribute">I0</span>.<span class="hljs-number">3</span>   Sensor_ClampClosed_PNP_NO   <span class="hljs-number">24</span>VDC digital input
+<span class="hljs-attribute">Q0</span>.<span class="hljs-number">5</span>   Valve_Clamp_Extend          <span class="hljs-number">24</span>VDC solenoid coil</code></pre>
+<p>From these two lines, without having seen the machine in person yet, you can already infer quite a lot: there&#39;s a cylinder (probably pneumatic, given the words &quot;valve&quot; and &quot;coil&quot; from solenoid valve) that operates a clamp or a gripping jaw; there&#39;s a sensor, probably inductive or magnetic, mounted on the cylinder itself or on the mechanism, telling you when the clamp is closed; the PLC output doesn&#39;t drive the cylinder directly, but the coil of a solenoid valve that in turn routes compressed air to the cylinder. Three levels of &quot;physical translation&quot; — PLC, solenoid valve, cylinder — behind a simple bit <code>Q0.5</code> that in your code you might just call <code>bClampExtend := TRUE</code>.</p>
+<p>The whole point of this series is exactly this: to give you the physical intuition behind each of these steps, so that when you read <code>I0.3</code> or <code>Q0.5</code> in an I/O list, you really see the inductive sensor screwed onto the cylinder bracket and the solenoid valve clicking in the panel, not just an abstract symbol in a program.</p>
+<h2>The road ahead</h2>
+<p>In the coming articles we&#39;ll go down, block by block, into each of these areas:</p>
+<ul>
+<li>The <strong>electrical panel</strong>: what&#39;s really inside that metal cabinet, how to read an electrical schematic, what distinguishes a contactor from a relay, why everything runs on 24VDC.</li>
+<li><strong>Sensors</strong>: the practical difference between a PNP and an NPN output (which will make you swear the first time you get a wiring wrong), inductive, capacitive, and photoelectric sensors, encoders.</li>
+<li><strong>Motors and drives</strong>: asynchronous motors, servomotors, inverters, and what actually changes for you as the person writing the control software.</li>
+<li><strong>Mechanical transmission</strong>: belts, chains, ball screws — the minimum you need to understand why a machine is designed a certain way.</li>
+<li><strong>Pneumatics</strong>, in three parts: air production and treatment, valves, cylinders.</li>
+<li><strong>Hydraulics</strong>, for contrast and completeness.</li>
+<li><strong>Functional safety</strong>, which in industry isn&#39;t optional but an entire way of designing.</li>
+<li><strong>Fieldbuses</strong>, to understand why almost no modern machine wires every single sensor all the way back to the central PLC anymore.</li>
+<li>And finally a complete <strong>case study</strong>, where we&#39;ll put every piece together on a real — imaginary but plausible — machine, to see the whole reasoning applied from start to finish.</li>
+</ul>
+<p>This isn&#39;t an academic path. The goal isn&#39;t for you to be able to size a pneumatic cylinder using the formulas from a mechanical engineering manual — for that, if you ever really need it, there are the manufacturers&#39; technical catalogs, which we&#39;ll also learn to read. The goal is that the next time you&#39;re in front of an open panel or a control desk, you recognize what you&#39;re looking at, and understand <em>why</em> it was designed that way — why that valve is wired that way, why that sensor is inductive and not photoelectric, why that output goes through a relay instead of being driven directly by the PLC.</p>
+<p>It&#39;s the same kind of understanding you already have, instinctively, for software: when you read well-written code, you don&#39;t just see instructions, you see the architectural decisions behind them. With this series, I want you to reach the point where you see the same kind of decisions behind the metal, the compressed air, and the cables of an electrical panel.</p>
+<p>In the next article we open the cabinet: the electrical panel, component by component.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/articles/matrix-multiplication-optimization-part-3/">
+        <span class="post-nav__label">← Previous article</span>
+        <span class="post-nav__title">Optimizing matrix multiplication in C++ — Part 3: vectorization, the full reveal, and two honest surprises</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/02-il-quadro-elettrico/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">The electrical panel explained to someone who's only ever glimpsed it open</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

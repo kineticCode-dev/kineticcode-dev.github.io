@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moteurs asynchrones, servomoteurs et variateurs : ce qui change vraiment pour qui écrit le logiciel — Kinetic Code</title>
+  <meta name="description" content="Un guide pratique des moteurs les plus courants sur les machines industrielles — asynchrones, servo, pas à pas — et ce que l'automate voit réellement de chacun d'eux.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/articles/05-motori-e-azionamenti/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/05-motori-e-azionamenti/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/05-motori-e-azionamenti/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Moteurs asynchrones, servomoteurs et variateurs : ce qui change vraiment pour qui écrit le logiciel — Kinetic Code">
+  <meta property="og:description" content="Un guide pratique des moteurs les plus courants sur les machines industrielles — asynchrones, servo, pas à pas — et ce que l'automate voit réellement de chacun d'eux.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/articles/05-motori-e-azionamenti/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Moteurs asynchrones, servomoteurs et variateurs : ce qui change vraiment pour qui écrit le logiciel","description":"Un guide pratique des moteurs les plus courants sur les machines industrielles — asynchrones, servo, pas à pas — et ce que l'automate voit réellement de chacun d'eux.","datePublished":"2026-09-01","inLanguage":"fr","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/" aria-current="page">Articles</a>
+        <a href="/fr/learning-paths/">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/05-motori-e-azionamenti/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/05-motori-e-azionamenti/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/05-motori-e-azionamenti/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/05-motori-e-azionamenti/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/05-motori-e-azionamenti/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automatisation Industrielle</span>
+        <h1>Moteurs asynchrones, servomoteurs et variateurs : ce qui change vraiment pour qui écrit le logiciel</h1>
+        <p class="article-hero__excerpt">Un guide pratique des moteurs les plus courants sur les machines industrielles — asynchrones, servo, pas à pas — et ce que l'automate voit réellement de chacun d'eux.</p>
+        <div class="article-hero__meta">
+          <span>01 sept. 2026</span>
+          <span>·</span>
+          <span>6 min de lecture</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Quand tu lis dans la liste d&#39;E/S une ligne comme <code>Q1.2 Motor_Conveyor_Run</code>, la tentation, venant du logiciel, est de penser au moteur comme un actionneur booléen un peu plus gros qu&#39;une LED : tu l&#39;allumes, il tourne ; tu l&#39;éteins, il s&#39;arrête. C&#39;est une abstraction qui fonctionne pour un simple convoyeur, et qui échoue lamentablement dès que la machine a besoin de positionner quelque chose avec précision, ou de contrôler le couple appliqué, ou de synchroniser plusieurs axes entre eux. Dans cet article, nous mettons de l&#39;ordre entre les trois types de moteurs que tu rencontreras le plus souvent, et surtout nous comprenons ce qui change, du point de vue de ce que tu programmes réellement.</p>
+<h2>Le moteur asynchrone triphasé : le cheval de trait, simple et robuste</h2>
+<p>C&#39;est le moteur le plus répandu dans l&#39;industrie, et probablement le premier que tu verras en ouvrant une armoire : trois bobinages alimentés par une tension triphasée déphasée de 120 degrés, qui génèrent un champ magnétique tournant dans le stator. Ce champ &quot;entraîne&quot; le rotor, qui tourne légèrement plus lentement que le champ lui-même (d&#39;où le nom &quot;asynchrone&quot; : la différence de vitesse, appelée <em>glissement</em>, est ce qui génère le couple). C&#39;est un moteur robuste, économique, pratiquement sans entretien, mais dans sa forme la plus simple il présente un défaut important pour un ingénieur automaticien : <strong>connecté directement au réseau, il tourne à une vitesse fixe</strong>, déterminée par la fréquence du réseau (50Hz en Europe) et le nombre de pôles du moteur. Il n&#39;est pas conçu pour être &quot;positionné&quot; avec précision : il est conçu pour tourner, point final.</p>
+<p>C&#39;est là qu&#39;entre en scène le <strong>variateur de fréquence</strong> (<em>VFD</em>, <em>Variable Frequency Drive</em>) : un dispositif d&#39;électronique de puissance qui, au lieu de connecter le moteur directement au réseau à 50Hz fixes, redresse d&#39;abord le courant alternatif en continu puis le reconstruit en une nouvelle onde alternative à fréquence (et donc vitesse) variable, générée électroniquement via des composants à commutation rapide (IGBT). En faisant varier la fréquence, le variateur fait varier directement la vitesse de rotation du moteur, et dans de nombreuses applications il permet aussi un réglage fin du couple et des rampes d&#39;accélération et de décélération contrôlées — un détail loin d&#39;être anodin quand il faut arrêter un convoyeur chargé sans que le produit dessus ne glisse par inertie.</p>
+<p>De ton point de vue logiciel, un moteur asynchrone piloté par un variateur communique presque toujours avec l&#39;automate via un bus de terrain (nous y consacrerons un article) avec quelques paramètres clés : une commande marche/arrêt, une consigne de vitesse (souvent exprimée en pourcentage de la vitesse maximale, ou directement en Hz), et un retour d&#39;état qui t&#39;indique si le moteur tourne effectivement, s&#39;il y a une alarme, et parfois le courant absorbé en temps réel — une valeur précieuse, car un courant anormal est souvent le premier symptôme d&#39;un problème mécanique (un roulement qui commence à gripper, une courroie trop tendue) avant même qu&#39;il ne se transforme en panne avérée.</p>
+<p><img src="/assets/images/articles/motor-control-chain.svg" alt="Signal chain from a PLC output through a VFD or servo drive to the motor, with optional encoder feedback loop" loading="lazy"></p>
+<h2>Le servomoteur : quand il faut savoir exactement où l&#39;on est</h2>
+<p>Si le moteur asynchrone avec variateur te donne le contrôle sur la vitesse, le <strong>servomoteur</strong> te donne le contrôle sur la <strong>position</strong>. C&#39;est un saut conceptuel important. Un servomoteur est, presque toujours, un moteur synchrone à aimants permanents associé à un <strong>codeur</strong> (tu les as déjà rencontrés dans l&#39;article précédent) monté directement sur l&#39;arbre, et à un variateur dédié (le <em>drive</em>) qui referme une boucle de régulation en <strong>retour</strong> (<em>closed loop</em>, boucle fermée) : le drive compare en continu la position demandée par l&#39;automate avec celle lue par le codeur, et corrige en temps réel le courant délivré au moteur pour annuler l&#39;erreur. C&#39;est le même principe conceptuel qu&#39;un régulateur PID que tu as probablement déjà rencontré dans d&#39;autres contextes — mais ici appliqué physiquement à un arbre moteur, des dizaines voire des centaines de fois par seconde.</p>
+<p>Ce contrôle de précision a un prix, tant au sens littéral (les servomoteurs et leurs drives coûtent beaucoup plus cher qu&#39;un moteur asynchrone avec variateur) qu&#39;en complexité : là où un moteur asynchrone n&#39;a besoin que d&#39;une commande marche/vitesse, un axe servo nécessite typiquement une configuration complète de paramètres de mouvement — accélération maximale, décélération, à-coup ou <em>jerk</em> (la variation de l&#39;accélération, qui si elle est trop brusque génère des vibrations mécaniques indésirables) —, et est souvent piloté non pas avec de simples bits mais avec un véritable protocole de positionnement (des fonctions technologiques standard comme celles définies par le profil PLCopen Motion Control, que tu trouveras implémentées dans pratiquement tous les automates modernes avec des fonctions comme <code>MC_MoveAbsolute</code> ou <code>MC_MoveVelocity</code>).</p>
+<p>Où trouve-t-on des servomoteurs sur le terrain ? Partout où un positionnement précis et répétable est nécessaire : axes de découpe, robots cartésiens, systèmes d&#39;étiquetage qui doivent appliquer une étiquette toujours au même endroit exact sur des milliers de pièces consécutives, tiges de levage qui doivent s&#39;arrêter à une hauteur précise sans oscillation.</p>
+<h2>Le moteur pas à pas : précision économique, mais (presque) jamais avec retour</h2>
+<p>Une troisième famille, plus répandue dans les petits positionnements et le prototypage (tu la rencontreras aussi souvent en impression 3D, si tu y as déjà touché), mais présente aussi dans des applications industrielles légères, est le <strong>moteur pas à pas</strong> (<em>stepper motor</em>). Le principe diffère des deux précédents : le rotor avance par &quot;sauts&quot; discrets (les pas, justement) en réponse à des impulsions électriques séquentielles appliquées aux bobinages du stator. En comptant les impulsions envoyées, en théorie tu sais exactement de combien le moteur a tourné, <strong>sans avoir besoin d&#39;un codeur de retour</strong> — c&#39;est une commande en boucle ouverte (<em>open loop</em>).</p>
+<p>Le défaut structurel, et la raison pour laquelle on ne le trouve pas sur les axes critiques des machines industrielles lourdes, est que si le moteur rencontre une charge supérieure au couple dont il dispose à cet instant, il &quot;perd des pas&quot; : il continue de recevoir des impulsions mais le rotor ne les suit plus fidèlement, et le système perd silencieusement la synchronisation entre &quot;combien de pas j&#39;ai envoyés&quot; et &quot;où se trouve réellement l&#39;arbre&quot; — une erreur que, sans codeur de vérification, la commande n&#39;a aucun moyen de détecter, jusqu&#39;à ce que quelque chose tourne visiblement mal en aval.</p>
+<h2>Une grille de lecture mentale pour se repérer sur le terrain</h2>
+<p>Quand tu vois un moteur sur une machine, les questions qui t&#39;aident à le classer rapidement sont : a-t-il besoin de se positionner avec précision, ou seulement de tourner à une certaine vitesse ? Seulement la vitesse — presque certainement asynchrone avec variateur. Positionnement précis et répétable avec charges variables — presque certainement servomoteur. Positionnement simple, charges légères et prévisibles, budget limité — probablement un pas à pas. Et dans les trois cas, le fil conducteur reste toujours le même : l&#39;automate ne &quot;voit&quot; jamais le moteur directement, il voit toujours un intermédiaire électronique — variateur ou drive — qui traduit tes commandes numériques en une forme d&#39;onde électrique réelle sur le bobinage du moteur.</p>
+<p>Dans le prochain article, nous restons dans la partie mécanique, mais changeons de sujet : comment le mouvement généré par ces moteurs arrive physiquement là où il faut, via courroies, chaînes, vis à billes et guides linéaires.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/articles/04-sensori-di-prossimita-e-presenza/">
+        <span class="post-nav__label">← Article précédent</span>
+        <span class="post-nav__title">Inductif, capacitif, photoélectrique, codeur : quatre façons différentes de faire voir les choses à une machine</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/articles/06-trasmissione-meccanica-del-moto/">
+        <span class="post-nav__label">Article suivant →</span>
+        <span class="post-nav__title">Courroies, chaînes et vis à billes : comment le mouvement d'un moteur arrive vraiment où il faut</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/articles/">← Retour à tous les articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+---
+title: "Motores asíncronos, servomotores y variadores: qué cambia realmente para quien escribe el software"
+description: "Una guía práctica a los motores más comunes en las máquinas industriales — asíncronos, servo, paso a paso — y qué ve el PLC de cada uno de ellos."
+date: "2026-09-01"
+category: "automazione"
+tags: ["Motors", "Servo", "VFD", "Automation"]
+---
+
+Cuando en la lista de I/O lees una línea como `Q1.2 Motor_Conveyor_Run`, viniendo del software la tentación es pensar en el motor como un actuador booleano un poco más grande que un LED: lo enciendes, gira; lo apagas, se detiene. Es una abstracción que funciona para una cinta transportadora simple, y falla estrepitosamente en cuanto la máquina necesita posicionar algo con precisión, o controlar el par aplicado, o sincronizar varios ejes entre sí. En este artículo ponemos orden entre los tres tipos de motor que encontrarás más a menudo, y sobre todo entendemos qué cambia, desde el punto de vista de lo que tú realmente programas.
+
+## El motor asíncrono trifásico: el caballo de batalla, simple y robusto
+
+Es el motor más extendido en la industria en general, y probablemente el primero que verás al abrir un cuadro: tres devanados alimentados por una tensión trifásica desfasada 120 grados, que generan un campo magnético giratorio en el estator. Este campo "arrastra" el rotor, que gira ligeramente más lento que el propio campo (de ahí el nombre "asíncrono": la diferencia de velocidad, llamada *deslizamiento*, es lo que genera el par). Es un motor robusto, económico, prácticamente exento de mantenimiento, pero en su forma más simple tiene un defecto relevante para un ingeniero de control: **conectado directamente a la red, gira a una velocidad fija**, determinada por la frecuencia de red (50Hz en Europa) y el número de polos del motor. No está pensado para ser "posicionado" con precisión: está pensado para girar, punto.
+
+Y aquí es donde entra en escena el **variador de frecuencia**, también llamado **VFD** (*Variable Frequency Drive*): un dispositivo electrónico de potencia que, en lugar de conectar el motor directamente a la red a 50Hz fijos, primero rectifica la corriente alterna en continua y luego la reconstruye en una nueva onda alterna de frecuencia (y por tanto velocidad) variable, generada electrónicamente mediante componentes de conmutación rápida (IGBT). Variando la frecuencia, el variador varía directamente la velocidad de rotación del motor, y en muchas aplicaciones permite también una regulación fina del par y rampas de aceleración y deceleración controladas — un detalle nada trivial cuando tienes que parar una cinta transportadora cargada sin que el producto encima resbale por la inercia.
+
+Desde el punto de vista de tu software, un motor asíncrono pilotado por un variador se comunica casi siempre con el PLC a través de un bus de campo (lo veremos en un artículo dedicado) con pocos parámetros clave: una orden de marcha/paro, una referencia de velocidad (a menudo expresada como porcentaje de la velocidad máxima, o directamente en Hz), y un estado de retorno que te dice si el motor está realmente girando, si hay una alarma, y a veces la corriente absorbida en tiempo real — un valor precioso, porque una corriente anómala es a menudo el primer síntoma de un problema mecánico (un rodamiento que empieza a agarrotarse, una correa demasiado tensa) incluso antes de que se convierta en una avería declarada.
+
+![Signal chain from a PLC output through a VFD or servo drive to the motor, with optional encoder feedback loop](./img/motor-control-chain.svg)
+
+## El servomotor: cuando hace falta saber exactamente dónde estás
+
+Si el motor asíncrono con variador te da control sobre la velocidad, el **servomotor** te da control sobre la **posición**. Es un salto conceptual importante. Un servomotor es, casi siempre, un motor síncrono de imanes permanentes combinado con un **encoder** (ya los encontraste en el artículo anterior) montado directamente en el eje, y un accionamiento dedicado (el *drive*) que cierra un lazo de regulación en **realimentación** (*closed loop*, en lazo cerrado): el drive compara continuamente la posición solicitada por el PLC con la leída por el encoder, y corrige en tiempo real la corriente entregada al motor para anular el error. Es el mismo principio conceptual de un controlador PID que probablemente ya hayas encontrado en otros contextos — pero aquí aplicado físicamente a un eje motor, decenas o cientos de veces por segundo.
+
+Este control de precisión tiene un precio, tanto en sentido literal (los servomotores y sus drives cuestan mucho más que un motor asíncrono con variador) como en complejidad: donde un motor asíncrono solo necesita una orden de marcha/velocidad, un eje servo típicamente requiere una configuración completa de parámetros de movimiento — aceleración máxima, deceleración, jerk (la variación de la aceleración, que si es demasiado brusca genera vibraciones mecánicas no deseadas) —, y a menudo se pilota no con simples bits sino con un auténtico protocolo de posicionamiento (funciones tecnológicas estándar como las definidas por el perfil PLCopen Motion Control, que encontrarás implementadas en prácticamente todos los PLC modernos con funciones como `MC_MoveAbsolute` o `MC_MoveVelocity`).
+
+¿Dónde encuentras los servomotores en el campo? Donde sea que se necesite un posicionamiento preciso y repetible: ejes de corte, robots cartesianos, sistemas de etiquetado que deben aplicar una etiqueta siempre en el mismo punto exacto sobre miles de piezas consecutivas, varillas de elevación que deben detenerse en una cota precisa sin oscilaciones.
+
+## El motor paso a paso: precisión económica, pero (casi nunca) sin retroalimentación
+
+Una tercera familia, más extendida en posicionamientos pequeños y en prototipado (la encontrarás a menudo también en la impresión 3D, si ya has trasteado con ella), pero presente también en aplicaciones industriales ligeras, es el **motor paso a paso** (*stepper motor*). El principio es distinto de los dos anteriores: el rotor avanza a "saltos" discretos (los pasos, precisamente) en respuesta a impulsos eléctricos secuenciales aplicados a los devanados del estator. Contando los impulsos enviados, en teoría sabes exactamente cuánto ha girado el motor, **sin necesidad de un encoder de retroalimentación** — es un control en lazo abierto (*open loop*).
+
+El defecto estructural, y el motivo por el que no lo encuentras en ejes críticos de máquinas industriales pesadas, es que si el motor encuentra una carga superior al par disponible en ese instante, "pierde pasos": sigue recibiendo impulsos, pero el rotor no los sigue fielmente, y el sistema pierde silenciosamente la sincronización entre "cuántos pasos he enviado" y "dónde está realmente el eje" — un error que, sin un encoder de verificación, el control no tiene manera de percibir hasta que algo sale visiblemente mal aguas abajo.
+
+## Una tabla mental para orientarte en el campo
+
+Cuando ves un motor en una máquina, las preguntas que te ayudan a clasificarlo rápidamente son: ¿necesita posicionarse con precisión, o solo girar a una cierta velocidad? Si solo velocidad — casi con toda seguridad asíncrono con variador. Si posicionamiento preciso y repetible con cargas variables — casi con toda seguridad servomotor. Si posicionamiento simple, cargas ligeras y predecibles, presupuesto limitado — probablemente un paso a paso. Y en los tres casos, el hilo conductor sigue siendo el mismo de siempre: el PLC nunca "ve" el motor directamente, siempre ve un intermediario electrónico — variador o drive — que traduce tus órdenes digitales en una forma de onda eléctrica real sobre el devanado del motor.
+
+En el próximo artículo nos quedamos en la parte mecánica, pero cambiamos de tema: cómo el movimiento generado por estos motores llega físicamente donde hace falta, a través de correas, cadenas, husillos de bolas y guías lineales.

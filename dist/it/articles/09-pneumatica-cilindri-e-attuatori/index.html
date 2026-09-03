@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pneumatica, terza puntata: cilindri e attuatori, dove l'aria diventa finalmente movimento — Kinetic Code</title>
+  <meta name="description" content="Come funzionano i cilindri pneumatici a semplice e doppio effetto, i sensori magnetici di fine corsa, il dimensionamento base e la lettura di un datasheet reale.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/it/articles/09-pneumatica-cilindri-e-attuatori/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/09-pneumatica-cilindri-e-attuatori/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/09-pneumatica-cilindri-e-attuatori/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Pneumatica, terza puntata: cilindri e attuatori, dove l'aria diventa finalmente movimento — Kinetic Code">
+  <meta property="og:description" content="Come funzionano i cilindri pneumatici a semplice e doppio effetto, i sensori magnetici di fine corsa, il dimensionamento base e la lettura di un datasheet reale.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/it/articles/09-pneumatica-cilindri-e-attuatori/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (it)" href="/it/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pneumatica, terza puntata: cilindri e attuatori, dove l'aria diventa finalmente movimento","description":"Come funzionano i cilindri pneumatici a semplice e doppio effetto, i sensori magnetici di fine corsa, il dimensionamento base e la lettura di un datasheet reale.","datePublished":"2026-09-01","inLanguage":"it","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/it/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/it/">Home</a>
+        <a href="/it/articles/" aria-current="page">Articoli</a>
+        <a href="/it/learning-paths/">Corsi</a>
+        <a href="/it/about/">About</a>
+        <a href="/it/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Lingua">
+            IT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/09-pneumatica-cilindri-e-attuatori/" aria-current="true"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/09-pneumatica-cilindri-e-attuatori/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/09-pneumatica-cilindri-e-attuatori/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/09-pneumatica-cilindri-e-attuatori/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/09-pneumatica-cilindri-e-attuatori/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automazione Industriale</span>
+        <h1>Pneumatica, terza puntata: cilindri e attuatori, dove l'aria diventa finalmente movimento</h1>
+        <p class="article-hero__excerpt">Come funzionano i cilindri pneumatici a semplice e doppio effetto, i sensori magnetici di fine corsa, il dimensionamento base e la lettura di un datasheet reale.</p>
+        <div class="article-hero__meta">
+          <span>01 set 2026</span>
+          <span>·</span>
+          <span>6 min di lettura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Chiudiamo il blocco dedicato alla pneumatica con il componente più visibile di tutti, quello che chiunque, anche senza alcuna preparazione tecnica, riconoscerebbe a colpo d&#39;occhio su una macchina: il <strong>cilindro pneumatico</strong>. È qui che tutto quello che abbiamo costruito nei due articoli precedenti — l&#39;aria trattata e regolata, l&#39;elettrovalvola che ne indirizza il flusso — si trasforma finalmente in una spinta meccanica reale.</p>
+<h2>Anatomia di un cilindro: uno stantuffo dentro un tubo</h2>
+<p>Un cilindro pneumatico, nella sua forma più comune, è concettualmente semplice: un tubo cilindrico (la <em>canna</em>), chiuso alle due estremità da testate, al cui interno scorre un pistone collegato a uno stelo (<em>rod</em>) che esce da una delle due testate e si collega meccanicamente al carico da muovere — una pinza, una slitta, un pusher. L&#39;aria compressa, introdotta in una delle due camere separate dal pistone, spinge quest&#39;ultimo, generando forza e movimento.</p>
+<p><img src="/assets/images/articles/cylinder-cross-section.svg" alt="Cross-section of a double-acting pneumatic cylinder showing air ports A and B, and magnetic proximity sensors mounted on the tie rods" loading="lazy"></p>
+<p>Avevamo già distinto, parlando delle valvole, i cilindri a <strong>semplice effetto</strong> (aria da un lato, ritorno a molla) e a <strong>doppio effetto</strong> (aria attiva su entrambi i lati). Vale la pena aggiungere una considerazione pratica su quando si sceglie l&#39;uno o l&#39;altro: il semplice effetto è più economico e semplice da comandare, ed è la scelta naturale quando serve un ritorno automatico e affidabile &quot;per costruzione&quot; anche in assenza di segnale — pensa a un morsetto di sicurezza che deve tornare aperto appena manca l&#39;aria o la corrente. Il doppio effetto, molto più diffuso in generale, è la scelta quando serve controllo attivo in entrambe le direzioni, forza anche nel movimento di ritorno, o quando la corsa è lunga (la molla di un cilindro a semplice effetto, oltre una certa lunghezza, diventerebbe ingombrante e con una forza di richiamo poco uniforme lungo tutta la corsa).</p>
+<h2>I sensori di fine corsa: come il PLC sa se il cilindro è arrivato</h2>
+<p>Un cilindro pneumatico, da solo, non dice al PLC dove si trova: è un attuatore, non un sensore. Per sapere se un cilindro è completamente esteso o completamente retratto — un&#39;informazione quasi sempre indispensabile prima di far avanzare la sequenza logica della macchina al passo successivo — servono sensori dedicati, e la soluzione standard, elegante e quasi universale nell&#39;industria, sono i <strong>sensori magnetici di prossimità</strong> (spesso chiamati semplicemente <em>sensori di finecorsa magnetici</em>, o con il nome commerciale storico <em>reed switch</em>, anche se oggi la tecnologia più diffusa è a effetto Hall).</p>
+<p>Il trucco costruttivo è questo: il pistone all&#39;interno del cilindro monta un anello magnetico permanente, integrato nella sua struttura. La canna del cilindro, dal canto suo, non è in materiale ferromagnetico ma in una lega (tipicamente alluminio anodizzato) che lascia passare il campo magnetico senza schermarlo. I sensori magnetici, invece di essere montati all&#39;interno del cilindro (cosa che richiederebbe cablaggi interni complessi e poco affidabili), vengono agganciati <strong>esternamente</strong> su apposite guide scanalate lungo la canna, e rilevano il passaggio del campo magnetico del pistone quando questo transita nella loro posizione — senza nessun contatto fisico, nessun foro nella canna, nessun cablaggio interno. È lo stesso identico principio fisico del sensore induttivo che hai già incontrato, applicato in una configurazione specifica.</p>
+<p>Il vantaggio pratico enorme di questo sistema è che i sensori sono <strong>posizionabili manualmente</strong>, facendoli scorrere lungo la scanalatura esterna della canna e bloccandoli con una piccola vite quando sono nella posizione desiderata — un&#39;operazione che farai concretamente in fase di collaudo, quando devi regolare con precisione il punto esatto in cui il PLC deve considerare &quot;raggiunta&quot; la posizione estesa o retratta di ogni singolo cilindro della macchina.</p>
+<h2>Il dimensionamento: quanta forza genera davvero un cilindro</h2>
+<p>Non è compito tuo, di solito, dimensionare i cilindri di una macchina — è un lavoro che fa l&#39;ufficio tecnico del costruttore, in fase di progettazione meccanica, ben prima che tu riceva la lista I/O. Ma capire il ragionamento di base ti aiuta enormemente a &quot;sentire&quot; se qualcosa non torna quando, sul campo, un cilindro sembra troppo lento o incapace di completare la sua corsa contro un certo carico.</p>
+<p>La forza teorica generata da un cilindro a doppio effetto in fase di <strong>estensione</strong> si calcola con una formula semplicissima, la stessa identica logica della pressione idrostatica che probabilmente hai già visto altrove:</p>
+<p><strong>F = P × A</strong></p>
+<p>dove <strong>F</strong> è la forza (in newton), <strong>P</strong> è la pressione dell&#39;aria (in pascal, o più praticamente convertita da bar), e <strong>A</strong> è l&#39;area della superficie del pistone su cui l&#39;aria spinge (in metri quadrati). Concettualmente, cosa dice questa formula? Che la stessa identica pressione applicata su una superficie più grande genera una forza proporzionalmente maggiore — è il motivo per cui, a parità di pressione di rete disponibile (i famosi 6-7 bar visti nel primo articolo della serie), un cilindro con un diametro maggiore genera una forza maggiore, semplicemente perché offre più superficie all&#39;aria su cui spingere.</p>
+<p>Un dettaglio interessante, e spesso fonte di errori di valutazione da parte di chi non ha mai fatto questo conto: in fase di <strong>retrazione</strong>, la forza è leggermente minore a parità di pressione, perché lo stelo che attraversa la testata &quot;ruba&quot; una porzione dell&#39;area utile del pistone su quel lato — l&#39;aria, in quella camera, spinge su un&#39;area a forma di corona circolare, non su un cerchio pieno. Per la maggior parte delle applicazioni la differenza è trascurabile, ma nei catalghi dei costruttori (Festo, SMC, Camozzi sono i nomi che troverai ovunque in Europa) trovi sempre due valori di forza distinti, uno per l&#39;estensione e uno per la retrazione, proprio per questo motivo.</p>
+<h2>Un esempio concreto di lettura datasheet</h2>
+<p>Immagina di dover verificare se un cilindro SMC serie CDQ2, diametro 32mm, alimentato alla pressione di rete standard di 6 bar, ha abbastanza forza per spingere un carico che oppone una resistenza stimata di 350N. Il datasheet ti dà l&#39;area del pistone (per un diametro di 32mm, circa 8 cm², cioè 0.0008 m²). Applicando la formula: F = 600.000 Pa × 0.0008 m² ≈ 480N di forza teorica. Sembra sufficiente rispetto ai 350N richiesti — ma qui entra un&#39;ultima considerazione pratica che ogni collaudatore impara presto sul campo: la forza teorica calcolata così è quella <strong>statica ideale</strong>, senza considerare attriti interni del cilindro, perdite di carico nelle tubazioni, e soprattutto senza alcun margine di sicurezza. La regola empirica diffusa nell&#39;ambiente è di non superare, in condizioni operative reali, circa il 70-80% della forza teorica calcolata — nel nostro esempio, un margine operativo reale attorno ai 340-380N, già abbastanza vicino al limite richiesto da farti quantomeno consigliare, in fase di collaudo, un cilindro di diametro superiore o una pressione di esercizio più alta, prima che il problema si presenti in produzione sotto forma di un ciclo troppo lento o di un cilindro che, con l&#39;usura, smette di completare la corsa.</p>
+<p>Con questo si chiude il blocco sulla pneumatica. Nel prossimo articolo vediamo, per contrasto e completezza, la sorella maggiore della pneumatica quando servono forze davvero grandi: l&#39;idraulica.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/it/articles/08-pneumatica-valvole/">
+        <span class="post-nav__label">← Articolo precedente</span>
+        <span class="post-nav__title">Pneumatica, seconda puntata: le elettrovalvole, dove un bit del PLC diventa aria in movimento</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ti va di offrirmi un caffè?</h3>
+          <p>Se questo contenuto ti è stato utile, puoi sostenere il progetto con una piccola donazione libera.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/it/articles/10-idraulica-le-basi/">
+        <span class="post-nav__label">Articolo successivo →</span>
+        <span class="post-nav__title">Idraulica per chi viene dalla pneumatica: stessa logica, forze molto più grandi</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/it/articles/">← Torna a tutti gli articoli</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tutti i contenuti sono opera dell'autore, verificati sul campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Guarda il codice su GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Scrivimi una mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/it/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Torna su</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Correas, cadenas y husillos de bolas: cómo el movimiento de un motor llega realmente donde hace falta — Kinetic Code</title>
+  <meta name="description" content="El mínimo de mecánica de transmisión que necesita un ingeniero de control para entender por qué una máquina está construida de una cierta manera.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/es/articles/06-trasmissione-meccanica-del-moto/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/06-trasmissione-meccanica-del-moto/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/06-trasmissione-meccanica-del-moto/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/06-trasmissione-meccanica-del-moto/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/06-trasmissione-meccanica-del-moto/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/06-trasmissione-meccanica-del-moto/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/06-trasmissione-meccanica-del-moto/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Correas, cadenas y husillos de bolas: cómo el movimiento de un motor llega realmente donde hace falta — Kinetic Code">
+  <meta property="og:description" content="El mínimo de mecánica de transmisión que necesita un ingeniero de control para entender por qué una máquina está construida de una cierta manera.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/es/articles/06-trasmissione-meccanica-del-moto/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (es)" href="/es/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Correas, cadenas y husillos de bolas: cómo el movimiento de un motor llega realmente donde hace falta","description":"El mínimo de mecánica de transmisión que necesita un ingeniero de control para entender por qué una máquina está construida de una cierta manera.","datePublished":"2026-09-01","inLanguage":"es","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/es/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/es/">Inicio</a>
+        <a href="/es/articles/" aria-current="page">Artículos</a>
+        <a href="/es/learning-paths/">Cursos</a>
+        <a href="/es/about/">Sobre mí</a>
+        <a href="/es/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Idioma">
+            ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/06-trasmissione-meccanica-del-moto/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/06-trasmissione-meccanica-del-moto/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/06-trasmissione-meccanica-del-moto/" aria-current="true"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/06-trasmissione-meccanica-del-moto/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/06-trasmissione-meccanica-del-moto/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automatización Industrial</span>
+        <h1>Correas, cadenas y husillos de bolas: cómo el movimiento de un motor llega realmente donde hace falta</h1>
+        <p class="article-hero__excerpt">El mínimo de mecánica de transmisión que necesita un ingeniero de control para entender por qué una máquina está construida de una cierta manera.</p>
+        <div class="article-hero__meta">
+          <span>01 sep 2026</span>
+          <span>·</span>
+          <span>6 min de lectura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Un motor, por sí solo, sabe hacer una sola cosa: hacer girar su propio eje. Todo lo demás — desplazar una corredera en línea recta, elevar un peso, sincronizar dos ejes que deben moverse en una proporción fija entre sí — es tarea de los <strong>órganos de transmisión</strong>: los componentes mecánicos que toman esa rotación y la transforman en otra cosa. No es un capítulo de mecánica aplicada en sentido académico: es, mucho más pragmáticamente, el motivo por el que una máquina está construida de una cierta manera, y conocerlo te ayuda a entender, mirando una máquina real, por qué ese motor está montado ahí y conectado de ese modo a esa corredera.</p>
+<p><img src="/assets/images/articles/mechanical-transmission-types.svg" alt="Four common ways to transmit motion: belt and pulley, chain and sprocket, ball screw, and linear guide" loading="lazy"></p>
+<h2>Correas y poleas: ligereza y silencio, con un compromiso</h2>
+<p>La transmisión por correa es probablemente la más extendida en general para transmitir movimiento entre dos ejes paralelos a distancia corta o media: una correa (de goma reforzada, a menudo dentada para evitar deslizamientos) envuelve dos poleas, una conectada al motor y otra al órgano a mover. Es ligera, económica, silenciosa, y amortigua de forma natural las vibraciones — propiedad valiosa cuando la máquina trabaja a alta velocidad.</p>
+<p>El compromiso afecta a la precisión: incluso una correa dentada, por rígida que sea comparada con una lisa, tiene una mínima elasticidad intrínseca y un juego en el engrane con los dientes de la polea. Para una cinta transportadora esto es irrelevante. Para un eje que debe posicionar una herramienta con precisión de décimas de milímetro, esta elasticidad se traduce en un error de posicionamiento que un encoder en el motor, por sí solo, no puede corregir — porque el encoder mide cuánto ha girado el motor, no cuánto se ha desplazado realmente la carga en el otro extremo de la correa. Es uno de los motivos por los que, en los ejes de precisión más críticos, encontrarás a menudo un segundo encoder montado directamente en la parte móvil (una configuración llamada <em>retroalimentación directa</em>, o <em>feedback lineal</em>), que cierra el lazo de control sobre la posición real de la carga y no sobre la presunta del motor.</p>
+<h2>Cadenas y piñones: cuando hace falta fuerza sin compromisos</h2>
+<p>Donde la correa cede a favor de la robustez, encuentras la cadena: eslabones metálicos articulados que engranan sobre ruedas dentadas (los piñones). A diferencia de la correa, la cadena es prácticamente inextensible y nunca desliza — transmite el movimiento con una relación de transmisión fija y exacta, punto por punto. Es la elección típica para cargas pesadas y entornos exigentes (suciedad, temperaturas elevadas, aceite) donde una correa de goma se degradaría rápidamente: cadenas de elevación, transportadores de cadena para pallets y productos pesados, transmisiones de potencia en prensas y líneas industriales robustas.</p>
+<p>El precio de esta robustez es el mantenimiento: una cadena necesita lubricación periódica y, con el tiempo, se alarga ligeramente por el desgaste de las articulaciones (fenómeno llamado <em>alargamiento por desgaste</em>), lo que requiere un tensado periódico — una operación que, si la ves en el campo durante una parada programada de la máquina, ahora sabes exactamente por qué se hace.</p>
+<h2>El husillo de bolas: la forma elegante de transformar rotación en traslación precisa</h2>
+<p>Cuando hace falta transformar un movimiento rotatorio en un movimiento lineal — no simplemente transportar algo en círculo, sino desplazar una corredera adelante y atrás a lo largo de un eje —, el órgano más extendido en las aplicaciones de precisión es el <strong>husillo de bolas</strong> (<em>ball screw</em>). El principio es, en apariencia, el de un tornillo cualquiera: una tuerca que avanza a lo largo de un eje roscado cuando este gira. La diferencia sustancial, que justifica el nombre, es que entre la tuerca y la rosca del eje no hay contacto directo deslizante, sino una serie de bolas metálicas que ruedan en el canal de la rosca y se recirculan continuamente a través de un canal de retorno interno de la tuerca.</p>
+<p>¿Por qué es importante este detalle? Porque en un tornillo tradicional el contacto es de <strong>deslizamiento</strong> (fricción de deslizamiento), con pérdidas por fricción significativas y desgaste con el tiempo; en el husillo de bolas el contacto es de <strong>rodadura</strong> (fricción de rodadura), enormemente más eficiente — rendimientos incluso superiores al 90%, frente al 20-40% de un tornillo tradicional —, y con un juego mecánico mínimo y constante en el tiempo. Por eso prácticamente todos los ejes de precisión lineal en una máquina herramienta, en un sistema de dosificación, en una máquina de envasado de gama alta, usan un husillo de bolas combinado con un servomotor: la unión de los dos componentes — motor en lazo cerrado más transmisión de juego bajísimo — es lo que hace posible posicionar una carga con repetibilidad de pocos micrómetros.</p>
+<p>Un parámetro clave que encontrarás en la hoja de datos de un husillo de bolas es el <strong>paso</strong> (en milímetros por vuelta): define cuánto avanza linealmente la tuerca por cada vuelta completa del eje. Con un motor del que sabes exactamente cuánto ha girado (gracias al encoder), y un paso conocido, el cálculo de la posición lineal de la corredera se convierte en una simple proporción — la fórmula que, con toda probabilidad, ya encuentras encapsulada dentro de las funciones de <em>escalado</em> del eje en tu software de control de movimiento.</p>
+<h2>Las guías lineales: la tarea silenciosa de mantener todo alineado</h2>
+<p>Un último componente, a menudo pasado por alto porque no &quot;genera&quot; movimiento sino que lo <strong>acompaña</strong>, son las guías lineales: pares de patines que se deslizan sobre raíles, sosteniendo la carga y obligándola a moverse exactamente a lo largo de la dirección deseada, sin desviaciones laterales o verticales. También aquí, la solución más extendida en aplicaciones de precisión usa la rodadura sobre bolas o rodillos encerrados en el patín, por el mismo motivo que el husillo de bolas: fricción mínima, desgaste mínimo, máxima repetibilidad.</p>
+<p>¿Por qué es importante saberlo, aunque no sea &quot;eléctrico&quot; y aparentemente esté lejos de tu trabajo? Porque un eje servo que vibra, que no alcanza la posición requerida con la precisión esperada, o que absorbe una corriente anómala durante el movimiento, a veces no tiene nada malo en el software de control ni en el ajuste del regulador: el problema es una guía lineal sucia, desalineada o dañada, que introduce fricción extra o una restricción mecánica que el motor debe vencer de más. Saber que ese componente existe, y qué hace, te da un diagnóstico adicional a considerar antes de pasar horas revisando parámetros PID que, en realidad, ya eran correctos.</p>
+<p>En el próximo artículo entramos en un mundo completamente distinto, que probablemente conoces todavía menos que el mecánico: la neumática, empezando por cómo se genera y se trata el aire comprimido que alimenta cada cilindro de la máquina.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/es/articles/05-motori-e-azionamenti/">
+        <span class="post-nav__label">← Artículo anterior</span>
+        <span class="post-nav__title">Motores asíncronos, servomotores y variadores: qué cambia realmente para quien escribe el software</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>¿Te ha resultado útil?</h3>
+          <p>Si este contenido te ha ayudado, puedes apoyar el proyecto con una pequeña donación voluntaria.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/es/articles/07-pneumatica-produzione-e-trattamento-aria/">
+        <span class="post-nav__label">Artículo siguiente →</span>
+        <span class="post-nav__title">Neumática, primera entrega: de dónde viene realmente el aire comprimido que mueve una máquina</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/es/articles/">← Volver a todos los artículos</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Todo el contenido es obra del autor, verificado en el campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Ver el código en GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Envíame un correo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/es/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Volver arriba</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

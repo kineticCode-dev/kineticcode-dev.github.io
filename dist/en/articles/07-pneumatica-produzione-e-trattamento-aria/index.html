@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pneumatics, part one: where the compressed air that moves a machine actually comes from — Kinetic Code</title>
+  <meta name="description" content="How compressed air is produced and treated in an industrial plant: compressors, receiver tanks, dryers and FRL units, explained without differential equations.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/07-pneumatica-produzione-e-trattamento-aria/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/07-pneumatica-produzione-e-trattamento-aria/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/07-pneumatica-produzione-e-trattamento-aria/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/07-pneumatica-produzione-e-trattamento-aria/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/07-pneumatica-produzione-e-trattamento-aria/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/07-pneumatica-produzione-e-trattamento-aria/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/07-pneumatica-produzione-e-trattamento-aria/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Pneumatics, part one: where the compressed air that moves a machine actually comes from — Kinetic Code">
+  <meta property="og:description" content="How compressed air is produced and treated in an industrial plant: compressors, receiver tanks, dryers and FRL units, explained without differential equations.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/07-pneumatica-produzione-e-trattamento-aria/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pneumatics, part one: where the compressed air that moves a machine actually comes from","description":"How compressed air is produced and treated in an industrial plant: compressors, receiver tanks, dryers and FRL units, explained without differential equations.","datePublished":"2026-09-01","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/07-pneumatica-produzione-e-trattamento-aria/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/07-pneumatica-produzione-e-trattamento-aria/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/07-pneumatica-produzione-e-trattamento-aria/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/07-pneumatica-produzione-e-trattamento-aria/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/07-pneumatica-produzione-e-trattamento-aria/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrial Automation</span>
+        <h1>Pneumatics, part one: where the compressed air that moves a machine actually comes from</h1>
+        <p class="article-hero__excerpt">How compressed air is produced and treated in an industrial plant: compressors, receiver tanks, dryers and FRL units, explained without differential equations.</p>
+        <div class="article-hero__meta">
+          <span>Sep 01, 2026</span>
+          <span>·</span>
+          <span>5 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Here we start a small block of three articles dedicated to pneumatics, and if you come from a purely software or electronics background, this is likely the newest territory in the whole series. And yet, as soon as you walk into a production department, the background sound you hear — that intermittent hiss, that rhythmic &quot;sssh-clack&quot; — is almost always pneumatics at work. Before we get to valves and cylinders (we&#39;ll see them in the next two articles), we need to answer an upstream question: where does the compressed air feeding all of this physically come from?</p>
+<h2>The compressor: the heart of the pneumatic system</h2>
+<p>Every industrial pneumatic system starts with a <strong>compressor</strong>, almost always just one for the whole plant, feeding a network of piping distributed to all the connected machines — a bit like the electrical system distributes power to every outlet in a house, starting from a single meter. The most common type in industry is the <strong>rotary screw compressor</strong>: two intermeshing helical rotors that, as they turn, progressively trap air in ever-smaller volumes, compressing it continuously — unlike the piston compressor, cheaper but typically reserved for small or portable systems, which compresses air in discontinuous strokes, with more noise and vibration.</p>
+<p>The compressor is typically regulated to keep the network at a standard <strong>working pressure</strong> — very often around <strong>6-7 bar</strong> — a value worth memorizing because you&#39;ll keep running into it in pneumatic component datasheets as the reference nominal pressure. Worth noting: the &quot;bar&quot; we&#39;re referring to here is almost always <strong>gauge</strong> pressure (measured relative to atmospheric pressure, not absolute) — a detail that makes a concrete difference in sizing calculations, but that will rarely cause you problems in day-to-day commissioning work, because all industrial instruments (pressure gauges, pressure sensors) are calibrated to read the gauge value directly.</p>
+<h2>The receiver tank: a shock absorber, not just a container</h2>
+<p>Right after the compressor you&#39;ll almost always find a large cylindrical metal tank, the <strong>receiver tank</strong>. Its function isn&#39;t as simple as &quot;holding air&quot;: it serves to <strong>decouple</strong> the compressor&#39;s continuous (or near-continuous) production from the plant&#39;s instantaneous consumption spikes. Imagine a dozen machines that, at the same instant, all fire several pneumatic cylinders together: the air flow demand at that instant can far exceed what the compressor can produce in real time. The tank, having built up a reserve during lower-consumption moments, absorbs these spikes, keeping the network pressure stable. It also has a second, less obvious role: acting as a large expansion volume, it lets the air cool down and some of the residual moisture and oil from the compressor condense and settle at the bottom, where it&#39;s periodically drained through a purge valve (nowadays often automatic, timer- or level-controlled).</p>
+<h2>The dryer: the invisible enemy is moisture</h2>
+<p>Atmospheric air, the air the compressor draws in to compress, always contains a certain amount of water vapor. When this air is compressed and then cools down along the network, that vapor condenses into liquid water — exactly like the fogging on a cold glass on a humid day. This water, traveling inside the pneumatic piping all the way to valves and cylinders, is a serious problem: it corrodes internal components, washes lubricant off moving parts, and in cold climates can even freeze inside the pipes. That&#39;s why, in every serious industrial plant, after the tank you&#39;ll find a <strong>dryer</strong> (<em>air dryer</em>), almost always of the <strong>refrigerant</strong> type: it deliberately cools the air down to a few degrees above zero, forcing the excess moisture to condense out (which is then drained), before letting it return to ambient temperature, now &quot;dry&quot; to the standard required by the plant.</p>
+<p><img src="/assets/images/articles/compressed-air-chain.svg" alt="The journey of compressed air from the compressor through the receiver tank, dryer and FRL unit to the solenoid valve and cylinder" loading="lazy"></p>
+<h2>The FRL unit: the final treatment, right before each machine</h2>
+<p>If the compressor, tank and dryer are centralized systems serving the whole plant, the final treatment happens locally instead, often right at the entry of each individual machine, or even each individual group of valves (a <em>valve island</em>, which we&#39;ll cover in the next article): the <strong>FRL unit</strong>, an acronym for <strong>Filter, Regulator, Lubricator</strong>, three components almost always assembled into a single compact block, instantly recognizable on sight in any pneumatic panel.</p>
+<p><strong>The filter</strong> removes residual solid particles and any remaining traces of condensate that may have slipped past the upstream treatment, protecting the more delicate components (valves in particular, which have very tight mechanical tolerances) from wear and jamming.</p>
+<p><strong>The pressure regulator</strong> is perhaps the most functionally important component: it lets you set, via a knob, the exact working pressure for that specific machine or application, independent of the general network pressure upstream (which can fluctuate). This is where, during commissioning, you adjust the cylinders&#39; operating pressure: too low a pressure and the actuator doesn&#39;t have enough force to complete its stroke against the expected load; too high a pressure and you risk over-stressing the mechanics, as well as wasting compressed air (which, never forget, has a real and far from negligible energy cost for the company).</p>
+<p><strong>The lubricator</strong> (increasingly often omitted nowadays, because many modern pneumatic components are designed to run on dry air with no additional lubrication, the so-called <em>oil-free</em> components) nebulizes a tiny amount of oil into the passing air, to lubricate the moving internal parts of the downstream cylinders and valves — a detail always worth checking against the manufacturer&#39;s manual, because mixing lubricated air and oil-free components in the same circuit can, in some cases, cause more harm than good.</p>
+<p>With this clear picture — where the air comes from, how it&#39;s treated, and at what pressure it reaches the point of use — in the next article we can finally open up the heart of pneumatic control: solenoid valves, the component that turns a bit from your PLC into real physical motion of air.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/articles/06-trasmissione-meccanica-del-moto/">
+        <span class="post-nav__label">← Previous article</span>
+        <span class="post-nav__title">Belts, chains and ball screws: how a motor's motion really gets where it needs to go</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/08-pneumatica-valvole/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">Pneumatics, part two: solenoid valves, where a PLC bit becomes moving air</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

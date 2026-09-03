@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pneumatique, premier épisode : d'où vient vraiment l'air comprimé qui fait bouger une machine — Kinetic Code</title>
+  <meta name="description" content="Comment est produit et traité l'air comprimé dans une installation industrielle : compresseurs, réservoirs, sécheurs et unités FRL, expliqués sans équations différentielles.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/articles/07-pneumatica-produzione-e-trattamento-aria/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/07-pneumatica-produzione-e-trattamento-aria/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/07-pneumatica-produzione-e-trattamento-aria/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/07-pneumatica-produzione-e-trattamento-aria/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/07-pneumatica-produzione-e-trattamento-aria/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/07-pneumatica-produzione-e-trattamento-aria/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/07-pneumatica-produzione-e-trattamento-aria/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Pneumatique, premier épisode : d'où vient vraiment l'air comprimé qui fait bouger une machine — Kinetic Code">
+  <meta property="og:description" content="Comment est produit et traité l'air comprimé dans une installation industrielle : compresseurs, réservoirs, sécheurs et unités FRL, expliqués sans équations différentielles.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/articles/07-pneumatica-produzione-e-trattamento-aria/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pneumatique, premier épisode : d'où vient vraiment l'air comprimé qui fait bouger une machine","description":"Comment est produit et traité l'air comprimé dans une installation industrielle : compresseurs, réservoirs, sécheurs et unités FRL, expliqués sans équations différentielles.","datePublished":"2026-09-01","inLanguage":"fr","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/" aria-current="page">Articles</a>
+        <a href="/fr/learning-paths/">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/07-pneumatica-produzione-e-trattamento-aria/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/07-pneumatica-produzione-e-trattamento-aria/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/07-pneumatica-produzione-e-trattamento-aria/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/07-pneumatica-produzione-e-trattamento-aria/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/07-pneumatica-produzione-e-trattamento-aria/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automatisation Industrielle</span>
+        <h1>Pneumatique, premier épisode : d'où vient vraiment l'air comprimé qui fait bouger une machine</h1>
+        <p class="article-hero__excerpt">Comment est produit et traité l'air comprimé dans une installation industrielle : compresseurs, réservoirs, sécheurs et unités FRL, expliqués sans équations différentielles.</p>
+        <div class="article-hero__meta">
+          <span>01 sept. 2026</span>
+          <span>·</span>
+          <span>5 min de lecture</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>À partir d&#39;ici commence un petit bloc de trois articles consacré à la pneumatique, et si tu viens d&#39;un parcours purement informatique ou électronique, c&#39;est probablement le territoire le plus nouveau de toute la série. Et pourtant, dès que tu entres dans un atelier de production, le bruit de fond que tu entends — ce sifflement intermittent, ce &quot;sssh-clac&quot; rythmé — c&#39;est presque toujours de la pneumatique au travail. Avant d&#39;arriver aux distributeurs et aux vérins (nous les verrons dans les deux prochains articles), nous devons répondre à une question en amont : d&#39;où vient, physiquement, l&#39;air comprimé qui alimente tout cela ?</p>
+<h2>Le compresseur : le cœur de l&#39;installation pneumatique</h2>
+<p>Tout système pneumatique industriel part d&#39;un <strong>compresseur</strong>, presque toujours unique pour toute l&#39;usine, qui alimente un réseau de tuyauterie distribué à toutes les machines connectées — un peu comme l&#39;installation électrique distribue l&#39;énergie à toutes les prises d&#39;une maison, à partir d&#39;un unique compteur. Le type le plus répandu dans l&#39;industrie est le <strong>compresseur à vis</strong> (<em>rotary screw compressor</em>) : deux rotors hélicoïdaux engrenés entre eux qui, en tournant, emprisonnent progressivement l&#39;air dans des volumes de plus en plus petits, le comprimant en continu — contrairement au compresseur à pistons, plus économique mais typiquement réservé aux petites installations ou aux appareils portatifs, qui comprime l&#39;air par à-coups discontinus, avec plus de bruit et de vibrations.</p>
+<p>Le compresseur est typiquement régulé pour maintenir le réseau à une <strong>pression de service</strong> standard — très souvent autour de <strong>6-7 bar</strong> — une valeur qu&#39;il vaut la peine de mémoriser car tu la retrouveras constamment dans les fiches techniques des composants pneumatiques comme pression nominale de référence. À noter : le &quot;bar&quot; auquel nous nous référons ici est presque toujours la pression <strong>relative</strong> (mesurée par rapport à la pression atmosphérique, et non à la pression absolue) — un détail qui fait une différence concrète dans les calculs de dimensionnement, mais qui, dans la pratique quotidienne de mise en service, te posera rarement des problèmes, car tous les instruments industriels (manomètres, capteurs de pression) sont étalonnés pour lire directement la valeur relative.</p>
+<h2>Le réservoir d&#39;air comprimé : un amortisseur, pas seulement un contenant</h2>
+<p>Juste après le compresseur, tu trouveras presque toujours un grand réservoir métallique cylindrique, le <strong>réservoir d&#39;air comprimé</strong> (<em>receiver tank</em>). Sa fonction n&#39;est pas aussi banale que &quot;contenir de l&#39;air&quot; : il sert à <strong>découpler</strong> la production continue (ou presque) du compresseur des pics de consommation instantanés de l&#39;usine. Imagine une dizaine de machines qui, au même instant, actionnent toutes ensemble plusieurs vérins pneumatiques : la demande de débit d&#39;air à cet instant peut dépasser largement ce que le compresseur parvient à produire en temps réel. Le réservoir, ayant accumulé une réserve pendant les moments de moindre consommation, amortit ces pics, maintenant la pression du réseau stable. Il a aussi un second rôle, moins évident : en agissant comme un grand volume d&#39;expansion, il permet à l&#39;air de se refroidir et à une partie de l&#39;humidité et de l&#39;huile résiduelle du compresseur de condenser et de se déposer au fond, d&#39;où elles sont périodiquement évacuées par une vanne de purge (aujourd&#39;hui souvent automatique, temporisée ou à niveau).</p>
+<h2>Le sécheur : l&#39;ennemi invisible, c&#39;est l&#39;humidité</h2>
+<p>L&#39;air atmosphérique, celui que le compresseur aspire pour le comprimer, contient toujours une certaine quantité de vapeur d&#39;eau. Quand cet air est comprimé puis, le long du réseau, se refroidit, cette vapeur condense en eau liquide — exactement comme la buée sur un verre froid par une journée humide. Cette eau, voyageant à l&#39;intérieur de la tuyauterie pneumatique jusqu&#39;aux distributeurs et aux vérins, est un problème sérieux : elle corrode les composants internes, entraîne le lubrifiant des parties mobiles, et dans les climats froids peut même geler dans les tuyaux. C&#39;est pourquoi, dans toute installation industrielle sérieuse, après le réservoir on trouve un <strong>sécheur</strong> (<em>air dryer</em>), presque toujours de type <strong>frigorifique</strong> : il refroidit délibérément l&#39;air jusqu&#39;à quelques degrés au-dessus de zéro, forçant la condensation de l&#39;excès d&#39;humidité (qui est évacuée), avant de le laisser revenir à température ambiante, désormais &quot;sec&quot; selon le standard requis par l&#39;installation.</p>
+<p><img src="/assets/images/articles/compressed-air-chain.svg" alt="The journey of compressed air from the compressor through the receiver tank, dryer and FRL unit to the solenoid valve and cylinder" loading="lazy"></p>
+<h2>L&#39;unité FRL : le dernier traitement, juste avant chaque machine</h2>
+<p>Si le compresseur, le réservoir et le sécheur sont des installations centralisées qui desservent toute l&#39;usine, le dernier traitement se fait quant à lui localement, souvent juste à l&#39;entrée de chaque machine individuelle, voire de chaque groupe de distributeurs (<em>îlot de distributeurs</em>, nous en parlons dans le prochain article) : l&#39;<strong>unité FRL</strong>, acronyme de <strong>Filtre, Régulateur, Lubrificateur</strong> (<em>Filter, Regulator, Lubricator</em>), trois composants presque toujours assemblés en un seul bloc compact, reconnaissable à vue dans n&#39;importe quelle armoire pneumatique.</p>
+<p><strong>Le filtre</strong> élimine les particules solides résiduelles et les traces supplémentaires de condensat qui auraient pu échapper aux traitements en amont, protégeant les composants les plus délicats (les distributeurs en particulier, qui ont des tolérances mécaniques très serrées) de l&#39;usure et des blocages.</p>
+<p><strong>Le régulateur de pression</strong> est peut-être le composant le plus important d&#39;un point de vue fonctionnel : il permet de régler, via un bouton, la pression de service exacte pour cette machine ou cette application spécifique, indépendamment de la pression du réseau général en amont (qui peut fluctuer). C&#39;est ici que, en mise en service, tu règles la pression de fonctionnement des vérins : une pression trop basse et l&#39;actionneur n&#39;a pas assez de force pour terminer sa course contre la charge prévue ; une pression trop haute et tu risques de trop solliciter la mécanique, en plus de gaspiller de l&#39;air comprimé (qui, ne l&#39;oublie jamais, a un coût énergétique réel et loin d&#39;être négligeable pour l&#39;entreprise).</p>
+<p><strong>Le lubrificateur</strong> (aujourd&#39;hui de plus en plus souvent omis, car beaucoup de composants pneumatiques modernes sont conçus pour fonctionner avec de l&#39;air sec sans lubrification supplémentaire, les composants dits <em>oil-free</em>) nébulise une très petite quantité d&#39;huile dans l&#39;air en transit, pour lubrifier les parties internes mobiles des vérins et distributeurs en aval — un détail toujours à vérifier dans le manuel du fabricant, car mélanger de l&#39;air lubrifié et des composants oil-free dans le même circuit peut, dans certains cas, causer plus de dommages que de bénéfices.</p>
+<p>Avec ce tableau clair — d&#39;où vient l&#39;air, comment il est traité, et à quelle pression il arrive au point d&#39;utilisation —, dans le prochain article nous pouvons enfin ouvrir le cœur de la commande pneumatique : les électrovannes, le composant qui transforme un bit de ton automate en un véritable mouvement physique d&#39;air.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/articles/06-trasmissione-meccanica-del-moto/">
+        <span class="post-nav__label">← Article précédent</span>
+        <span class="post-nav__title">Courroies, chaînes et vis à billes : comment le mouvement d'un moteur arrive vraiment où il faut</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/articles/08-pneumatica-valvole/">
+        <span class="post-nav__label">Article suivant →</span>
+        <span class="post-nav__title">Pneumatique, deuxième épisode : les électrovannes, où un bit de l'automate devient de l'air en mouvement</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/articles/">← Retour à tous les articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

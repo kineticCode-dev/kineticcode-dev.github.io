@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Induttivi, capacitivi, fotoelettrici, encoder: quattro modi diversi di far vedere le cose a una macchina — Kinetic Code</title>
+  <meta name="description" content="Come funzionano davvero i sensori di prossimità industriali più comuni, quando si sceglie l'uno o l'altro, e come leggere un datasheet reale.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/it/articles/04-sensori-di-prossimita-e-presenza/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/04-sensori-di-prossimita-e-presenza/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/04-sensori-di-prossimita-e-presenza/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/04-sensori-di-prossimita-e-presenza/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/04-sensori-di-prossimita-e-presenza/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/04-sensori-di-prossimita-e-presenza/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/04-sensori-di-prossimita-e-presenza/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Induttivi, capacitivi, fotoelettrici, encoder: quattro modi diversi di far vedere le cose a una macchina — Kinetic Code">
+  <meta property="og:description" content="Come funzionano davvero i sensori di prossimità industriali più comuni, quando si sceglie l'uno o l'altro, e come leggere un datasheet reale.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/it/articles/04-sensori-di-prossimita-e-presenza/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (it)" href="/it/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Induttivi, capacitivi, fotoelettrici, encoder: quattro modi diversi di far vedere le cose a una macchina","description":"Come funzionano davvero i sensori di prossimità industriali più comuni, quando si sceglie l'uno o l'altro, e come leggere un datasheet reale.","datePublished":"2026-09-01","inLanguage":"it","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/it/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/it/">Home</a>
+        <a href="/it/articles/" aria-current="page">Articoli</a>
+        <a href="/it/learning-paths/">Corsi</a>
+        <a href="/it/about/">About</a>
+        <a href="/it/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Lingua">
+            IT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/04-sensori-di-prossimita-e-presenza/" aria-current="true"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/04-sensori-di-prossimita-e-presenza/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/04-sensori-di-prossimita-e-presenza/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/04-sensori-di-prossimita-e-presenza/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/04-sensori-di-prossimita-e-presenza/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automazione Industriale</span>
+        <h1>Induttivi, capacitivi, fotoelettrici, encoder: quattro modi diversi di far vedere le cose a una macchina</h1>
+        <p class="article-hero__excerpt">Come funzionano davvero i sensori di prossimità industriali più comuni, quando si sceglie l'uno o l'altro, e come leggere un datasheet reale.</p>
+        <div class="article-hero__meta">
+          <span>01 set 2026</span>
+          <span>·</span>
+          <span>6 min di lettura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Nel software, quando devi sapere se qualcosa &quot;esiste&quot; o &quot;è nella condizione X&quot;, scrivi una condizione booleana e il problema è risolto. Nel mondo fisico, sapere se un pezzo metallico è arrivato in una certa posizione, o se un contenitore di plastica trasparente è pieno, o quanti gradi ha ruotato un albero motore, sono tre problemi completamente diversi, che richiedono tre principi fisici diversi per essere risolti in modo affidabile. Questo articolo è la guida ai quattro sensori che risolvono il 90% dei casi che incontrerai: induttivo, capacitivo, fotoelettrico ed encoder.</p>
+<p><img src="/assets/images/articles/sensor-types-comparison.svg" alt="Comparison of inductive, capacitive, photoelectric sensors and a rotary encoder" loading="lazy"></p>
+<h2>Il sensore induttivo: vede solo i metalli, ma li vede benissimo</h2>
+<p>Il sensore induttivo è probabilmente il sensore di prossimità più diffuso in assoluto nell&#39;automazione industriale, e la ragione è semplice: la maggior parte delle parti mobili di una macchina — cilindri, slitte, bracci — sono in metallo, e l&#39;induttivo è economico, robusto, senza contatto, e praticamente insensibile a sporco, olio e vibrazioni.</p>
+<p>Il principio fisico è elegante. Dentro il sensore c&#39;è una bobina che genera un campo elettromagnetico ad alta frequenza, che esce dalla faccia sensibile del sensore. Quando un oggetto metallico entra in questo campo, al suo interno si generano delle correnti indotte (dette <em>correnti parassite</em> o <em>correnti di Foucault</em>) che assorbono energia dal campo. Il circuito interno del sensore misura questo assorbimento di energia — in pratica, lo smorzamento dell&#39;oscillazione della bobina — e quando supera una certa soglia, commuta l&#39;uscita. Nota il dettaglio importante: <strong>il sensore induttivo rileva solo materiali conduttivi</strong>, in pratica quasi solo metalli. Plastica, legno, vetro, liquidi: per l&#39;induttivo sono trasparenti, semplicemente non esistono.</p>
+<p>Un parametro che troverai sempre nel datasheet è la <strong>distanza nominale di intervento</strong> (<code>Sn</code>), tipicamente pochi millimetri per i sensori più compatti (i famosi cilindrici M8, M12, M18, dove il numero indica il diametro filettato in millimetri) fino a qualche centimetro per i modelli più grandi. Trovi anche una distinzione tra montaggio <strong>filo (o embeddable)</strong> e <strong>non filo (non-embeddable)</strong>: i primi possono essere incassati completamente a filo in un supporto metallico senza che questo interferisca con la lettura, i secondi hanno bisogno di uno spazio libero attorno alla faccia sensibile — un dettaglio che sui disegni meccanici del supporto del sensore fa davvero la differenza, e che se ignorato produce sensori che &quot;vedono&quot; il proprio supporto invece del pezzo da rilevare.</p>
+<h2>Il sensore capacitivo: vede (quasi) tutto, anche attraverso una parete</h2>
+<p>Dove l&#39;induttivo si ferma, entra in gioco il capacitivo. Funziona in modo concettualmente simile — genera un campo, questa volta elettrico anziché magnetico, e ne misura la variazione — ma è sensibile alla <strong>costante dielettrica</strong> del materiale che si avvicina, una proprietà che quasi ogni materiale possiede in qualche misura: plastica, vetro, legno, liquidi, persino la mano di una persona. Questo lo rende molto più versatile ma anche più &quot;rumoroso&quot;: un capacitivo mal regolato può scattare per l&#39;umidità dell&#39;aria o per lo sporco che si accumula sulla sua faccia sensibile, quindi quasi tutti i modelli industriali hanno un trimmer di sensibilità da regolare in fase di installazione — uno dei pochi sensori che richiede davvero una taratura sul campo, e non solo un posizionamento meccanico.</p>
+<p>L&#39;applicazione da manuale è il rilevamento di livello attraverso pareti non metalliche: un sensore capacitivo appoggiato all&#39;esterno di un serbatoio di plastica può rilevare se il liquido all&#39;interno ha raggiunto quel punto, senza bisogno di alcun foro nel serbatoio — una soluzione che, la prima volta che la vedi funzionare, sembra quasi magia.</p>
+<h2>Il sensore fotoelettrico: la portata più lunga, il principio più intuitivo</h2>
+<p>Il fotoelettrico usa un raggio di luce — quasi sempre infrarossa, invisibile all&#39;occhio ma perfettamente funzionante nel principio — e ne misura l&#39;interruzione o il riflesso. Ne esistono tre configurazioni principali, ed è importante distinguerle perché cambiano radicalmente il modo in cui progetti il loro montaggio sulla macchina:</p>
+<p><strong>A sbarramento (through-beam).</strong> Un trasmettitore e un ricevitore separati, montati uno di fronte all&#39;altro: quando qualcosa interrompe il raggio, il ricevitore lo rileva. È la configurazione più affidabile e a lunga portata (anche decine di metri), ma richiede l&#39;allineamento e il cablaggio di due componenti distinti.</p>
+<p><strong>Retroriflettore (retro-reflective).</strong> Trasmettitore e ricevitore nello stesso corpo, con un catadiottro (un riflettore prismatico passivo, economico e senza bisogno di alimentazione) montato dall&#39;altra parte: il raggio va, rimbalza sul riflettore e torna. Un solo componente attivo da cablare, portata intermedia.</p>
+<p><strong>A diffusione (diffuse).</strong> Il sensore stesso emette luce e ne rileva il riflesso diretto sull&#39;oggetto, senza alcun riflettore dedicato. È il più semplice da installare (un solo componente, nessun riflettore) ma il più sensibile al colore e alla finitura superficiale dell&#39;oggetto: una superficie nera opaca riflette molta meno luce di una superficie bianca lucida, e questo può cambiare drasticamente la portata utile — un dettaglio da tenere bene a mente quando la macchina deve gestire prodotti di colori diversi.</p>
+<h2>L&#39;encoder: quando non basta sapere &quot;sì o no&quot;, ma serve sapere &quot;quanto&quot;</h2>
+<p>Tutti i sensori visti finora rispondono a una domanda binaria: presente o assente. L&#39;encoder risponde a una domanda completamente diversa: quanto ha ruotato (o traslato) qualcosa, e a volte a quale velocità. È il sensore che troverai sull&#39;albero di un motore, su un asse di posizionamento, su qualunque parte della macchina di cui serva conoscere la posizione esatta e non solo un paio di stati.</p>
+<p>Il tipo più comune è l&#39;<strong>encoder incrementale ottico</strong>: un disco forato solidale all&#39;albero rotante passa tra un emettitore e un ricevitore di luce, generando un treno di impulsi ogni volta che un foro passa. Contando gli impulsi, il PLC (o più spesso un modulo di conteggio veloce dedicato, perché la frequenza di questi impulsi può superare abbondantemente la velocità di scansione ciclica normale del PLC) ricostruisce quanto l&#39;albero ha ruotato. Gli encoder incrementali di qualità hanno tipicamente due canali sfasati di 90 gradi (chiamati A e B), che permettono non solo di contare gli impulsi ma anche di determinare la <strong>direzione</strong> di rotazione dalla sequenza con cui i due canali commutano — un dettaglio elegante di ingegneria che vale la pena capire, perché è lo stesso principio usato ovunque serva rilevare un verso di movimento da due segnali digitali sfasati.</p>
+<p>L&#39;alternativa è l&#39;<strong>encoder assoluto</strong>, che invece di contare impulsi relativi restituisce direttamente, in ogni istante, la posizione assoluta corrente (tipicamente come valore digitale su un bus di comunicazione), anche subito dopo un&#39;accensione — una proprietà preziosissima per gli assi che non possono permettersi una fase di &quot;azzeramento&quot; a ogni riavvio della macchina, come i grandi assi di posizionamento su una linea di produzione continua.</p>
+<h2>Leggere un datasheet reale: cosa cercare per primo</h2>
+<p>Quando ricevi un componente fisico da collaudare, o devi verificarne uno da sostituire, il datasheet del costruttore (Omron, Sick, Balluff, Pepperl+Fuchs sono nomi che incontrerai spessissimo) ha sempre una struttura simile. I parametri da guardare per primi, in ordine di priorità pratica: la tensione di alimentazione (quasi sempre 10-30VDC, con 24VDC nominale), il tipo di uscita (PNP/NPN, NO/NC — quello che hai imparato nell&#39;articolo precedente), la distanza nominale di intervento e, per l&#39;induttivo e il capacitivo, se è filo o non filo. Se dopo aver letto queste quattro righe sai già rispondere &quot;questo sensore va bene per quella posizione sulla macchina&quot;, hai imparato esattamente quello che serve per lavorare sul campo con sicurezza.</p>
+<p>Nel prossimo articolo passiamo dal &quot;percepire&quot; al &quot;muovere&quot;: motori asincroni, servomotori e inverter, e cosa cambia davvero, dal punto di vista del software di controllo, tra questi tre mondi.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/it/articles/03-sensoristica-industriale-le-basi/">
+        <span class="post-nav__label">← Articolo precedente</span>
+        <span class="post-nav__title">PNP, NPN, digitale, analogico: il linguaggio con cui i sensori parlano al PLC</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ti va di offrirmi un caffè?</h3>
+          <p>Se questo contenuto ti è stato utile, puoi sostenere il progetto con una piccola donazione libera.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/it/articles/05-motori-e-azionamenti/">
+        <span class="post-nav__label">Articolo successivo →</span>
+        <span class="post-nav__title">Motori asincroni, servomotori e inverter: cosa cambia davvero per chi scrive il software</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/it/articles/">← Torna a tutti gli articoli</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tutti i contenuti sono opera dell'autore, verificati sul campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Guarda il codice su GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Scrivimi una mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/it/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Torna su</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

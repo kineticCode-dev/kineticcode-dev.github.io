@@ -1,0 +1,58 @@
+<svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="41"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+  </defs>
+  <rect width="900" height="520" fill="#faf6ec"/>
+  <text x="450" y="40" text-anchor="middle" font-size="24" fill="#3a3a3a">Reading a valve symbol (ISO 1219)</text>
+
+  <!-- 3/2 valve -->
+  <text x="220" y="90" text-anchor="middle" font-size="18" fill="#3a3a3a">3/2-way valve</text>
+  <g filter="url(#sketchy)">
+    <rect x="90" y="120" width="130" height="100" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="2.2"/>
+    <rect x="220" y="120" width="130" height="100" fill="#faf6ec" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="155" y="175" text-anchor="middle" font-size="13" fill="#3a3a3a">rest</text>
+  <text x="285" y="175" text-anchor="middle" font-size="13" fill="#3a3a3a">actuated</text>
+  <!-- ports -->
+  <text x="60" y="145" font-size="12" fill="#3a3a3a">P (supply)</text>
+  <text x="60" y="205" font-size="12" fill="#3a3a3a">A (to actuator)</text>
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2" fill="none">
+    <line x1="90" y1="140" x2="70" y2="140"/>
+    <line x1="90" y1="200" x2="70" y2="200"/>
+  </g>
+  <text x="230" y="260" text-anchor="middle" font-size="12" fill="#3a3a3a">3 ports, 2 positions</text>
+  <text x="230" y="280" text-anchor="middle" font-size="12" fill="#3a3a3a">used for single-acting cylinders</text>
+
+  <!-- 5/2 valve -->
+  <text x="680" y="90" text-anchor="middle" font-size="18" fill="#3a3a3a">5/2-way valve</text>
+  <g filter="url(#sketchy)">
+    <rect x="550" y="120" width="130" height="100" fill="#f0dca0" stroke="#3a3a3a" stroke-width="2.2"/>
+    <rect x="680" y="120" width="130" height="100" fill="#faf6ec" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="615" y="175" text-anchor="middle" font-size="13" fill="#3a3a3a">rest</text>
+  <text x="745" y="175" text-anchor="middle" font-size="13" fill="#3a3a3a">actuated</text>
+  <text x="500" y="135" font-size="12" fill="#3a3a3a">P</text>
+  <text x="500" y="175" font-size="12" fill="#3a3a3a">A</text>
+  <text x="500" y="215" font-size="12" fill="#3a3a3a">B</text>
+  <text x="690" y="260" text-anchor="middle" font-size="12" fill="#3a3a3a">5 ports, 2 positions</text>
+  <text x="690" y="280" text-anchor="middle" font-size="12" fill="#3a3a3a">used for double-acting cylinders</text>
+
+  <!-- Cylinder diagrams -->
+  <g filter="url(#sketchy)">
+    <rect x="90" y="340" width="260" height="60" rx="6" fill="#faf6ec" stroke="#3a3a3a" stroke-width="2.2"/>
+    <rect x="90" y="340" width="90" height="60" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="2.2"/>
+    <rect x="270" y="355" width="16" height="30" fill="#3a3a3a"/>
+  </g>
+  <text x="220" y="425" text-anchor="middle" font-size="13" fill="#3a3a3a">single-acting: spring returns it</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="550" y="340" width="260" height="60" rx="6" fill="#faf6ec" stroke="#3a3a3a" stroke-width="2.2"/>
+    <rect x="640" y="340" width="90" height="60" fill="#f0dca0" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="680" y="425" text-anchor="middle" font-size="13" fill="#3a3a3a">double-acting: air pushes both ways</text>
+
+  <text x="450" y="480" text-anchor="middle" font-size="14" fill="#3a3a3a">Port count tells you the valve type — position count tells you how many air paths it can switch between.</text>
+</svg>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PNP, NPN, digital, analog: die Sprache, in der Sensoren mit der SPS reden — Kinetic Code</title>
+  <meta name="description" content="Die Grundlagen der industriellen Sensorik: PNP- und NPN-Ausgänge, digitale und analoge Signale (4-20mA, 0-10V), und warum die Verwechslung dieser Konzepte der häufigste Verdrahtungsfehler ist.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/articles/03-sensoristica-industriale-le-basi/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/03-sensoristica-industriale-le-basi/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/03-sensoristica-industriale-le-basi/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/03-sensoristica-industriale-le-basi/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/03-sensoristica-industriale-le-basi/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/03-sensoristica-industriale-le-basi/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/03-sensoristica-industriale-le-basi/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="PNP, NPN, digital, analog: die Sprache, in der Sensoren mit der SPS reden — Kinetic Code">
+  <meta property="og:description" content="Die Grundlagen der industriellen Sensorik: PNP- und NPN-Ausgänge, digitale und analoge Signale (4-20mA, 0-10V), und warum die Verwechslung dieser Konzepte der häufigste Verdrahtungsfehler ist.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/articles/03-sensoristica-industriale-le-basi/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"PNP, NPN, digital, analog: die Sprache, in der Sensoren mit der SPS reden","description":"Die Grundlagen der industriellen Sensorik: PNP- und NPN-Ausgänge, digitale und analoge Signale (4-20mA, 0-10V), und warum die Verwechslung dieser Konzepte der häufigste Verdrahtungsfehler ist.","datePublished":"2026-09-01","inLanguage":"de","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/" aria-current="page">Artikel</a>
+        <a href="/de/learning-paths/">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/03-sensoristica-industriale-le-basi/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/03-sensoristica-industriale-le-basi/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/03-sensoristica-industriale-le-basi/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/03-sensoristica-industriale-le-basi/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/03-sensoristica-industriale-le-basi/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrielle Automatisierung</span>
+        <h1>PNP, NPN, digital, analog: die Sprache, in der Sensoren mit der SPS reden</h1>
+        <p class="article-hero__excerpt">Die Grundlagen der industriellen Sensorik: PNP- und NPN-Ausgänge, digitale und analoge Signale (4-20mA, 0-10V), und warum die Verwechslung dieser Konzepte der häufigste Verdrahtungsfehler ist.</p>
+        <div class="article-hero__meta">
+          <span>01 Sep 2026</span>
+          <span>·</span>
+          <span>5 Min. Lesezeit</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Wenn es einen Fehler gibt, den früher oder später jeder macht, der im Feld arbeitet — vom Elektriker bis zum frisch graduierten Mechatroniker, und ja, auch du —, dann ist es, einen PNP-Sensor dort anzuschließen, wo ein NPN gebraucht wurde, oder umgekehrt, und zwanzig Minuten damit zu verbringen, sich zu fragen, warum die SPS absolut nichts sieht, während die LED des Sensors fröhlich blinkt und meldet, dass er etwas erkennt. Das ist kein dummer Fehler: Er entsteht aus einem subtilen Konzept, das fast immer schlecht erklärt wird, und das ich dir heute ein für alle Mal klären möchte.</p>
+<h2>Ein Sensor ist kein Schalter, verhält sich aber wie einer</h2>
+<p>Beginne mit einem einfachen Bild: Ein industrieller Näherungssensor — ob induktiv, kapazitiv oder optoelektronisch, das sehen wir im nächsten Artikel — tut im Kern genau das, was ein Lichtschalter tut: Er schließt oder öffnet einen elektrischen Kontakt als Reaktion auf etwas (beim Schalter deine Hand, beim Sensor das Vorhandensein eines Objekts). Der Unterschied ist, dass der Lichtschalter ein Metallstück ist, das du mechanisch selbst schließt, während der Sensor eine kleine elektronische Schaltung enthält, die das Schließen eines Kontakts mit einem Transistor als elektronischem Schalter <em>simuliert</em>.</p>
+<p>Und genau daraus entsteht die Unterscheidung PNP/NPN: Sie hängt davon ab, <strong>mit welcher Seite des Stromkreises der Transistor des Sensors den Ausgang verbindet</strong>.</p>
+<h2>PNP: der Sensor &quot;schenkt&quot; das Positive</h2>
+<p>Ein <strong>PNP</strong>-Sensor (auch <em>sourcing</em> genannt, &quot;stromliefernd&quot;) verbindet seinen Ausgang im aktiven Zustand mit <strong>+24V</strong> der Versorgung. Praktisch heißt das: Wenn der Sensor das Objekt erkennt, liegen am Ausgang 24V gegenüber Masse an. Der Eingang der SPS muss seinerseits so konfiguriert sein (oder ist bei modernen SPS öfter schon fest verdrahtet), dass er einen High-Pegel am Eingang als &quot;wahr&quot; erkennt, mit der 0V-Referenz gemeinsam angeschlossen.</p>
+<h2>NPN: der Sensor &quot;zieht&quot; gegen Masse</h2>
+<p>Ein <strong>NPN</strong>-Sensor (auch <em>sinking</em> genannt, &quot;stromaufnehmend&quot;) tut genau das Gegenteil: Im aktiven Zustand verbindet er seinen Ausgang mit <strong>0V</strong> (Masse). Der SPS-Eingang muss in diesem Fall einen Low-Pegel als &quot;wahr&quot; erkennen, wobei +24V gemeinsam auf der Gegenseite anliegt.</p>
+<p><img src="/assets/images/articles/pnp-vs-npn-wiring.svg" alt="Wiring comparison between a PNP sourcing sensor and an NPN sinking sensor connected to a PLC input" loading="lazy"></p>
+<p>Schau dir das Schema genau an: Der physische Unterschied liegt genau darin, welche Klemme des Sensors — die Signalklemme — beim Schalten des Sensors auf +24V oder auf 0V gezogen wird. Wenn du einen PNP-Sensor an einen SPS-Eingang anschließt, der für NPN verdrahtet ist (also mit dem gemeinsamen Bezug auf +24V statt auf 0V), schließt sich der Stromkreis einfach nie in die richtige Richtung: Der Eingang sieht keine nutzbare Pegeländerung, und für die SPS ist der Sensor &quot;nie aktiv&quot;, obwohl er das Objekt physisch einwandfrei erkennt und seine LED es bestätigt.</p>
+<p><strong>Eine praktische Faustregel, die dir Zeit im Feld spart:</strong> In Europa ist aus historischen und normativen Gründen die überwiegende Mehrheit der Industriesensoren und SPSen in <strong>PNP</strong> verdrahtet. Wenn in der I/O-Liste oder auf dem Sensor-Etikett nichts anderes angegeben ist, gehe von PNP aus — prüfe aber immer nach, denn im Automotive-Bereich und in vielen Anlagen amerikanischer oder asiatischer Herkunft findest du noch reichlich NPN, und beide Welten koexistieren häufiger, als du denkst, sogar in derselben Maschine.</p>
+<h2>Digital vs. analog: eine andere Frage als PNP/NPN</h2>
+<p>PNP und NPN betreffen, <em>wie</em> ein digitales Signal (an/aus, vorhanden/nicht vorhanden) elektrisch transportiert wird. Aber nicht alle Sensoren liefern eine binäre Antwort. Viele — denk an einen Drucksensor, einen Temperatursensor oder einen linearen Positionsgeber — müssen einen <strong>kontinuierlichen Wert</strong> übermitteln: nicht &quot;es gibt Druck&quot;, sondern &quot;der Druck beträgt 3,7 bar&quot;. Dafür braucht man <strong>analoge</strong> Signale, und in der Industriewelt findest du im Wesentlichen zwei Typen, fast überall dieselben:</p>
+<p><strong>4-20mA-Strom.</strong> Der Sensor lässt einen Strom durch den Stromkreis fließen, der proportional zur gemessenen Größe ist: 4mA entspricht dem Minimalwert der Skala (Beispiel: 0 bar), 20mA dem Maximalwert (Beispiel: 10 bar). Es ist der in der Schwerindustrie am weitesten verbreitete Standard, und der Grund dafür ist ingenieurtechnisch elegant: Da es ein Stromsignal und kein Spannungssignal ist, leidet es nicht unter Spannungsabfällen entlang langer Kabel (ein ernstes Problem, wenn man von Dutzenden oder Hunderten Metern Verkabelung in einer Anlage spricht), und es ist gegen die meisten elektromagnetischen Störungen immun, die Spannungssignale dagegen plagen. Beachte ein cleveres Detail des Standards: Der Minimalwert ist nicht 0mA, sondern 4mA. Das erlaubt der SPS, einen tatsächlichen Nullwert (4mA) von einem gebrochenen Kabel oder einem getrennten Sensor (0mA) zu unterscheiden: Ein Fehler erzeugt einen erkennbaren Wert außerhalb der Skala, statt eines stillen Fehlers, der wie ein gültiger Wert aussieht.</p>
+<p><strong>0-10V-Spannung.</strong> Konzeptionell einfacher — der Sensor erzeugt eine Spannung proportional zur gemessenen Größe —, aber empfindlicher gegenüber Störungen und Spannungsabfällen bei langen Kabeln, deshalb typischerweise für kurze Distanzen reserviert, im oder in der Nähe des Schaltschranks.</p>
+<p>Das analoge Eingangsmodul der SPS wandelt seinerseits dieses kontinuierliche Signal über einen Analog-Digital-Wandler (ADC) in eine digitale Zahl um, die dir typischerweise einen 12- oder 16-Bit-Ganzzahlwert liefert, den du in deinem Code auf die reale physikalische Größe umskalieren musst — dort schreibst du die Skalierungsfunktionen, die <code>raw_value</code> in <code>pressure_bar</code> umwandeln, mit der linearen Formel, die die beiden Enden der Skala verbindet.</p>
+<h2>NO und NC: die andere Unterscheidung, die zählt</h2>
+<p>Ein letztes Kürzelpaar, das dir überall begegnet und das völlig unabhängig von PNP/NPN ist: <strong>NO</strong> (<em>Normally Open</em>, Öffner... nein, tatsächlich Schließer in Ruhestellung offen) und <strong>NC</strong> (<em>Normally Closed</em>, in Ruhestellung geschlossen). Sie beschreiben den Zustand des Kontakts — oder des äquivalenten elektronischen Ausgangs — wenn der Sensor <em>nicht</em> aktiv ist, also im Ruhezustand. Ein NO-Sensor lässt kein Signal durch, bis er das Objekt erkennt; ein NC-Sensor macht genau das Gegenteil: Er lässt immer ein Signal durch, außer wenn er das Objekt erkennt (oder wenn er ausfällt, was ihn zu einer sehr gängigen Wahl in Sicherheitskreisen macht — wird das Kabel durchtrennt, öffnet sich der Kreis, und das System interpretiert das korrekt als Alarm, statt als mehrdeutige Stille).</p>
+<p>Setze all diese Kürzel zusammen — PNP/NPN, NO/NC, digital/analog — und du hast die überwiegende Mehrheit der Angaben entschlüsselt, die du neben einem Sensor in einem Katalog oder einer I/O-Liste findest: <code>PNP NO digital</code>, <code>NPN NC digital</code>, <code>4-20mA analog</code>. Es sind keine abstrakten Kürzel mehr: Es sind präzise Verdrahtungsanweisungen, und jetzt weißt du genau, was zu tun ist, wenn du sie liest.</p>
+<p>Im nächsten Artikel gehen wir auf die häufigsten Sensoren ein, denen du physisch im Feld begegnest: induktive, kapazitive, optoelektronische Sensoren und Encoder — wie sie innen funktionieren und wann man den einen statt den anderen wählt.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/de/articles/02-il-quadro-elettrico/">
+        <span class="post-nav__label">← Vorheriger Artikel</span>
+        <span class="post-nav__title">Der Schaltschrank erklärt für alle, die ihn bisher nur offen gesehen haben</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/de/articles/04-sensori-di-prossimita-e-presenza/">
+        <span class="post-nav__label">Nächster Artikel →</span>
+        <span class="post-nav__title">Induktiv, kapazitiv, optoelektronisch, Encoder: vier verschiedene Arten, eine Maschine sehen zu lassen</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/articles/">← Zurück zu allen Artikeln</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

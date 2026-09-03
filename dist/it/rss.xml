@@ -5,6 +5,90 @@
   <description>Diario tecnico di un ingegnere meccatronico: embedded, automazione industriale e software, raccontati come si racconterebbero a voce.</description>
   <language>it</language>
   <item>
+    <title>Bus di campo: perché nessuno cablea più ogni sensore fino al quadro centrale</title>
+    <link>https://kineticcode-dev.github.io/it/articles/12-bus-di-campo-e-architettura-io/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/12-bus-di-campo-e-architettura-io/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Come e perché l'I/O di una macchina moderna è decentralizzato tramite bus di campo come Profinet ed EtherCAT, invece di essere cablato punto-punto fino al PLC.</description>
+  </item>
+  <item>
+    <title>Sicurezza funzionale: perché il pulsante di emergenza non passa mai dal tuo software</title>
+    <link>https://kineticcode-dev.github.io/it/articles/11-sicurezza-funzionale/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/11-sicurezza-funzionale/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Come funzionano davvero i circuiti di sicurezza di una macchina industriale: emergenze, relè di sicurezza, barriere fotoelettriche, categorie e Performance Level.</description>
+  </item>
+  <item>
+    <title>Idraulica per chi viene dalla pneumatica: stessa logica, forze molto più grandi</title>
+    <link>https://kineticcode-dev.github.io/it/articles/10-idraulica-le-basi/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/10-idraulica-le-basi/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Le basi dell'idraulica industriale — pompe, motori idraulici, valvole — e quando conviene davvero rispetto alla pneumatica.</description>
+  </item>
+  <item>
+    <title>Pneumatica, terza puntata: cilindri e attuatori, dove l'aria diventa finalmente movimento</title>
+    <link>https://kineticcode-dev.github.io/it/articles/09-pneumatica-cilindri-e-attuatori/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/09-pneumatica-cilindri-e-attuatori/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Come funzionano i cilindri pneumatici a semplice e doppio effetto, i sensori magnetici di fine corsa, il dimensionamento base e la lettura di un datasheet reale.</description>
+  </item>
+  <item>
+    <title>Pneumatica, seconda puntata: le elettrovalvole, dove un bit del PLC diventa aria in movimento</title>
+    <link>https://kineticcode-dev.github.io/it/articles/08-pneumatica-valvole/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/08-pneumatica-valvole/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Come funzionano le elettrovalvole pneumatiche 3/2 e 5/2, la simbologia ISO 1219, e come il PLC comanda davvero un cilindro.</description>
+  </item>
+  <item>
+    <title>Pneumatica, prima puntata: da dove viene davvero l'aria compressa che muove una macchina</title>
+    <link>https://kineticcode-dev.github.io/it/articles/07-pneumatica-produzione-e-trattamento-aria/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/07-pneumatica-produzione-e-trattamento-aria/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Come si produce e si tratta l'aria compressa in uno stabilimento industriale: compressori, serbatoi, essiccatori e gruppi FRL, spiegati senza equazioni differenziali.</description>
+  </item>
+  <item>
+    <title>Cinghie, catene e viti a ricircolo di sfere: come il moto di un motore arriva davvero dove serve</title>
+    <link>https://kineticcode-dev.github.io/it/articles/06-trasmissione-meccanica-del-moto/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/06-trasmissione-meccanica-del-moto/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Il minimo di meccanica di trasmissione che serve a un ingegnere di controllo per capire perché una macchina è costruita in un certo modo.</description>
+  </item>
+  <item>
+    <title>Motori asincroni, servomotori e inverter: cosa cambia davvero per chi scrive il software</title>
+    <link>https://kineticcode-dev.github.io/it/articles/05-motori-e-azionamenti/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/05-motori-e-azionamenti/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Una guida pratica ai motori più comuni nelle macchine industriali — asincroni, servo, passo-passo — e a cosa vede il PLC di ognuno di essi.</description>
+  </item>
+  <item>
+    <title>Induttivi, capacitivi, fotoelettrici, encoder: quattro modi diversi di far vedere le cose a una macchina</title>
+    <link>https://kineticcode-dev.github.io/it/articles/04-sensori-di-prossimita-e-presenza/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/04-sensori-di-prossimita-e-presenza/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Come funzionano davvero i sensori di prossimità industriali più comuni, quando si sceglie l'uno o l'altro, e come leggere un datasheet reale.</description>
+  </item>
+  <item>
+    <title>PNP, NPN, digitale, analogico: il linguaggio con cui i sensori parlano al PLC</title>
+    <link>https://kineticcode-dev.github.io/it/articles/03-sensoristica-industriale-le-basi/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/03-sensoristica-industriale-le-basi/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Le basi della sensoristica industriale: uscite PNP e NPN, segnali digitali e analogici (4-20mA, 0-10V), e perché confondere questi concetti è l'errore più comune in cablaggio.</description>
+  </item>
+  <item>
+    <title>Il quadro elettrico spiegato a chi finora l'ha solo intravisto aperto</title>
+    <link>https://kineticcode-dev.github.io/it/articles/02-il-quadro-elettrico/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/02-il-quadro-elettrico/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Cosa c'è davvero dentro l'armadio elettrico di una macchina industriale: interruttori, alimentatori, contattori, relè, morsettiere, e perché quasi tutto lavora a 24VDC.</description>
+  </item>
+  <item>
+    <title>Anatomia di una macchina industriale: cosa vedi davvero quando entri in produzione</title>
+    <link>https://kineticcode-dev.github.io/it/articles/01-anatomia-di-una-macchina-industriale/</link>
+    <guid>https://kineticcode-dev.github.io/it/articles/01-anatomia-di-una-macchina-industriale/</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description>Una mappa dei sotto-sistemi che compongono una macchina industriale, per chi arriva dal software e deve imparare a leggerla nel suo insieme.</description>
+  </item>
+  <item>
     <title>Ottimizzare la moltiplicazione tra matrici in C++ — Parte 3: vettorizzazione, il quadro completo e due sorprese oneste</title>
     <link>https://kineticcode-dev.github.io/it/articles/matrix-multiplication-optimization-part-3/</link>
     <guid>https://kineticcode-dev.github.io/it/articles/matrix-multiplication-optimization-part-3/</guid>

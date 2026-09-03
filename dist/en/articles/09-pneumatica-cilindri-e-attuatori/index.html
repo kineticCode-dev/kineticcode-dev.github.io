@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pneumatics, part three: cylinders and actuators, where air finally becomes motion — Kinetic Code</title>
+  <meta name="description" content="How single- and double-acting pneumatic cylinders work, magnetic limit sensors, basic sizing, and reading a real datasheet.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/09-pneumatica-cilindri-e-attuatori/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/09-pneumatica-cilindri-e-attuatori/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/09-pneumatica-cilindri-e-attuatori/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Pneumatics, part three: cylinders and actuators, where air finally becomes motion — Kinetic Code">
+  <meta property="og:description" content="How single- and double-acting pneumatic cylinders work, magnetic limit sensors, basic sizing, and reading a real datasheet.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/09-pneumatica-cilindri-e-attuatori/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pneumatics, part three: cylinders and actuators, where air finally becomes motion","description":"How single- and double-acting pneumatic cylinders work, magnetic limit sensors, basic sizing, and reading a real datasheet.","datePublished":"2026-09-01","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/09-pneumatica-cilindri-e-attuatori/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/09-pneumatica-cilindri-e-attuatori/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/09-pneumatica-cilindri-e-attuatori/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/09-pneumatica-cilindri-e-attuatori/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/09-pneumatica-cilindri-e-attuatori/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrial Automation</span>
+        <h1>Pneumatics, part three: cylinders and actuators, where air finally becomes motion</h1>
+        <p class="article-hero__excerpt">How single- and double-acting pneumatic cylinders work, magnetic limit sensors, basic sizing, and reading a real datasheet.</p>
+        <div class="article-hero__meta">
+          <span>Sep 01, 2026</span>
+          <span>·</span>
+          <span>6 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>We close out the pneumatics block with the most visible component of all, the one that anyone, even with no technical background whatsoever, would recognize at a glance on a machine: the <strong>pneumatic cylinder</strong>. This is where everything we&#39;ve built up over the previous two articles — treated and regulated air, the solenoid valve directing its flow — finally turns into a real mechanical push.</p>
+<h2>Anatomy of a cylinder: a piston inside a tube</h2>
+<p>A pneumatic cylinder, in its most common form, is conceptually simple: a cylindrical tube (the <em>barrel</em>), closed at both ends by end caps, inside which a piston connected to a rod slides; the rod exits through one of the two end caps and connects mechanically to the load to be moved — a gripper, a slide, a pusher. Compressed air, introduced into one of the two chambers separated by the piston, pushes it, generating force and motion.</p>
+<p><img src="/assets/images/articles/cylinder-cross-section.svg" alt="Cross-section of a double-acting pneumatic cylinder showing air ports A and B, and magnetic proximity sensors mounted on the tie rods" loading="lazy"></p>
+<p>We already distinguished, when talking about valves, between <strong>single-acting</strong> cylinders (air on one side, spring return) and <strong>double-acting</strong> ones (air active on both sides). It&#39;s worth adding a practical note on when you&#39;d choose one over the other: single-acting is cheaper and simpler to control, and it&#39;s the natural choice when you need an automatic, reliable return &quot;by design&quot; even with no signal present — think of a safety clamp that must return to the open position as soon as air or power is lost. Double-acting, much more common overall, is the choice when you need active control in both directions, force on the return stroke too, or when the stroke is long (a single-acting cylinder&#39;s spring, beyond a certain length, would become bulky and produce an uneven return force along the whole stroke).</p>
+<h2>Limit sensors: how the PLC knows the cylinder has arrived</h2>
+<p>A pneumatic cylinder, on its own, doesn&#39;t tell the PLC where it is: it&#39;s an actuator, not a sensor. To know whether a cylinder is fully extended or fully retracted — information almost always essential before advancing the machine&#39;s logic sequence to the next step — dedicated sensors are needed, and the standard, elegant, and almost universal industry solution is <strong>magnetic proximity sensors</strong> (often simply called <em>magnetic limit sensors</em>, or by the old commercial name <em>reed switch</em>, even though the most common technology today is Hall-effect).</p>
+<p>The construction trick is this: the piston inside the cylinder carries a permanent magnetic ring, built into its structure. The cylinder barrel, for its part, isn&#39;t made of ferromagnetic material but of an alloy (typically anodized aluminum) that lets the magnetic field pass through without shielding it. The magnetic sensors, instead of being mounted inside the cylinder (which would require complex and unreliable internal wiring), are clipped <strong>externally</strong> onto dedicated grooved rails along the barrel, and detect the piston&#39;s magnetic field passing by as it transits their position — with no physical contact, no hole in the barrel, no internal wiring. It&#39;s the exact same physical principle as the inductive sensor you already met, applied in a specific configuration.</p>
+<p>The huge practical advantage of this system is that the sensors are <strong>manually positionable</strong>, sliding them along the barrel&#39;s external groove and locking them with a small screw once in the desired position — an operation you&#39;ll actually perform during commissioning, when you need to precisely adjust the exact point at which the PLC should consider each individual cylinder&#39;s extended or retracted position &quot;reached&quot;.</p>
+<h2>Sizing: how much force a cylinder really generates</h2>
+<p>Sizing a machine&#39;s cylinders usually isn&#39;t your job — that&#39;s work done by the manufacturer&#39;s technical office, during mechanical design, well before you receive the I/O list. But understanding the basic reasoning helps enormously in &quot;sensing&quot; whether something&#39;s off when, in the field, a cylinder seems too slow or unable to complete its stroke against a certain load.</p>
+<p>The theoretical force generated by a double-acting cylinder during <strong>extension</strong> is calculated with a very simple formula, the exact same logic as the hydrostatic pressure you&#39;ve probably seen elsewhere:</p>
+<p><strong>F = P × A</strong></p>
+<p>where <strong>F</strong> is the force (in newtons), <strong>P</strong> is the air pressure (in pascals, or more practically converted from bar), and <strong>A</strong> is the area of the piston surface the air pushes on (in square meters). Conceptually, what does this formula say? That the exact same pressure applied over a larger surface generates a proportionally greater force — which is why, for the same available network pressure (the familiar 6-7 bar seen in the first article of this series), a cylinder with a larger diameter generates greater force, simply because it offers more surface area for the air to push on.</p>
+<p>An interesting detail, and often a source of misjudgment for those who&#39;ve never done this calculation: during <strong>retraction</strong>, the force is slightly lower at the same pressure, because the rod passing through the end cap &quot;steals&quot; a portion of the piston&#39;s useful area on that side — the air, in that chamber, pushes on a ring-shaped area, not a full circle. For most applications the difference is negligible, but in manufacturers&#39; catalogs (Festo, SMC, Camozzi are names you&#39;ll find everywhere in Europe) you&#39;ll always find two separate force values, one for extension and one for retraction, precisely for this reason.</p>
+<h2>A concrete datasheet-reading example</h2>
+<p>Imagine having to check whether an SMC CDQ2-series cylinder, 32mm bore, supplied at the standard network pressure of 6 bar, has enough force to push a load with an estimated resistance of 350N. The datasheet gives you the piston area (for a 32mm bore, about 8 cm², i.e. 0.0008 m²). Applying the formula: F = 600,000 Pa × 0.0008 m² ≈ 480N of theoretical force. That looks sufficient against the required 350N — but here comes one last practical consideration every commissioner learns quickly in the field: the theoretical force calculated this way is the <strong>ideal static</strong> value, without accounting for internal cylinder friction, pressure losses in the piping, and above all with no safety margin at all. The rule of thumb widespread in the field is not to exceed, under real operating conditions, about 70-80% of the calculated theoretical force — in our example, a real operating margin of around 340-380N, already close enough to the required limit that, during commissioning, you&#39;d be well advised to consider a larger-bore cylinder or a higher operating pressure, before the problem shows up in production as a cycle that&#39;s too slow or a cylinder that, with wear, stops completing its stroke.</p>
+<p>This closes the pneumatics block. In the next article we look, by contrast and for completeness, at pneumatics&#39; big sister for when you need really large forces: hydraulics.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/articles/08-pneumatica-valvole/">
+        <span class="post-nav__label">← Previous article</span>
+        <span class="post-nav__title">Pneumatics, part two: solenoid valves, where a PLC bit becomes moving air</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/10-idraulica-le-basi/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">Hydraulics for people coming from pneumatics: same logic, much bigger forces</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

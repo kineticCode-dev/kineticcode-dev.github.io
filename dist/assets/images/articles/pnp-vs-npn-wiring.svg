@@ -1,0 +1,77 @@
+<svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="11"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+  </defs>
+  <rect width="900" height="520" fill="#faf6ec"/>
+  <text x="450" y="40" text-anchor="middle" font-size="24" fill="#3a3a3a">PNP vs NPN sensor wiring</text>
+
+  <!-- PNP side -->
+  <text x="220" y="80" text-anchor="middle" font-size="18" fill="#3a3a3a">PNP (sourcing)</text>
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2.2" fill="none">
+    <line x1="120" y1="110" x2="120" y2="440"/>
+    <line x1="320" y1="110" x2="320" y2="440"/>
+    <line x1="120" y1="110" x2="320" y2="110"/>
+  </g>
+  <text x="60" y="115" font-size="13" fill="#3a3a3a">+24V</text>
+  <text x="60" y="445" font-size="13" fill="#3a3a3a">0V</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="150" y="180" width="140" height="70" rx="8" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="2"/>
+  </g>
+  <text x="220" y="220" text-anchor="middle" font-size="14" fill="#3a3a3a">PNP sensor</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2" fill="none">
+    <line x1="220" y1="110" x2="220" y2="180"/>
+    <line x1="220" y1="250" x2="220" y2="320"/>
+  </g>
+  <text x="235" y="290" font-size="12" fill="#3a3a3a">signal (high</text>
+  <text x="235" y="305" font-size="12" fill="#3a3a3a">when active)</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="150" y="320" width="140" height="60" rx="8" fill="#a8c5e8" stroke="#3a3a3a" stroke-width="2"/>
+  </g>
+  <text x="220" y="356" text-anchor="middle" font-size="13" fill="#3a3a3a">PLC input</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2" fill="none">
+    <line x1="220" y1="380" x2="220" y2="440"/>
+  </g>
+  <text x="235" y="415" font-size="12" fill="#3a3a3a">common (0V)</text>
+
+  <!-- NPN side -->
+  <text x="680" y="80" text-anchor="middle" font-size="18" fill="#3a3a3a">NPN (sinking)</text>
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2.2" fill="none">
+    <line x1="580" y1="110" x2="580" y2="440"/>
+    <line x1="780" y1="110" x2="780" y2="440"/>
+    <line x1="580" y1="110" x2="780" y2="110"/>
+  </g>
+  <text x="520" y="115" font-size="13" fill="#3a3a3a">+24V</text>
+  <text x="520" y="445" font-size="13" fill="#3a3a3a">0V</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="610" y="180" width="140" height="70" rx="8" fill="#f2b8a8" stroke="#3a3a3a" stroke-width="2"/>
+  </g>
+  <text x="680" y="220" text-anchor="middle" font-size="14" fill="#3a3a3a">NPN sensor</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2" fill="none">
+    <line x1="580" y1="110" x2="580" y2="215"/>
+    <line x1="580" y1="215" x2="610" y2="215"/>
+    <line x1="680" y1="250" x2="680" y2="320"/>
+  </g>
+  <text x="695" y="290" font-size="12" fill="#3a3a3a">signal (low</text>
+  <text x="695" y="305" font-size="12" fill="#3a3a3a">when active)</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="610" y="320" width="140" height="60" rx="8" fill="#a8c5e8" stroke="#3a3a3a" stroke-width="2"/>
+  </g>
+  <text x="680" y="356" text-anchor="middle" font-size="13" fill="#3a3a3a">PLC input</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2" fill="none">
+    <line x1="780" y1="380" x2="780" y2="440"/>
+    <line x1="750" y1="380" x2="780" y2="380"/>
+  </g>
+
+  <text x="450" y="490" text-anchor="middle" font-size="14" fill="#3a3a3a">PNP switches the +24V side to the input — NPN switches the 0V side. Mixing them up means no signal at all.</text>
+</svg>

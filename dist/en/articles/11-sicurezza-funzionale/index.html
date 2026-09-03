@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Functional safety: why the emergency stop button never goes through your software — Kinetic Code</title>
+  <meta name="description" content="How the safety circuits of an industrial machine really work: emergency stops, safety relays, light curtains, categories and Performance Level.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/11-sicurezza-funzionale/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/11-sicurezza-funzionale/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/11-sicurezza-funzionale/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/11-sicurezza-funzionale/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/11-sicurezza-funzionale/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/11-sicurezza-funzionale/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/11-sicurezza-funzionale/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Functional safety: why the emergency stop button never goes through your software — Kinetic Code">
+  <meta property="og:description" content="How the safety circuits of an industrial machine really work: emergency stops, safety relays, light curtains, categories and Performance Level.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/11-sicurezza-funzionale/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Functional safety: why the emergency stop button never goes through your software","description":"How the safety circuits of an industrial machine really work: emergency stops, safety relays, light curtains, categories and Performance Level.","datePublished":"2026-09-01","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/11-sicurezza-funzionale/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/11-sicurezza-funzionale/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/11-sicurezza-funzionale/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/11-sicurezza-funzionale/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/11-sicurezza-funzionale/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrial Automation</span>
+        <h1>Functional safety: why the emergency stop button never goes through your software</h1>
+        <p class="article-hero__excerpt">How the safety circuits of an industrial machine really work: emergency stops, safety relays, light curtains, categories and Performance Level.</p>
+        <div class="article-hero__meta">
+          <span>Sep 01, 2026</span>
+          <span>·</span>
+          <span>6 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>If you come from software, you probably have an implicit idea of how an emergency stop button should work: a digital input, read by the PLC, which if active forces all outputs to zero. Logical, clean, easy to program. And it is, almost always, <strong>wrong</strong> — or rather, insufficient — in the real industrial world. This article explains why, and introduces you to a completely different way of reasoning, one well worth internalizing because it&#39;s probably the single most important concept in this whole series from a professional-responsibility point of view.</p>
+<h2>The underlying problem: software can always fail</h2>
+<p>The reasoning behind industrial functional safety starts from an uncomfortable but honest admission: <strong>any system, including your PLC software, can fail</strong>. A bug, a scan-cycle lockup, an output module that stays electrically stuck in an active state due to an internal hardware fault (a real phenomenon, called a <em>stuck-at fault</em>), a short circuit that keeps a coil energized even after the PLC has correctly commanded it off: these are all low-probability but non-zero scenarios, and in a context where an error can cause a serious or fatal injury, &quot;low probability&quot; is not an acceptable level of risk.</p>
+<p>The practical consequence of this admission is a principle you&#39;ll find everywhere in machine design: <strong>safety functions must not depend on the correct operation of the standard PLC</strong>. Not because the PLC is unreliable in an absolute sense (industrial PLCs are extremely reliable), but because a safety function has to remain effective even under the assumption, however remote, that something in the standard control system goes wrong.</p>
+<h2>How it&#39;s actually built: the dual-channel safety circuit</h2>
+<p>The real emergency stop button, the red mushroom-head one you find on every machine, isn&#39;t wired to a normal PLC digital input. It&#39;s wired to a dedicated device, the <strong>safety relay</strong>, through a <strong>dual-channel</strong> circuit: the button has, inside it, not one contact but two electrically independent contacts, wired along two separate paths all the way to the safety relay. The relay continuously reads both channels and compares them: if they&#39;re consistent (both closed, machine normal; both open, emergency pressed) everything proceeds normally; if the two channels turn out to be <strong>inconsistent</strong> — one open and the other still closed — the relay interprets this as a possible fault in the wiring itself (a cut wire, a damaged contact) and forces the safe state regardless, even if no one has actually pressed the button. This continuous self-diagnostic mechanism is what makes the system <em>fail-safe</em>: any plausible fault in the circuit always and only leads to the safer state, never to an ambiguous state, and certainly never to a state that looks safe but actually isn&#39;t.</p>
+<p><img src="/assets/images/articles/safety-circuit-chain.svg" alt="Dual-channel safety circuit from an E-stop button through a safety relay to the motor contactors, with a separate diagnostic status bit sent to the PLC" loading="lazy"></p>
+<p>Notice a crucial detail in the diagram: the safety relay&#39;s output <strong>cuts power directly</strong> to the motors&#39; power contactors — it doesn&#39;t send a bit to the PLC that would then, in turn, have to decide to shut the motors down. The PLC does receive a status signal from the safety circuit, but <strong>for diagnostic purposes only</strong>: to know the emergency is active and perhaps show it on an operator panel, not to decide whether to actually remove power. Real safety happens at the electrical, hardware level, before and independently of any software logic.</p>
+<h2>Safety light curtains: a special case, not an ordinary photoelectric sensor</h2>
+<p>You already met through-beam photoelectric sensors in the article on sensing. <strong>Safety light curtains</strong> look, at first glance, very similar: a row of aligned infrared transmitters and receivers, detecting the interruption of the beam when something — typically an operator&#39;s arm or body — crosses a hazardous zone. But they&#39;re profoundly different components from a standard photoelectric sensor: internally redundant, with self-diagnosing electronics, certified to specific functional-safety standards, and also wired to the safety module using the same dual-channel logic — never to an ordinary PLC digital input. Seeing them used in production, typically in front of a robotic cell or an area with dangerous moving mechanical parts, is one of the most immediate examples of applied functional safety: the operator approaching interrupts the beam, and the machine stops through a direct electrical path, not through a loop of software logic that could, in theory, never get executed.</p>
+<h2>Categories and Performance Level: a vocabulary you&#39;ll need to get familiar with</h2>
+<p>In machine technical documentation — and in the CE marking every machine placed on the European market must carry — you&#39;ll find references to <strong>safety categories</strong> (per EN 954-1, now superseded but still cited) or, in more modern terms, a <strong>Performance Level</strong> (PL, per EN ISO 13849-1), expressed with a letter from <strong>a</strong> to <strong>e</strong>, where <strong>e</strong> represents the highest level of reliability. Without going into the detail of the calculation (which requires component reliability statistics, mean time between failures, diagnostic coverage — specialist work done by the manufacturer&#39;s safety engineering office), the concept you need to take away is simple: <strong>the greater the risk associated with a possible failure of the safety function, the stricter the redundancy and self-diagnosis requirements</strong> — and this translates directly into concrete wiring choices you&#39;ll see in the field: a low PL can get by with a single channel and a simple safety relay; a high PL, typical of functions protecting against serious hazards (a high-speed robot, a press capable of generating tons of force), typically requires dual-channel with cross-diagnostics, like what we just saw.</p>
+<h2>What all this concretely means for your work</h2>
+<p>When you receive a machine&#39;s I/O list, always mentally distinguish between &quot;standard&quot; I/O (the ones you freely program in your application logic) and safety I/O, which in the list are almost always flagged with an explicit label (<code>SAFETY</code>, <code>SIL</code>, or similar) and which, as a general rule, <strong>you must never handle as if they were an ordinary boolean input in your application program</strong>: your job, at most, is to read their status for diagnostics or to correctly manage restarting the sequence after an emergency reset — never to re-implement in software a safety logic that already is, and must remain, the responsibility of dedicated hardware. It&#39;s a distinction that, once internalized, will save you from one of the most serious conceptual mistakes (and potentially one of the most serious in terms of legal and professional liability) a beginner engineer can make in this field.</p>
+<p>In the next article we return to more familiar ground — digital communications — to understand why almost no modern machine wires every single sensor all the way to the central panel anymore, and what changes with fieldbuses.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/articles/10-idraulica-le-basi/">
+        <span class="post-nav__label">← Previous article</span>
+        <span class="post-nav__title">Hydraulics for people coming from pneumatics: same logic, much bigger forces</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/12-bus-di-campo-e-architettura-io/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">Fieldbuses: why nobody wires every sensor all the way to the central panel anymore</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

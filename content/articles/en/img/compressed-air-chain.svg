@@ -1,0 +1,60 @@
+<svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="31"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+  </defs>
+  <rect width="900" height="480" fill="#faf6ec"/>
+  <text x="450" y="40" text-anchor="middle" font-size="24" fill="#3a3a3a">From compressor to cylinder: the air's journey</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="30" y="90" width="150" height="110" rx="8" fill="#a8c5e8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="105" y="135" text-anchor="middle" font-size="14" fill="#3a3a3a">Compressor</text>
+  <text x="105" y="155" text-anchor="middle" font-size="12" fill="#3a3a3a">makes pressure</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="215" y="90" width="150" height="110" rx="8" fill="#f0dca0" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="290" y="135" text-anchor="middle" font-size="14" fill="#3a3a3a">Receiver tank</text>
+  <text x="290" y="155" text-anchor="middle" font-size="12" fill="#3a3a3a">stores + settles</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="400" y="90" width="150" height="110" rx="8" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="475" y="130" text-anchor="middle" font-size="14" fill="#3a3a3a">Dryer</text>
+  <text x="475" y="150" text-anchor="middle" font-size="12" fill="#3a3a3a">removes</text>
+  <text x="475" y="168" text-anchor="middle" font-size="12" fill="#3a3a3a">moisture</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="585" y="90" width="290" height="110" rx="8" fill="#f2b8a8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="730" y="125" text-anchor="middle" font-size="14" fill="#3a3a3a">FRL unit</text>
+  <text x="730" y="147" text-anchor="middle" font-size="12" fill="#3a3a3a">Filter - Regulator - Lubricator</text>
+  <text x="730" y="167" text-anchor="middle" font-size="12" fill="#3a3a3a">clean, set pressure, oil mist</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2.2" fill="none">
+    <path d="M180 145 h35"/>
+    <path d="M365 145 h35"/>
+    <path d="M550 145 h35"/>
+  </g>
+
+  <g filter="url(#sketchy)">
+    <rect x="300" y="300" width="300" height="110" rx="8" fill="#d0b8e8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="450" y="340" text-anchor="middle" font-size="14" fill="#3a3a3a">Solenoid valve</text>
+  <text x="450" y="362" text-anchor="middle" font-size="12" fill="#3a3a3a">directs air, PLC-controlled</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="330" y="440" width="240" height="30" rx="6" fill="#faf6ec" stroke="#3a3a3a" stroke-width="2"/>
+  </g>
+  <text x="450" y="461" text-anchor="middle" font-size="13" fill="#3a3a3a">cylinder / actuator</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2.2" fill="none">
+    <path d="M730 200 C 730 260, 450 260, 450 300"/>
+    <path d="M450 410 L450 440"/>
+  </g>
+
+  <text x="450" y="260" text-anchor="middle" font-size="12" fill="#666">every FRL unit sits right before its own valve island</text>
+</svg>

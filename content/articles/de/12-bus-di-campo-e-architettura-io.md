@@ -1,0 +1,37 @@
+---
+title: "Feldbusse: warum niemand mehr jeden Sensor bis zum zentralen Schaltschrank verkabelt"
+description: "Wie und warum die I/O einer modernen Maschine über Feldbusse wie Profinet und EtherCAT dezentralisiert wird, statt Punkt-zu-Punkt bis zur SPS verkabelt zu sein."
+date: "2026-09-01"
+category: "automazione"
+tags: ["Fieldbus", "Profinet", "EtherCAT", "Automation"]
+---
+
+Stell dir eine mittelgroße Maschine mit zweihundert Sensoren und Aktoren vor, verteilt über eine zehn Meter lange Struktur. Müsste jedes einzelne Signal individuell bis zur SPS im zentralen Schaltschrank verkabelt werden — ein eigenes Kabel für jeden Sensor, hin und zurück —, sprechen wir von Hunderten von Kabeln, manche bis zu zehn oder fünfzehn Meter lang, jedes mit eigenem Kabelkanalweg, eigener Identifikationsnummer, eigener dedizierter Klemme. Das ist eine Architektur, die bis vor einigen Jahrzehnten einfach der Standard war — und die du heute, wenn du ihr noch begegnest, sofort als "alten Stil" erkennst. Die moderne, fast universelle Lösung ist der **Feldbus**.
+
+![Comparison between centralized home-run wiring, with one dedicated cable per sensor back to the PLC, and distributed fieldbus wiring through local remote I/O blocks](./img/centralized-vs-distributed-io.svg)
+
+## Die Grundidee: ein einziges Kabel, viele Geräte
+
+Ein Feldbus ist konzeptionell ein digitales Kommunikationsnetz, das der industriellen Automatisierung gewidmet ist: Statt jeden Sensor und jeden Aktor mit einem dedizierten Kabel bis zur SPS zu verbinden, verbindet man Gruppen physisch benachbarter Geräte mit einem **Remote-I/O**-Modul (oder *dezentraler I/O*), das direkt an der Maschine platziert ist, nahe bei den Geräten, die es bedient. Dieses Remote-Modul kommuniziert dann über ein **einziges Buskabel** mit der zentralen SPS, über das digital, in schneller Folge, alle Zustände aller Sensoren und alle Befehle für alle an dieses Modul angeschlossenen Aktoren laufen.
+
+Die Verkabelungsersparnis ist enorm, aber nicht der einzige Vorteil. Ein Remote-I/O-Modul bietet typischerweise auch viel reichhaltigere Diagnosefunktionen als ein einfacher verdrahteter Kontakt: Du kannst nicht nur wissen, ob ein Sensor aktiv ist oder nicht, sondern auch, ob sein Kabel unterbrochen ist, ob er einen anormalen Strom zieht, ob ein Ausgangskanal kurzgeschlossen ist — Informationen, die bei traditioneller Punkt-zu-Punkt-Verkabelung dedizierte und teure Diagnoseschaltungen für jedes einzelne Signal erfordern würden, während sie auf einem Feldbus "gratis" mitkommen, eingebaut im Kommunikationsprotokoll selbst.
+
+## Die Protokolle, denen du am häufigsten begegnest: Profinet und EtherCAT
+
+Die Welt der Feldbusse war historisch stark fragmentiert (Profibus, DeviceNet, CANopen und viele andere, jeder mit eigenen industriellen Unterstützern), hat sich aber in den letzten Jahren stark um Lösungen auf Basis von **Industrial Ethernet** konsolidiert, die dieselbe physische Hardware wie das dir schon aus der IT-Welt bekannte Ethernet-Netz nutzen, mit spezifischen Protokollen und Zeitsteuerungen, um den vom Echtzeit-Maschinensteuerung geforderten Determinismus zu gewährleisten (eine Eigenschaft, die das "normale" Büro-Ethernet an sich nicht garantiert).
+
+**Profinet**, entwickelt vom mit Siemens verbundenen Konsortium, ist wahrscheinlich das in Europa im allgemeinen Industriebereich am weitesten verbreitete: Es verwendet Standard-Ethernet-Pakete mit Erweiterungen, um vorhersehbare Zykluszeiten zu gewährleisten, und ist relativ einfach zu konfigurieren und zu diagnostizieren, auch mit generischen Netzwerkwerkzeugen.
+
+**EtherCAT**, entwickelt von Beckhoff, verfolgt einen technisch raffinierteren Ansatz: Statt dass jedes Gerät ein eigenes Ethernet-Paket empfängt und darauf antwortet (mit dem unvermeidlichen Verarbeitungs-Overhead für jedes einzelne), durchläuft ein einziges Ethernet-Paket der Reihe nach alle am Bus angeschlossenen Geräte, und jedes "liest im Vorbeiflug" die für es bestimmten Daten und "schreibt im Vorbeiflug" seine eigenen Daten in dasselbe Paket, während dieses es physisch durchläuft, fast ohne eingeführte Verzögerung — ein Mechanismus, der es ihm erlaubt, extrem niedrige Zykluszeiten zu erreichen (Bruchteile einer Millisekunde für Hunderte von Geräten), weshalb du es oft in den anspruchsvollsten Motion-Control-Anwendungen findest, wo mehrere Servoachsen mit sehr enger zeitlicher Präzision synchronisiert werden müssen.
+
+Für deine tägliche Arbeit brauchst du die tiefen Implementierungsdetails dieser Protokolle nicht zu kennen — das ist Terrain der Entwickler der Hardwaremodule selbst. Was du brauchst, ist, sie zu erkennen, wenn du sie in einem Schema oder einer Hardwarekonfiguration der SPS siehst, und zu wissen, dass hinter dem Kürzel genau der Mechanismus steckt, den wir gerade beschrieben haben: ein Kabel, viele Geräte, zyklische und deterministische digitale Kommunikation.
+
+## Was sich konkret in deiner Programmierarbeit ändert
+
+Aus Sicht deines Anwendungscodes ist die gute Nachricht, dass die Abstraktion fast identisch zu vorher bleibt: In der Konfigurationssoftware der SPS (dem *Engineering-Tool*, sei es TIA Portal, CODESYS oder andere) konfigurierst du die am Bus angeschlossenen Remote-Module genau so, wie du lokale I/O-Module im SPS-Baugruppenträger konfigurieren würdest, und in deinem Programm liest und schreibst du weiterhin boolesche oder analoge Variablen mit denselben Mechanismen — die Bus-Abstraktion ist für die Anwendungslogik fast immer vollständig transparent. Was sich ändert und für die Abnahme im Feld zu wissen sich lohnt, ist die **Netzwerkdiagnose**: Verliert ein Remote-Modul die Kommunikation (ein beschädigtes Buskabel, eine elektromagnetische Störung, eine fehlende Versorgung des Remote-Moduls), werden alle Signale, die über dieses Modul laufen, gleichzeitig nicht verfügbar, und die SPS meldet typischerweise einen spezifischen Kommunikationsfehler, der sich von einem einfachen Sensordefekt unterscheidet — ein Fehler, bei dem du beim ersten Mal sofort verstehst, dass er von völlig anderer Natur ist als ein Problem der Anwendungslogik, gerade weil du jetzt weißt, was physisch hinter dieser Kommunikation steckt.
+
+## Eine letzte Beobachtung: auch die Sicherheit hat ihren Bus
+
+Es lohnt sich, diesen Artikel abzuschließen, indem wir ihn mit dem vorherigen zur funktionalen Sicherheit verknüpfen: Auch Sicherheitskreise, die früher fast immer traditionell mit dedizierten Relais verdrahtet waren, laufen heute zunehmend über *Safety*-Varianten derselben Feldbusse (**Profisafe** auf Profinet, **FSoE** — *Fail Safe over EtherCAT* — auf EtherCAT), die dem Standardprotokoll zusätzliche Kontrollmechanismen hinzufügen (Redundanzcodes, Sequenznummern, enge Timeouts), die garantieren können, dass ein Kommunikationsfehler auf dem Bus nie unbemerkt bleibt, und so auch in einer gemeinsam genutzten Netzwerkarchitektur dieselbe intrinsische Sicherheitsgarantie der dedizierten Verkabelung aufrechterhalten, die du im vorherigen Artikel gesehen hast — ein schönes Beispiel dafür, wie sich ein solides technisches Prinzip (Redundanz und Selbstdiagnose) an verschiedene Technologien anpasst, ohne seine Substanz zu verlieren.
+
+Damit kommen wir zum letzten Artikel der Serie: Wir setzen alles zusammen, was wir gesehen haben — Mechanik, Schaltschrank, Sensoren, Motoren, Pneumatik, Hydraulik, Sicherheit, Feldbusse —, indem wir gemeinsam eine reale Maschine von Anfang bis Ende sezieren.

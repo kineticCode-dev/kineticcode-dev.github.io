@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pneumatics, part two: solenoid valves, where a PLC bit becomes moving air — Kinetic Code</title>
+  <meta name="description" content="How 3/2 and 5/2 pneumatic solenoid valves work, ISO 1219 symbols, and how the PLC really drives a cylinder.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/08-pneumatica-valvole/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Pneumatics, part two: solenoid valves, where a PLC bit becomes moving air — Kinetic Code">
+  <meta property="og:description" content="How 3/2 and 5/2 pneumatic solenoid valves work, ISO 1219 symbols, and how the PLC really drives a cylinder.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (en)" href="/en/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pneumatics, part two: solenoid valves, where a PLC bit becomes moving air","description":"How 3/2 and 5/2 pneumatic solenoid valves work, ISO 1219 symbols, and how the PLC really drives a cylinder.","datePublished":"2026-09-01","inLanguage":"en","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/en/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/en/">Home</a>
+        <a href="/en/articles/" aria-current="page">Articles</a>
+        <a href="/en/learning-paths/">Learning Paths</a>
+        <a href="/en/about/">About</a>
+        <a href="/en/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Language">
+            EN <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/08-pneumatica-valvole/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/08-pneumatica-valvole/" aria-current="true"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/08-pneumatica-valvole/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/08-pneumatica-valvole/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/08-pneumatica-valvole/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrial Automation</span>
+        <h1>Pneumatics, part two: solenoid valves, where a PLC bit becomes moving air</h1>
+        <p class="article-hero__excerpt">How 3/2 and 5/2 pneumatic solenoid valves work, ISO 1219 symbols, and how the PLC really drives a cylinder.</p>
+        <div class="article-hero__meta">
+          <span>Sep 01, 2026</span>
+          <span>·</span>
+          <span>6 min read</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>In the previous article we followed compressed air from the compressor all the way to the machine&#39;s doorstep, clean, dry and pressure-regulated. Now we get to the component that truly connects your software to the physical world of pneumatics: the <strong>solenoid valve</strong>. It&#39;s the exact pneumatic equivalent of the contactor you met when we talked about the electrical panel: a low-power (24VDC) PLC output drives a coil, which in turn acts on a mechanism capable of handling a far greater air flow than an electrical signal alone could ever manage.</p>
+<h2>How it works inside: a pin that moves</h2>
+<p>Put simply, inside a solenoid valve there&#39;s a small moving element — a pin or small piston, called a <em>spool</em> — that, by shifting a few millimeters inside the valve body, opens or closes several internal channels, connecting or disconnecting the air paths. When the electrical coil is energized, it generates a magnetic field that pulls in a metal core connected to the spool, moving it from the rest position to the working position. When the coil is de-energized, a return element — almost always a mechanical spring, or in some cases the air pressure itself suitably routed (so-called pilot-operated valves) — brings the spool back to the rest position.</p>
+<p>This behavior — rest/working — is exactly what the standard valve nomenclature describes, which we can now decode: when you read <strong>&quot;3/2-way valve&quot;</strong> or <strong>&quot;5/2-way valve&quot;</strong>, the first number indicates how many <strong>ports</strong> (physical connection points: supply, use, exhaust) the valve has, the second number indicates how many <strong>positions</strong> the spool can take.</p>
+<h2>The 3/2-way valve: the choice for single-acting cylinders</h2>
+<p>A <strong>3/2-way valve</strong> has three ports — typically labeled <strong>P</strong> (supply, <em>pressure</em>), <strong>A</strong> (use, toward the actuator) and <strong>R</strong> (exhaust, <em>release</em>, to atmosphere) — and two positions. At rest it connects A to R (the use port is vented, with no pressure); when the coil is energized, it connects P to A (the use port receives pressurized air), closing R at the same time.</p>
+<p>This configuration is perfect for driving a <strong>single-acting cylinder</strong>: a cylinder that&#39;s fed compressed air on only one side, and returns to its rest position via an internal mechanical spring when the air is removed. The PLC only has to manage a single bit: energize the coil to extend the cylinder, de-energize it to bring it back (by gravity or by the return spring).</p>
+<p><img src="/assets/images/articles/valve-symbols-3-2-5-2.svg" alt="Comparison between a 3/2-way valve for single-acting cylinders and a 5/2-way valve for double-acting cylinders, with ISO 1219 style symbols" loading="lazy"></p>
+<h2>The 5/2-way valve: the most common choice, for double-acting cylinders</h2>
+<p>Much more widespread in industry is the <strong>5/2-way valve</strong>: five ports (one supply P, two use ports A and B, two separate exhausts, often labeled R and S) and two positions. In one position, it connects P to A and B to exhaust; in the other (reversed) position, it connects P to B and A to exhaust. The practical result: you always have two working lines, one pushing the cylinder one way and one pushing it the other way, <strong>both actively pressurized in turn</strong> — never a spring push, always air.</p>
+<p>This is the typical configuration for <strong>double-acting cylinders</strong>, where compressed air pushes the piston in both directions (one chamber for extension, one for retraction), with no need for any internal mechanical spring. The practical advantage is twofold: the return stroke is as actively controlled as the outward one (useful if you need force on the way back too, not just going out), and the cylinder can be mounted in any orientation — horizontal, vertical, upside down — without depending on gravity or a spring to complete the return stroke.</p>
+<p>From the PLC wiring point of view, a 5/2-way valve with a <strong>single coil</strong> (where a mechanical spring returns the spool to rest when the coil de-energizes) is driven exactly like a 3/2: a single output bit, one &quot;true&quot; state for extension and &quot;false&quot; for rest. But there&#39;s also a very common variant, the <strong>double-coil 5/2</strong> (<em>bistable</em>): it has no return spring at all, and the spool holds its position even when both coils are de-energized — a detail with a huge practical impact, which we&#39;ll get to in a moment.</p>
+<h2>Monostable vs bistable: a choice with real safety consequences</h2>
+<p>A <strong>monostable</strong> valve (with a single coil and a spring return) has a well-defined rest state: as soon as power is removed — even due to a fault, an emergency, or simply because the PLC goes into stop — the spool always returns to the same predefined position, and with it the cylinder moves to a known, predictable position. This behavior is often deliberately exploited for safety: if a gripper&#39;s cylinder must <em>always</em> open in an emergency to free an operator, you choose a monostable valve whose spring returns the valve to the &quot;gripper open&quot; state by design, regardless of the software.</p>
+<p>A <strong>bistable</strong> valve, on the other hand, holds its last commanded position even with no power — a valuable property when an actuator needs to &quot;stay where it was&quot; during a power interruption (for example, an actuator holding a heavy part clamped shouldn&#39;t suddenly release it just because the power went out), but it requires more careful reasoning in the software about the machine&#39;s actual state at restart: after a blackout, the PLC cannot automatically assume the position of a bistable actuator — it must verify it with limit sensors (we&#39;ll cover these in the next article), not with the memory of its own last command, which in the meantime could be completely stale.</p>
+<h2>Valve islands: where you&#39;ll find dozens of solenoid valves grouped together</h2>
+<p>In real industrial practice, you&#39;ll rarely find a single isolated solenoid valve: they&#39;re almost always grouped into a <strong>valve island</strong> (or <em>valve manifold</em>), a compact block sharing a single common air supply (often right downstream of the FRL unit seen in the previous article) and, increasingly in modern machines, a single electrical connection to the PLC via a fieldbus module integrated directly on the island itself — instead of individually wiring every single coil back to the panel with a dedicated cable. This is a preview of a topic we&#39;ll cover more thoroughly when we talk about fieldbuses: saving dozens or hundreds of meters of cable, replacing them with a single bus cable, is one of the main drivers behind the decentralization of I/O in modern machines.</p>
+<p>In the next article we close the loop on pneumatics by finally reaching the component that actually puts the air into motion: cylinders, single- and double-acting, how they&#39;re sized, and how to read a real datasheet.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/en/articles/07-pneumatica-produzione-e-trattamento-aria/">
+        <span class="post-nav__label">← Previous article</span>
+        <span class="post-nav__title">Pneumatics, part one: where the compressed air that moves a machine actually comes from</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Found this useful?</h3>
+          <p>If this content helped you, you can support the project with a small optional donation.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/en/articles/09-pneumatica-cilindri-e-attuatori/">
+        <span class="post-nav__label">Next article →</span>
+        <span class="post-nav__title">Pneumatics, part three: cylinders and actuators, where air finally becomes motion</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/en/articles/">← Back to all articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — All content is the author's own work, verified in the field.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="See the code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Send an email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/en/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS feed</a>
+        <a href="#main">Back to top</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+---
+title: "Motori asincroni, servomotori e inverter: cosa cambia davvero per chi scrive il software"
+description: "Una guida pratica ai motori più comuni nelle macchine industriali — asincroni, servo, passo-passo — e a cosa vede il PLC di ognuno di essi."
+date: "2026-09-01"
+category: "automazione"
+tags: ["Motors", "Servo", "VFD", "Automation"]
+---
+
+Quando nella lista I/O leggi una riga come `Q1.2 Motor_Conveyor_Run` la tentazione, arrivando dal software, è pensare al motore come a un attuatore booleano un po' più grande di un LED: lo accendi, gira; lo spegni, si ferma. È un'astrazione che funziona per un nastro trasportatore semplice, e fallisce miseramente appena la macchina ha bisogno di posizionare qualcosa con precisione, o di controllare la coppia applicata, o di sincronizzare più assi tra loro. In questo articolo mettiamo ordine tra i tre tipi di motore che incontrerai più spesso, e soprattutto capiamo cosa cambia, dal punto di vista di quello che tu effettivamente programmi.
+
+## Il motore asincrono trifase: il cavallo da lavoro, semplice e robusto
+
+È il motore più diffuso nell'industria in assoluto, ed è probabilmente il primo che vedrai aprire un quadro: tre avvolgimenti alimentati da una tensione trifase sfasata di 120 gradi, che generano un campo magnetico rotante nello statore. Questo campo "trascina" il rotore, che gira leggermente più lento del campo stesso (da qui il nome "asincrono": la differenza di velocità, chiamata *scorrimento*, è ciò che genera la coppia). È un motore robusto, economico, praticamente esente da manutenzione, ma nella sua forma più semplice ha un difetto rilevante per un ingegnere di controllo: **collegato direttamente alla rete, gira a una velocità fissa**, determinata dalla frequenza di rete (50Hz in Europa) e dal numero di poli del motore. Non è pensato per essere "posizionato" con precisione: è pensato per girare, punto.
+
+Ed è qui che entra in scena l'**inverter**, anche detto **VFD** (*Variable Frequency Drive*): un dispositivo elettronico di potenza che, invece di collegare il motore direttamente alla rete a 50Hz fissi, prima raddrizza la corrente alternata in continua e poi la ricostruisce in una nuova onda alternata a frequenza (e quindi velocità) variabile, generata elettronicamente tramite componenti a commutazione rapida (IGBT). Variando la frequenza, l'inverter varia direttamente la velocità di rotazione del motore, e in molte applicazioni permette anche una regolazione fine della coppia e rampe di accelerazione e decelerazione controllate — un dettaglio tutt'altro che banale quando devi far fermare un nastro trasportatore carico senza che il prodotto sopra scivoli per l'inerzia.
+
+Dal punto di vista del tuo software, un motore asincrono pilotato da inverter comunica quasi sempre con il PLC su un bus di campo (ne parleremo in un articolo dedicato) con pochi parametri chiave: un comando di marcia/arresto, un riferimento di velocità (spesso espresso in percentuale della velocità massima, o direttamente in Hz), e uno stato di ritorno che ti dice se il motore sta effettivamente girando, se c'è un allarme, e a volte la corrente assorbita in tempo reale — un valore prezioso, perché una corrente anomala è spesso il primo sintomo di un problema meccanico (un cuscinetto che si sta grippando, un nastro troppo teso) prima ancora che diventi un guasto conclamato.
+
+![Signal chain from a PLC output through a VFD or servo drive to the motor, with optional encoder feedback loop](./img/motor-control-chain.svg)
+
+## Il servomotore: quando serve sapere esattamente dove sei
+
+Se il motore asincrono con inverter ti dà controllo sulla velocità, il **servomotore** ti dà controllo sulla **posizione**. È un salto concettuale importante. Un servomotore è, quasi sempre, un motore sincrono a magneti permanenti abbinato a un **encoder** (li hai già incontrati nell'articolo precedente) montato direttamente sull'albero, e a un azionamento dedicato (il *drive*) che chiude un anello di regolazione in **retroazione** (*closed loop*, ad anello chiuso): il drive confronta continuamente la posizione richiesta dal PLC con quella letta dall'encoder, e corregge in tempo reale la corrente erogata al motore per annullare l'errore. È lo stesso principio concettuale di un controllore PID che probabilmente hai già incontrato in altri contesti — ma qui applicato fisicamente a un albero motore, decine o centinaia di volte al secondo.
+
+Questo controllo di precisione ha un prezzo, sia in senso letterale (i servomotori e i loro drive costano molto di più di un motore asincrono con inverter) sia in complessità: dove un motore asincrono ha bisogno solo di un comando marcia/velocità, un asse servo tipicamente richiede una configurazione completa di parametri di movimento — accelerazione massima, decelerazione, jerk (la variazione dell'accelerazione, che se troppo brusca genera vibrazioni meccaniche indesiderate), e spesso è pilotato non con semplici bit ma con un vero e proprio protocollo di posizionamento (funzioni tecnologiche standard come quelle definite dal profilo PLCopen Motion Control, che troverai implementate in praticamente ogni PLC moderno con funzioni come `MC_MoveAbsolute` o `MC_MoveVelocity`).
+
+Dove trovi i servomotori sul campo? Ovunque serva posizionamento accurato e ripetibile: assi di taglio, robot cartesiani, sistemi di etichettatura che devono applicare un'etichetta sempre nello stesso identico punto su migliaia di pezzi consecutivi, aste di sollevamento che devono fermarsi a una quota precisa senza oscillazioni.
+
+## Il motore passo-passo: precisione economica, ma senza feedback (quasi mai)
+
+Una terza famiglia, più diffusa nell'ambito dei piccoli posizionamenti e della prototipazione (la incontrerai spesso anche nella stampa 3D, se ci hai già smanettato) ma presente anche in applicazioni industriali leggere, è il **motore passo-passo** (*stepper motor*). Il principio è diverso da entrambi i precedenti: il rotore avanza a "scatti" discreti (i passi, appunto) in risposta a impulsi elettrici sequenziali applicati agli avvolgimenti dello statore. Contando gli impulsi inviati, in teoria conosci esattamente quanto il motore ha ruotato, **senza bisogno di un encoder di retroazione** — è un controllo ad anello aperto (*open loop*).
+
+Il difetto strutturale, e il motivo per cui non lo trovi su assi critici di macchine industriali pesanti, è che se il motore incontra un carico superiore alla sua coppia disponibile in quell'istante, "perde dei passi": continua a ricevere impulsi ma il rotore non li segue fedelmente, e il sistema perde silenziosamente la sincronizzazione tra "quanti passi ho inviato" e "dove si trova realmente l'albero" — un errore che, senza un encoder di verifica, il controllo non ha alcun modo di accorgersi che è avvenuto, finché qualcosa non va visibilmente storto a valle.
+
+## Una tabella mentale per orientarti sul campo
+
+Quando vedi un motore su una macchina, le domande che ti aiutano a classificarlo velocemente sono: ha bisogno di posizionarsi con precisione, o solo di girare a una certa velocità? Se solo velocità — quasi certamente asincrono con inverter. Se posizionamento preciso e ripetibile con carichi variabili — quasi certamente servomotore. Se posizionamento semplice, carichi leggeri e prevedibili, budget limitato — probabilmente uno stepper. E in tutti e tre i casi, il filo conduttore resta lo stesso di sempre: il PLC non "vede" mai il motore direttamente, vede sempre un intermediario elettronico — inverter o drive — che traduce i tuoi comandi digitali in una forma d'onda elettrica reale sull'avvolgimento del motore.
+
+Nel prossimo articolo restiamo nella parte meccanica, ma cambiamo argomento: come il moto generato da questi motori arriva fisicamente dove serve, attraverso cinghie, catene, viti a ricircolo di sfere e guide lineari.

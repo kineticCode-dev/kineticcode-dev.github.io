@@ -1,0 +1,50 @@
+<svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="23"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+  </defs>
+  <rect width="900" height="460" fill="#faf6ec"/>
+  <text x="450" y="40" text-anchor="middle" font-size="24" fill="#3a3a3a">From PLC bit to shaft rotation</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="40" y="150" width="170" height="100" rx="8" fill="#a8c5e8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="125" y="195" text-anchor="middle" font-size="15" fill="#3a3a3a">PLC output</text>
+  <text x="125" y="215" text-anchor="middle" font-size="12" fill="#3a3a3a">start / speed ref</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="270" y="150" width="170" height="100" rx="8" fill="#f0dca0" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="355" y="190" text-anchor="middle" font-size="15" fill="#3a3a3a">VFD / inverter</text>
+  <text x="355" y="212" text-anchor="middle" font-size="12" fill="#3a3a3a">builds a variable</text>
+  <text x="355" y="228" text-anchor="middle" font-size="12" fill="#3a3a3a">frequency waveform</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="500" y="150" width="170" height="100" rx="8" fill="#f2b8a8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="585" y="190" text-anchor="middle" font-size="15" fill="#3a3a3a">Motor</text>
+  <text x="585" y="212" text-anchor="middle" font-size="12" fill="#3a3a3a">converts electrical</text>
+  <text x="585" y="228" text-anchor="middle" font-size="12" fill="#3a3a3a">power to torque</text>
+
+  <g filter="url(#sketchy)">
+    <circle cx="800" cy="200" r="55" fill="none" stroke="#3a3a3a" stroke-width="2.5"/>
+  </g>
+  <text x="800" y="205" text-anchor="middle" font-size="13" fill="#3a3a3a">load /</text>
+  <text x="800" y="222" text-anchor="middle" font-size="13" fill="#3a3a3a">mechanism</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2.2" fill="none">
+    <path d="M210 200 h60"/>
+    <path d="M440 200 h60"/>
+    <path d="M670 200 h75"/>
+  </g>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="1.6" fill="none">
+    <path d="M585 250 C 585 320, 355 320, 355 250" stroke-dasharray="6 5"/>
+  </g>
+  <text x="470" y="345" text-anchor="middle" font-size="12" fill="#3a3a3a">feedback (encoder) — only on closed-loop servo drives</text>
+
+  <text x="450" y="410" text-anchor="middle" font-size="14" fill="#3a3a3a">Async motor + VFD: open loop, speed only.</text>
+  <text x="450" y="432" text-anchor="middle" font-size="14" fill="#3a3a3a">Servo motor + drive: closed loop, exact position and torque.</text>
+</svg>

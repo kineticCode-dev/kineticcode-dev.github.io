@@ -1,0 +1,61 @@
+<svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="67"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+  </defs>
+  <rect width="900" height="480" fill="#faf6ec"/>
+  <text x="450" y="40" text-anchor="middle" font-size="24" fill="#3a3a3a">Dual-channel safety chain</text>
+
+  <g filter="url(#sketchy)">
+    <circle cx="130" cy="150" r="55" fill="#f2b8a8" stroke="#3a3a3a" stroke-width="2.5"/>
+  </g>
+  <text x="130" y="145" text-anchor="middle" font-size="13" fill="#3a3a3a">E-stop</text>
+  <text x="130" y="163" text-anchor="middle" font-size="13" fill="#3a3a3a">button</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2.2" fill="none">
+    <path d="M185 135 h90"/>
+    <path d="M185 165 h90"/>
+  </g>
+  <text x="230" y="128" font-size="11" fill="#3a3a3a">ch. 1</text>
+  <text x="230" y="185" font-size="11" fill="#3a3a3a">ch. 2</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="280" y="100" width="200" height="120" rx="8" fill="#a8c5e8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="380" y="140" text-anchor="middle" font-size="15" fill="#3a3a3a">Safety relay</text>
+  <text x="380" y="162" text-anchor="middle" font-size="12" fill="#3a3a3a">compares both</text>
+  <text x="380" y="180" text-anchor="middle" font-size="12" fill="#3a3a3a">channels, cross-checks</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2.2" fill="none">
+    <path d="M480 160 h90"/>
+  </g>
+
+  <g filter="url(#sketchy)">
+    <rect x="570" y="100" width="200" height="120" rx="8" fill="#f0dca0" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="670" y="140" text-anchor="middle" font-size="15" fill="#3a3a3a">Safety output</text>
+  <text x="670" y="162" text-anchor="middle" font-size="12" fill="#3a3a3a">cuts power to</text>
+  <text x="670" y="180" text-anchor="middle" font-size="12" fill="#3a3a3a">contactors directly</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="1.6" fill="none">
+    <path d="M670 220 L670 280"/>
+  </g>
+  <g filter="url(#sketchy)">
+    <rect x="570" y="280" width="200" height="90" rx="8" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="670" y="320" text-anchor="middle" font-size="14" fill="#3a3a3a">Motor contactors</text>
+  <text x="670" y="342" text-anchor="middle" font-size="12" fill="#3a3a3a">power removed, not a bit</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="1.6" fill="none" stroke-dasharray="5 5">
+    <path d="M380 220 L380 370"/>
+  </g>
+  <g filter="url(#sketchy)">
+    <rect x="280" y="370" width="200" height="70" rx="8" fill="#d0b8e8" stroke="#3a3a3a" stroke-width="2"/>
+  </g>
+  <text x="380" y="400" text-anchor="middle" font-size="13" fill="#3a3a3a">status bit to PLC</text>
+  <text x="380" y="420" text-anchor="middle" font-size="12" fill="#3a3a3a">(for diagnostics only)</text>
+
+  <text x="450" y="465" text-anchor="middle" font-size="13" fill="#3a3a3a">Two independent channels, hardware-checked — the PLC only watches, it never decides safety.</text>
+</svg>

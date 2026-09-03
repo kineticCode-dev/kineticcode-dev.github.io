@@ -1,0 +1,38 @@
+<svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="61"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+  </defs>
+  <rect width="900" height="460" fill="#faf6ec"/>
+  <text x="450" y="40" text-anchor="middle" font-size="24" fill="#3a3a3a">Pneumatics vs hydraulics</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="50" y="80" width="370" height="330" rx="10" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="235" y="115" text-anchor="middle" font-size="18" fill="#3a3a3a">Pneumatics (air)</text>
+  <text x="80" y="160" font-size="13" fill="#3a3a3a">- compressible fluid</text>
+  <text x="80" y="188" font-size="13" fill="#3a3a3a">- ~6-7 bar typical</text>
+  <text x="80" y="216" font-size="13" fill="#3a3a3a">- fast, light forces</text>
+  <text x="80" y="244" font-size="13" fill="#3a3a3a">- open exhaust to air</text>
+  <text x="80" y="272" font-size="13" fill="#3a3a3a">- cheap, simple, clean</text>
+  <text x="80" y="300" font-size="13" fill="#3a3a3a">- imprecise positioning</text>
+  <text x="80" y="340" font-size="13" fill="#3a3a3a">picking, clamping,</text>
+  <text x="80" y="365" font-size="13" fill="#3a3a3a">pushing, ejecting</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="480" y="80" width="370" height="330" rx="10" fill="#f2b8a8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="665" y="115" text-anchor="middle" font-size="18" fill="#3a3a3a">Hydraulics (oil)</text>
+  <text x="510" y="160" font-size="13" fill="#3a3a3a">- incompressible fluid</text>
+  <text x="510" y="188" font-size="13" fill="#3a3a3a">- 100-350 bar typical</text>
+  <text x="510" y="216" font-size="13" fill="#3a3a3a">- slower, huge forces</text>
+  <text x="510" y="244" font-size="13" fill="#3a3a3a">- closed loop, oil returns</text>
+  <text x="510" y="272" font-size="13" fill="#3a3a3a">- costly, heavier, needs seals</text>
+  <text x="510" y="300" font-size="13" fill="#3a3a3a">- smooth, precise, rigid</text>
+  <text x="510" y="340" font-size="13" fill="#3a3a3a">presses, injection molding,</text>
+  <text x="510" y="365" font-size="13" fill="#3a3a3a">heavy lifting, forming</text>
+
+  <text x="450" y="410" text-anchor="middle" font-size="14" fill="#3a3a3a">Same logic, same valve symbols — just a different working fluid and a different scale of force.</text>
+</svg>

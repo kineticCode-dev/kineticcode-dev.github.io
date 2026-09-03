@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pneumatik, zweite Folge: Magnetventile, wo ein Bit der SPS zu bewegter Luft wird — Kinetic Code</title>
+  <meta name="description" content="Wie 3/2- und 5/2-Wege-Magnetventile funktionieren, die Symbolik nach ISO 1219, und wie die SPS wirklich einen Zylinder ansteuert.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/articles/08-pneumatica-valvole/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/08-pneumatica-valvole/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/08-pneumatica-valvole/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/08-pneumatica-valvole/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Pneumatik, zweite Folge: Magnetventile, wo ein Bit der SPS zu bewegter Luft wird — Kinetic Code">
+  <meta property="og:description" content="Wie 3/2- und 5/2-Wege-Magnetventile funktionieren, die Symbolik nach ISO 1219, und wie die SPS wirklich einen Zylinder ansteuert.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/articles/08-pneumatica-valvole/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pneumatik, zweite Folge: Magnetventile, wo ein Bit der SPS zu bewegter Luft wird","description":"Wie 3/2- und 5/2-Wege-Magnetventile funktionieren, die Symbolik nach ISO 1219, und wie die SPS wirklich einen Zylinder ansteuert.","datePublished":"2026-09-01","inLanguage":"de","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/" aria-current="page">Artikel</a>
+        <a href="/de/learning-paths/">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/08-pneumatica-valvole/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/08-pneumatica-valvole/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/08-pneumatica-valvole/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/08-pneumatica-valvole/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/08-pneumatica-valvole/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrielle Automatisierung</span>
+        <h1>Pneumatik, zweite Folge: Magnetventile, wo ein Bit der SPS zu bewegter Luft wird</h1>
+        <p class="article-hero__excerpt">Wie 3/2- und 5/2-Wege-Magnetventile funktionieren, die Symbolik nach ISO 1219, und wie die SPS wirklich einen Zylinder ansteuert.</p>
+        <div class="article-hero__meta">
+          <span>01 Sep 2026</span>
+          <span>·</span>
+          <span>5 Min. Lesezeit</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Im vorherigen Artikel haben wir die Druckluft vom Kompressor bis zur Schwelle der Maschine verfolgt, sauber, trocken und mit geregeltem Druck. Jetzt kommen wir zu der Komponente, die deine Software wirklich mit der physischen Welt der Pneumatik verbindet: das <strong>Magnetventil</strong> (<em>solenoid valve</em>). Es ist das exakte pneumatische Gegenstück zum Schütz, dem du beim Thema Schaltschrank begegnet bist: ein SPS-Ausgang mit niedriger Leistung (24VDC) steuert eine Spule an, die wiederum auf einen Mechanismus wirkt, der einen weit größeren Luftdurchsatz bewältigen kann, als es ein elektrisches Signal allein je könnte.</p>
+<h2>Wie es innen funktioniert: ein Stift, der sich verschiebt</h2>
+<p>Vereinfacht gesagt gibt es im Inneren eines Magnetventils ein kleines bewegliches Element — einen Stift oder kleinen Kolben, <em>Schieber</em> oder <em>Spool</em> genannt —, das sich, indem es sich um wenige Millimeter im Ventilkörper verschiebt, verschiedene interne Kanäle öffnet oder schließt und so die Luftwege verbindet oder trennt. Wird die elektrische Spule erregt, erzeugt sie ein Magnetfeld, das einen mit dem Schieber verbundenen Metallkern anzieht und ihn von der Ruhestellung in die Arbeitsstellung verschiebt. Wird die Spule entregt, bringt ein Rückstellelement — fast immer eine mechanische Feder, oder in manchen Fällen der Luftdruck selbst, entsprechend geleitet (die sogenannten pneumatisch vorgesteuerten Ventile) — den Schieber zurück in die Ruhestellung.</p>
+<p>Dieses Verhalten — Ruhe/Arbeit — ist genau das, was die genormte Ventilbezeichnung beschreibt, die wir jetzt entschlüsseln können: Wenn du <strong>&quot;3/2-Wege-Ventil&quot;</strong> oder <strong>&quot;5/2-Wege-Ventil&quot;</strong> liest, gibt die erste Zahl an, wie viele <strong>Wege</strong> (physische Anschlüsse: Zufuhr, Verbraucher, Entlüftung) das Ventil hat, die zweite Zahl gibt an, wie viele <strong>Stellungen</strong> der Schieber einnehmen kann.</p>
+<h2>Das 3/2-Wege-Ventil: die Wahl für einfachwirkende Zylinder</h2>
+<p>Ein <strong>3/2-Wege-Ventil</strong> hat drei Wege — typischerweise mit den Buchstaben <strong>P</strong> (Zufuhr, <em>pressure</em>), <strong>A</strong> (Verbraucher, zum Aktor) und <strong>R</strong> (Entlüftung, <em>release</em>, zur Atmosphäre) bezeichnet — und zwei Stellungen. In der Ruhestellung verbindet es A mit R (der Verbraucher ist entlüftet, drucklos); wird die Spule erregt, verbindet es P mit A (der Verbraucher erhält Druckluft), während R gleichzeitig geschlossen wird.</p>
+<p>Diese Konfiguration ist perfekt, um einen <strong>einfachwirkenden Zylinder</strong> anzusteuern: einen Zylinder, der Druckluft nur auf einer Seite erhält und über eine interne mechanische Feder in die Ruhestellung zurückkehrt, wenn die Luft entnommen wird. Die SPS muss nur ein einziges Bit verwalten: die Spule erregen, um den Zylinder ausfahren zu lassen, sie entregen, damit er zurückkehrt (durch Schwerkraft oder die Rückstellfeder).</p>
+<p><img src="/assets/images/articles/valve-symbols-3-2-5-2.svg" alt="Comparison between a 3/2-way valve for single-acting cylinders and a 5/2-way valve for double-acting cylinders, with ISO 1219 style symbols" loading="lazy"></p>
+<h2>Das 5/2-Wege-Ventil: die häufigste Wahl, für doppeltwirkende Zylinder</h2>
+<p>Deutlich weiter verbreitet in der Industrie ist das <strong>5/2-Wege-Ventil</strong>: fünf Wege (eine Zufuhr P, zwei Verbraucher A und B, zwei getrennte Entlüftungen, oft mit R und S bezeichnet) und zwei Stellungen. In einer Stellung verbindet es P mit A und B mit der Entlüftung; in der anderen (umgekehrten) Stellung verbindet es P mit B und A mit der Entlüftung. Das praktische Ergebnis: Du hast immer zwei Arbeitsleitungen, eine, die den Zylinder in die eine Richtung drückt, und eine, die ihn in die entgegengesetzte Richtung drückt, <strong>beide abwechselnd aktiv unter Druck</strong> — nie ein Federschub, immer Luft.</p>
+<p>Das ist die typische Konfiguration für <strong>doppeltwirkende Zylinder</strong>, bei denen die Druckluft den Kolben in beide Richtungen drückt (eine Kammer zum Ausfahren, eine zum Einfahren), ohne dass eine interne mechanische Feder nötig wäre. Der praktische Vorteil ist zweifach: Der Rückhub ist genauso aktiv gesteuert wie der Vorhub (nützlich, wenn auch bei der Rückbewegung Kraft gebraucht wird, nicht nur beim Ausfahren), und der Zylinder kann in jeder Ausrichtung montiert werden — horizontal, vertikal, überkopf —, ohne von der Schwerkraft oder einer Feder abhängig zu sein, um den Rückhub zu vollenden.</p>
+<p>Aus Sicht der Verdrahtung zur SPS wird ein 5/2-Wege-Ventil mit <strong>Einzelspule</strong> (bei dem eine mechanische Feder den Schieber in die Ruhestellung zurückbringt, wenn die Spule entregt wird) genau wie ein 3/2 angesteuert: ein einziges Ausgangsbit, ein &quot;wahr&quot;-Zustand für das Ausfahren und &quot;falsch&quot; für die Ruhe. Es gibt aber auch eine sehr verbreitete Variante, das <strong>5/2 mit doppelter Spule</strong> (<em>bistabil</em>): Es hat gar keine Rückstellfeder, und der Schieber behält seine Position auch dann bei, wenn beide Spulen entregt sind — ein Detail mit enormer praktischer Bedeutung, dazu gleich mehr.</p>
+<h2>Monostabil vs. bistabil: eine Wahl mit realen Sicherheitsauswirkungen</h2>
+<p>Wenn ein Ventil <strong>monostabil</strong> ist (mit einer einzigen Spule und Federrückstellung), hat es einen klar definierten Ruhezustand: Sobald die Spannung entfällt — auch durch einen Fehler, einen Notfall, oder einfach, weil die SPS in Stopp geht — kehrt der Schieber immer in dieselbe vordefinierte Stellung zurück, und mit ihm der Zylinder in eine bekannte, vorhersehbare Position. Dieses Verhalten wird oft bewusst für die Sicherheit genutzt: Wenn der Zylinder einer Zange im Notfall <em>immer</em> öffnen muss, um einen Bediener zu befreien, wählt man ein monostabiles Ventil, dessen Feder das Ventil konstruktiv in den Zustand &quot;Zange offen&quot; zurückbringt, unabhängig von der Software.</p>
+<p>Ein <strong>bistabiles</strong> Ventil dagegen hält die zuletzt befohlene Stellung auch ohne Versorgung — eine wertvolle Eigenschaft, wenn ein Aktor bei einer Unterbrechung &quot;dort bleiben&quot; muss, wo er war (zum Beispiel darf ein Aktor, der ein schweres Werkstück festhält, es nicht plötzlich loslassen, nur weil der Strom ausgefallen ist), erfordert aber von der Software eine sorgfältigere Überlegung zum tatsächlichen Zustand der Maschine beim Neustart: Die SPS kann nach einem Blackout nicht automatisch annehmen, in welcher Position sich ein bistabiler Aktor befindet — sie muss es mit den Endlagensensoren überprüfen (dazu im nächsten Artikel), nicht mit der Erinnerung an ihren letzten Befehl, der inzwischen völlig veraltet sein könnte.</p>
+<h2>Ventilinseln: wo du Dutzende Magnetventile gruppiert findest</h2>
+<p>In der realen industriellen Praxis findest du selten ein einzelnes, isoliertes Magnetventil: Fast immer sind sie in einer <strong>Ventilinsel</strong> (<em>valve island</em> oder <em>valve manifold</em>) gruppiert, einem kompakten Block, der eine einzige gemeinsame Luftzufuhr teilt (oft direkt nach der im vorherigen Artikel gesehenen FRL-Einheit) und, in modernen Maschinen zunehmend, eine einzige elektrische Verbindung zur SPS über ein direkt auf der Insel integriertes Feldbusmodul — statt jede einzelne Spule individuell mit einem eigenen Kabel bis zum Schaltschrank zu verdrahten. Das ist ein Vorgeschmack auf ein Thema, das wir beim Feldbus-Artikel ausführlicher behandeln: Dutzende oder Hunderte Meter Kabel zu sparen, indem man sie durch ein einziges Buskabel ersetzt, ist einer der Haupttreiber hinter der Dezentralisierung der I/O in modernen Maschinen.</p>
+<p>Im nächsten Artikel schließen wir den Kreis der Pneumatik, indem wir endlich zu der Komponente kommen, die die Luft wirklich in Bewegung versetzt: Zylinder, einfach- und doppeltwirkend, wie sie dimensioniert werden und wie man ein reales Datenblatt liest.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/de/articles/07-pneumatica-produzione-e-trattamento-aria/">
+        <span class="post-nav__label">← Vorheriger Artikel</span>
+        <span class="post-nav__title">Pneumatik, erste Folge: woher die Druckluft, die eine Maschine bewegt, wirklich kommt</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/de/articles/09-pneumatica-cilindri-e-attuatori/">
+        <span class="post-nav__label">Nächster Artikel →</span>
+        <span class="post-nav__title">Pneumatik, dritte Folge: Zylinder und Aktoren, wo Luft endlich zu Bewegung wird</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/articles/">← Zurück zu allen Artikeln</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

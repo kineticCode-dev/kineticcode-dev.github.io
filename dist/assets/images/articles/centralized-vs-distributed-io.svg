@@ -1,0 +1,59 @@
+<svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="71"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+  </defs>
+  <rect width="900" height="480" fill="#faf6ec"/>
+  <text x="450" y="36" text-anchor="middle" font-size="22" fill="#3a3a3a">Centralized wiring vs distributed fieldbus I/O</text>
+
+  <!-- Centralized -->
+  <text x="220" y="70" text-anchor="middle" font-size="16" fill="#3a3a3a">Centralized (home-run wiring)</text>
+  <g filter="url(#sketchy)">
+    <rect x="150" y="90" width="140" height="60" rx="6" fill="#a8c5e8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="220" y="125" text-anchor="middle" font-size="13" fill="#3a3a3a">PLC</text>
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="1.5" fill="none">
+    <path d="M180 150 L60 300"/>
+    <path d="M200 150 L120 320"/>
+    <path d="M220 150 L220 340"/>
+    <path d="M240 150 L320 320"/>
+    <path d="M260 150 L380 300"/>
+  </g>
+  <g filter="url(#sketchy)">
+    <circle cx="60" cy="310" r="16" fill="#f0dca0" stroke="#3a3a3a" stroke-width="1.8"/>
+    <circle cx="120" cy="330" r="16" fill="#f0dca0" stroke="#3a3a3a" stroke-width="1.8"/>
+    <circle cx="220" cy="350" r="16" fill="#f0dca0" stroke="#3a3a3a" stroke-width="1.8"/>
+    <circle cx="320" cy="330" r="16" fill="#f0dca0" stroke="#3a3a3a" stroke-width="1.8"/>
+    <circle cx="380" cy="310" r="16" fill="#f0dca0" stroke="#3a3a3a" stroke-width="1.8"/>
+  </g>
+  <text x="220" y="410" text-anchor="middle" font-size="12" fill="#3a3a3a">one dedicated wire per sensor, all the way home</text>
+
+  <!-- Distributed -->
+  <text x="680" y="70" text-anchor="middle" font-size="16" fill="#3a3a3a">Distributed (fieldbus)</text>
+  <g filter="url(#sketchy)">
+    <rect x="610" y="90" width="140" height="60" rx="6" fill="#a8c5e8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="680" y="125" text-anchor="middle" font-size="13" fill="#3a3a3a">PLC</text>
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="2.4" fill="none">
+    <path d="M680 150 L680 350"/>
+  </g>
+  <g filter="url(#sketchy)">
+    <rect x="620" y="230" width="120" height="40" rx="6" fill="#f2b8a8" stroke="#3a3a3a" stroke-width="1.8"/>
+  </g>
+  <text x="680" y="255" text-anchor="middle" font-size="12" fill="#3a3a3a">remote I/O block</text>
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="1.4" fill="none">
+    <path d="M630 270 L590 330"/>
+    <path d="M660 270 L650 340"/>
+    <path d="M700 270 L710 340"/>
+    <path d="M730 270 L770 330"/>
+  </g>
+  <g filter="url(#sketchy)">
+    <circle cx="590" cy="340" r="14" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="1.6"/>
+    <circle cx="650" cy="348" r="14" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="1.6"/>
+    <circle cx="710" cy="348" r="14" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="1.6"/>
+    <circle cx="770" cy="340" r="14" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="1.6"/>
+  </g>
+  <text x="680" y="410" text-anchor="middle" font-size="12" fill="#3a3a3a">one cable to a nearby block, short local wiring from there</text>
+</svg>

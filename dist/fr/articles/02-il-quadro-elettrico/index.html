@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>L'armoire électrique expliquée à qui ne l'a jusqu'ici qu'entraperçue ouverte — Kinetic Code</title>
+  <meta name="description" content="Ce qu'il y a vraiment dans l'armoire électrique d'une machine industrielle : sectionneur, alimentations, contacteurs, relais, borniers, et pourquoi presque tout fonctionne en 24VDC.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/articles/02-il-quadro-elettrico/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/02-il-quadro-elettrico/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/02-il-quadro-elettrico/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/02-il-quadro-elettrico/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/02-il-quadro-elettrico/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/02-il-quadro-elettrico/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/02-il-quadro-elettrico/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="L'armoire électrique expliquée à qui ne l'a jusqu'ici qu'entraperçue ouverte — Kinetic Code">
+  <meta property="og:description" content="Ce qu'il y a vraiment dans l'armoire électrique d'une machine industrielle : sectionneur, alimentations, contacteurs, relais, borniers, et pourquoi presque tout fonctionne en 24VDC.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/articles/02-il-quadro-elettrico/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"L'armoire électrique expliquée à qui ne l'a jusqu'ici qu'entraperçue ouverte","description":"Ce qu'il y a vraiment dans l'armoire électrique d'une machine industrielle : sectionneur, alimentations, contacteurs, relais, borniers, et pourquoi presque tout fonctionne en 24VDC.","datePublished":"2026-09-01","inLanguage":"fr","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/" aria-current="page">Articles</a>
+        <a href="/fr/learning-paths/">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/02-il-quadro-elettrico/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/02-il-quadro-elettrico/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/02-il-quadro-elettrico/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/02-il-quadro-elettrico/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/02-il-quadro-elettrico/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automatisation Industrielle</span>
+        <h1>L'armoire électrique expliquée à qui ne l'a jusqu'ici qu'entraperçue ouverte</h1>
+        <p class="article-hero__excerpt">Ce qu'il y a vraiment dans l'armoire électrique d'une machine industrielle : sectionneur, alimentations, contacteurs, relais, borniers, et pourquoi presque tout fonctionne en 24VDC.</p>
+        <div class="article-hero__meta">
+          <span>01 sept. 2026</span>
+          <span>·</span>
+          <span>7 min de lecture</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>La première fois que tu te retrouves devant une armoire électrique industrielle ouverte, l&#39;impression est celle de regarder à l&#39;intérieur du moteur d&#39;une voiture sans jamais avoir démonté un vélo : des composants gris, des câbles numérotés avec des étiquettes blanches, un bourdonnement de fond, et quelque part au milieu de tout ça, petit et presque discret par rapport au reste, l&#39;automate — la vraie raison de ta présence. Et pourtant cette armoire n&#39;est pas un chaos : c&#39;est l&#39;un des systèmes les plus normalisés et prévisibles que tu rencontreras jamais, parce qu&#39;il doit l&#39;être. Un électricien qui n&#39;a jamais vu cette machine auparavant doit pouvoir la comprendre en vingt minutes en regardant le schéma, et il en va de même pour toi.</p>
+<p>Dans cet article, nous décomposons l&#39;armoire en ses blocs fonctionnels. Je ne vais pas t&#39;apprendre à en concevoir une — c&#39;est un métier à part entière, avec des normes dédiées (la EN 60204-1 est la norme de référence pour la sécurité électrique des machines, tu la rencontreras souvent dans les dossiers techniques) — mais à la <em>lire</em>, en comprenant pourquoi chaque bloc est là où il est.</p>
+<p><img src="/assets/images/articles/electrical-panel-layout.svg" alt="Layout of an electrical cabinet showing main breaker, power supply, PLC, safety relay, contactors, interface relays, branch breakers and terminal blocks" loading="lazy"></p>
+<h2>Le flux de l&#39;énergie, de l&#39;arrivée jusqu&#39;au terrain</h2>
+<p>Le moyen le plus simple de se repérer dans une armoire est de suivre le trajet du courant, de haut en bas et de gauche à droite — c&#39;est presque toujours ainsi que sont dessinés les schémas électriques, par convention.</p>
+<p><strong>Le sectionneur général.</strong> C&#39;est le premier composant que tu rencontres, presque toujours en haut à gauche, avec une poignée qui dépasse de la porte de l&#39;armoire : c&#39;est celui que l&#39;opérateur tourne pour &quot;allumer&quot; la machine le matin, et celui que le technicien de maintenance verrouille avec un cadenas (le fameux <em>lockout-tagout</em>, LOTO, une procédure que nous verrons de plus près en parlant de sécurité) avant de mettre les mains dans l&#39;armoire. Électriquement, c&#39;est un disjoncteur dimensionné pour la puissance totale de la machine : il protège tout ce qui est en aval des courts-circuits et des surcharges générales.</p>
+<p><strong>L&#39;alimentation 24VDC.</strong> C&#39;est ici que se produit une transformation fondamentale qu&#39;il vaut la peine de bien comprendre, car elle explique presque toute la logique du reste de l&#39;armoire. Le réseau électrique industriel arrive typiquement en 400V triphasé (en Europe) — une tension dangereuse, adaptée pour entraîner de gros moteurs mais totalement inadaptée pour être traitée par une entrée numérique d&#39;automate ou par le contact d&#39;un capteur bon marché. L&#39;alimentation prend cette tension alternative et la convertit en une tension continue basse et sûre : <strong>24V DC</strong>. Ce n&#39;est pas une valeur arbitraire : elle est devenue le standard industriel de facto parce qu&#39;elle est assez basse pour être considérée comme &quot;très basse tension de sécurité&quot; dans de nombreuses configurations (limitant drastiquement le risque d&#39;électrocution pour l&#39;opérateur) mais assez élevée pour parcourir des dizaines de mètres de câble sans chute de tension excessive et pour fournir un courant suffisant pour piloter des bobines de relais et d&#39;électrovannes. Pratiquement chaque capteur, chaque entrée et sortie numérique de l&#39;automate, chaque bobine d&#39;électrovanne pneumatique que tu rencontreras fonctionne en 24VDC. Désormais, quand tu liras <code>24VDC digital input</code> dans une liste d&#39;E/S, tu sauras exactement d&#39;où vient ce 24 et pourquoi il est là.</p>
+<p><strong>L&#39;automate.</strong> Au centre de l&#39;armoire, ou du moins dans une position facilement accessible pour la maintenance (souvent près d&#39;une porte transparente, pour pouvoir voir les LED d&#39;état sans rien ouvrir), tu trouves l&#39;automate proprement dit : une CPU et une série de modules d&#39;entrée/sortie fixés sur un rail DIN, la même barre métallique à laquelle sont fixés pratiquement tous les composants de l&#39;armoire. Chaque borne de chaque module d&#39;E/S correspond exactement à une ligne de la liste d&#39;E/S que tu auras reçue : c&#39;est le point physique où ton <code>IF sensor THEN valve</code> du logiciel devient vraiment un signal électrique qui entre ou sort.</p>
+<p><strong>Le module de sécurité.</strong> Séparé — presque toujours physiquement et toujours logiquement — de l&#39;automate &quot;normal&quot; (qu&#39;on appelle dans le jargon automate de <em>safety</em> quand il intègre aussi des fonctions de sécurité, ou qui reste un automate &quot;standard&quot; épaulé par un relais de sécurité dédié), il gère les circuits qui ne peuvent en aucun cas dépendre uniquement du logiciel : le bouton d&#39;arrêt d&#39;urgence, les barrières immatérielles de sécurité, les verrouillages des protections mobiles. Nous y consacrerons un article dédié, car la sécurité fonctionnelle a une logique de conception qui lui est propre, avec des catégories et des niveaux de performance codifiés par norme.</p>
+<h2>Contacteurs, relais, et la question que tu te poseras souvent : &quot;pourquoi l&#39;automate ne le pilote-t-il pas directement ?&quot;</h2>
+<p>Une sortie numérique d&#39;automate délivre typiquement quelques centaines de milliampères en 24VDC. Un moteur triphasé de 5kW absorbe des courants de l&#39;ordre de dizaines d&#39;ampères en 400V. Il n&#39;y a aucun moyen, ni électrique ni de bon sens, de relier directement la sortie de l&#39;automate au moteur : il faudrait un interrupteur capable de supporter ce courant et cette tension, commandé en basse puissance par le signal de l&#39;automate. Cet interrupteur s&#39;appelle un <strong>contacteur</strong> : c&#39;est, en substance, un relais de puissance — une bobine qui, lorsqu&#39;elle est excitée en 24VDC (commandée par la sortie de l&#39;automate), ferme mécaniquement des contacts dimensionnés pour des courants bien plus importants, permettant au moteur d&#39;être alimenté depuis la ligne de puissance.</p>
+<p>Le <strong>relais</strong> ordinaire fait exactement le même travail conceptuel — une bobine basse puissance qui ferme des contacts — mais à plus petite échelle : il est utilisé pour interfacer des signaux, multiplier un contact (une seule entrée automate doit &quot;lire&quot; l&#39;état de dix fins de course câblés en série ? Un jeu de relais le permet), ou isoler électriquement deux circuits qui ne doivent pas se toucher directement. En pratique, quand tu vois dans un schéma un repère du type <code>K1</code>, <code>K2</code>, ce sont presque toujours des contacteurs ou des relais : la lettre K est la désignation normalisée CEI pour ces composants (tout comme <code>Q</code> désigne les disjoncteurs, <code>S</code> les boutons-poussoirs et sélecteurs, <code>B</code> les capteurs — apprendre ces repères te fera lire n&#39;importe quel schéma électrique européen beaucoup plus vite).</p>
+<h2>Les borniers : la frontière entre l&#39;armoire et la machine</h2>
+<p>Tout ce que nous avons vu jusqu&#39;ici vit à l&#39;intérieur de l&#39;armoire. Mais la machine elle-même — les moteurs, vérins, capteurs — est à l&#39;extérieur, répartie sur toute la structure mécanique, parfois sur des dizaines de mètres. Le point de passage entre &quot;dans l&#39;armoire&quot; et &quot;sur le terrain&quot; ce sont les <strong>borniers</strong> : des rangées de bornes numérotées où chaque câble sortant de l&#39;armoire trouve un point physique et identifié de façon univoque. Chaque borne porte un numéro qui correspond exactement à une ligne de la liste d&#39;E/S et à une référence dans le schéma électrique. Quand, en mise en service, tu branches un multimètre pour vérifier si un capteur commute effectivement, c&#39;est presque toujours sur l&#39;une de ces bornes que tu poses les pointes de touche — parce que c&#39;est le point le plus accessible et le mieux documenté de tout le câblage.</p>
+<p>C&#39;est aussi pour cela que, la première fois que tu reçois un schéma électrique complet, il vaut la peine de l&#39;imprimer (ou de le garder ouvert sur un second écran) et de le suivre borne par borne avec la liste des E/S : chaque ligne de ton programme automate a, quelque part dans ce document, un chemin physique précis qui va du capteur sur le terrain, à travers un câble, jusqu&#39;à la borne et l&#39;entrée du module automate. Voir tout cela ensemble, au moins une fois, c&#39;est ce qui transforme les capteurs d&#39;une liste de sigles en quelque chose que tu peux vraiment visualiser en écrivant du code.</p>
+<p>Dans le prochain article, nous entrons dans le détail de ces capteurs : ce que signifie vraiment une sortie PNP ou NPN, et pourquoi se tromper est l&#39;erreur de câblage la plus classique que tout le monde commet au moins une fois.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/articles/01-anatomia-di-una-macchina-industriale/">
+        <span class="post-nav__label">← Article précédent</span>
+        <span class="post-nav__title">Anatomie d'une machine industrielle : ce que tu vois vraiment en entrant dans un atelier de production</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/articles/03-sensoristica-industriale-le-basi/">
+        <span class="post-nav__label">Article suivant →</span>
+        <span class="post-nav__title">PNP, NPN, numérique, analogique : le langage avec lequel les capteurs parlent à l'automate</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/articles/">← Retour à tous les articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

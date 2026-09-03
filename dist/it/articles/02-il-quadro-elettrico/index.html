@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Il quadro elettrico spiegato a chi finora l'ha solo intravisto aperto — Kinetic Code</title>
+  <meta name="description" content="Cosa c'è davvero dentro l'armadio elettrico di una macchina industriale: interruttori, alimentatori, contattori, relè, morsettiere, e perché quasi tutto lavora a 24VDC.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/it/articles/02-il-quadro-elettrico/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/02-il-quadro-elettrico/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/02-il-quadro-elettrico/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/02-il-quadro-elettrico/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/02-il-quadro-elettrico/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/02-il-quadro-elettrico/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/02-il-quadro-elettrico/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Il quadro elettrico spiegato a chi finora l'ha solo intravisto aperto — Kinetic Code">
+  <meta property="og:description" content="Cosa c'è davvero dentro l'armadio elettrico di una macchina industriale: interruttori, alimentatori, contattori, relè, morsettiere, e perché quasi tutto lavora a 24VDC.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/it/articles/02-il-quadro-elettrico/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (it)" href="/it/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Il quadro elettrico spiegato a chi finora l'ha solo intravisto aperto","description":"Cosa c'è davvero dentro l'armadio elettrico di una macchina industriale: interruttori, alimentatori, contattori, relè, morsettiere, e perché quasi tutto lavora a 24VDC.","datePublished":"2026-09-01","inLanguage":"it","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/it/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/it/">Home</a>
+        <a href="/it/articles/" aria-current="page">Articoli</a>
+        <a href="/it/learning-paths/">Corsi</a>
+        <a href="/it/about/">About</a>
+        <a href="/it/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Lingua">
+            IT <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/02-il-quadro-elettrico/" aria-current="true"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/02-il-quadro-elettrico/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/02-il-quadro-elettrico/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/02-il-quadro-elettrico/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/02-il-quadro-elettrico/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automazione Industriale</span>
+        <h1>Il quadro elettrico spiegato a chi finora l'ha solo intravisto aperto</h1>
+        <p class="article-hero__excerpt">Cosa c'è davvero dentro l'armadio elettrico di una macchina industriale: interruttori, alimentatori, contattori, relè, morsettiere, e perché quasi tutto lavora a 24VDC.</p>
+        <div class="article-hero__meta">
+          <span>01 set 2026</span>
+          <span>·</span>
+          <span>6 min di lettura</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>La prima volta che ti trovi davanti a un quadro elettrico industriale aperto, l&#39;impressione è quella di guardare dentro il motore di un&#39;automobile senza aver mai smontato una bicicletta: componenti grigi, cavi numerati con etichette bianche, un ronzio di fondo, e da qualche parte in mezzo a tutto questo, piccolo e quasi dimesso rispetto al resto, il PLC — la cosa per cui in realtà sei lì. Eppure quel quadro non è caos: è uno dei sistemi più standardizzati e prevedibili che incontrerai mai, perché deve esserlo. Un elettricista che non ha mai visto quella macchina prima deve poterla capire in venti minuti guardando lo schema, e lo stesso vale per te.</p>
+<p>In questo articolo scomponiamo il quadro nei suoi blocchi funzionali. Non ti insegnerò a progettarne uno — è un mestiere a sé, con normative dedicate (la EN 60204-1 è quella di riferimento per la sicurezza elettrica delle macchine, la incontrerai spesso nei fascicoli tecnici) — ma a <em>leggerlo</em>, capendo perché ogni blocco sta dove sta.</p>
+<p><img src="/assets/images/articles/electrical-panel-layout.svg" alt="Layout of an electrical cabinet showing main breaker, power supply, PLC, safety relay, contactors, interface relays, branch breakers and terminal blocks" loading="lazy"></p>
+<h2>Il flusso dell&#39;energia, dall&#39;ingresso al campo</h2>
+<p>Il modo più semplice per orientarsi in un quadro è seguire il percorso della corrente, dall&#39;alto verso il basso e da sinistra verso destra — è quasi sempre disegnato così anche negli schemi elettrici, per convenzione.</p>
+<p><strong>L&#39;interruttore generale.</strong> È il primo componente che incontri, quasi sempre in alto a sinistra, con una maniglia che sporge fuori dallo sportello del quadro: è quello che l&#39;operatore gira per &quot;accendere&quot; la macchina la mattina, e quello che il manutentore blocca con un lucchetto (il famoso <em>lockout-tagout</em>, LOTO, una procedura che vedremo meglio parlando di sicurezza) prima di mettere le mani dentro il quadro. Elettricamente è un interruttore magnetotermico dimensionato per l&#39;intera potenza della macchina: protegge tutto quello che sta a valle da cortocircuiti e sovraccarichi generali.</p>
+<p><strong>L&#39;alimentatore 24VDC.</strong> Qui avviene una trasformazione fondamentale che vale la pena capire bene, perché spiega quasi tutta la logica del resto del quadro. La rete elettrica industriale arriva tipicamente a 400V trifase (in Europa) — una tensione pericolosa, adatta a muovere motori grossi ma del tutto inadatta a essere maneggiata da un ingresso digitale di un PLC o dal contatto di un sensore economico. L&#39;alimentatore prende questa tensione alternata e la converte in una tensione continua bassa e sicura: <strong>24V DC</strong>. Non è un valore arbitrario: è diventato lo standard industriale de facto perché è abbastanza basso da essere considerato &quot;bassissima tensione di sicurezza&quot; in molte configurazioni (limitando drasticamente il rischio di folgorazione per l&#39;operatore) ma abbastanza alto da percorrere decine di metri di cavo senza cadute di tensione eccessive e da fornire corrente sufficiente per pilotare bobine di relè e di elettrovalvole. Praticamente ogni sensore, ogni ingresso e uscita digitale del PLC, ogni bobina di elettrovalvola pneumatica che incontrerai lavorerà a 24VDC. Quando in futuro leggerai in una lista I/O <code>24VDC digital input</code>, ora sai esattamente da dove arriva quel 24 e perché è lì.</p>
+<p><strong>Il PLC.</strong> Al centro del quadro, o comunque in una posizione facilmente accessibile per la manutenzione (spesso vicino a uno sportello trasparente, per poter vedere i LED di stato senza aprire nulla), trovi il PLC vero e proprio: una CPU e una serie di moduli di ingresso/uscita agganciati a una guida DIN, la stessa barra metallica a cui sono fissati praticamente tutti i componenti del quadro. Ogni morsetto di ogni modulo I/O corrisponde a una riga della lista I/O che avrai ricevuto: è il punto fisico in cui il tuo software <code>IF sensor THEN valve</code> diventa davvero un segnale elettrico che entra o esce.</p>
+<p><strong>Il modulo di sicurezza.</strong> Separato — quasi sempre fisicamente e sempre logicamente — dal PLC &quot;normale&quot; (che in gergo viene chiamato PLC di <em>safety</em> quando integra anche funzioni di sicurezza, o resta un PLC &quot;standard&quot; affiancato da un relè di sicurezza dedicato), gestisce i circuiti che non possono in nessun caso dipendere solo dal software: il pulsante di emergenza, le barriere fotoelettriche di sicurezza, gli interblocchi dei ripari mobili. Ne parleremo in un articolo dedicato, perché la sicurezza funzionale ha una logica progettuale tutta sua, con categorie e livelli di prestazione codificati da norma.</p>
+<h2>Contattori, relè, e la domanda che ti farai spesso: &quot;perché non lo pilota direttamente il PLC?&quot;</h2>
+<p>Un&#39;uscita digitale di un PLC eroga tipicamente poche centinaia di milliampere a 24VDC. Un motore trifase da 5kW assorbe correnti dell&#39;ordine delle decine di ampere a 400V. Non c&#39;è modo, né elettrico né di buon senso, di collegare direttamente l&#39;uscita del PLC al motore: servirebbe un interruttore capace di reggere quella corrente e quella tensione, comandato in bassa potenza dal segnale del PLC. Questo interruttore si chiama <strong>contattore</strong>: è, in sostanza, un relè di potenza — una bobina che, quando eccitata a 24VDC (comandata dall&#39;uscita del PLC), chiude meccanicamente dei contatti dimensionati per correnti molto più grandi, permettendo al motore di essere alimentato dalla linea di potenza.</p>
+<p>Il <strong>relè</strong> ordinario fa lo stesso identico lavoro concettuale — bobina a bassa potenza che chiude contatti — ma su scala più piccola: viene usato per interfacciare segnali, moltiplicare un contatto (un solo ingresso PLC deve &quot;leggere&quot; lo stato di dieci finecorsa collegati in serie? Un gioco di relè lo permette), o isolare elettricamente due circuiti che non devono toccarsi direttamente. Nella pratica, quando vedrai nello schema una sigla tipo <code>K1</code>, <code>K2</code>, sono quasi sempre contattori o relè: la lettera K è la designazione normalizzata IEC per questi componenti (proprio come <code>Q</code> indica interruttori automatici, <code>S</code> pulsanti e selettori, <code>B</code> sensori — imparare queste sigle ti farà leggere qualsiasi schema elettrico europeo molto più in fretta).</p>
+<h2>Le morsettiere: il confine tra il quadro e la macchina</h2>
+<p>Tutto quello che abbiamo visto finora vive dentro l&#39;armadio. Ma la macchina vera — i motori, i cilindri, i sensori — sta fuori, distribuita su tutta la struttura meccanica, magari su decine di metri. Il punto di passaggio tra &quot;dentro il quadro&quot; e &quot;sul campo&quot; sono le <strong>morsettiere</strong>: file di morsetti numerati dove ogni cavo che esce dal quadro trova un punto fisico e identificato univocamente. Ogni morsetto ha un numero che corrisponde esattamente a una riga della lista I/O e a un riferimento nello schema elettrico. Quando, in collaudo, stacchi un multimetro per verificare se un sensore sta effettivamente commutando, è quasi sempre su uno di questi morsetti che appoggi i puntali — perché è il punto più accessibile e meglio documentato di tutto il cablaggio.</p>
+<p>Questo è anche il motivo per cui, la prima volta che ricevi uno schema elettrico completo, vale la pena stamparlo (o tenerlo aperto su un secondo monitor) e seguirlo morsetto per morsetto insieme alla lista I/O: ogni riga del tuo programma PLC ha, da qualche parte in quel documento, un percorso fisico preciso che va dal sensore sul campo, attraverso un cavo, fino al morsetto e all&#39;ingresso del modulo PLC. Vederlo tutto insieme, almeno una volta, è quello che trasforma la sensoristica da un elenco di sigle a qualcosa che riesci davvero a immaginare mentre scrivi codice.</p>
+<p>Nel prossimo articolo entriamo nel dettaglio di quei sensori: cosa significa davvero un&#39;uscita PNP o NPN, e perché sbagliarla è l&#39;errore di cablaggio più classico che chiunque commette almeno una volta.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/it/articles/01-anatomia-di-una-macchina-industriale/">
+        <span class="post-nav__label">← Articolo precedente</span>
+        <span class="post-nav__title">Anatomia di una macchina industriale: cosa vedi davvero quando entri in produzione</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ti va di offrirmi un caffè?</h3>
+          <p>Se questo contenuto ti è stato utile, puoi sostenere il progetto con una piccola donazione libera.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/it/articles/03-sensoristica-industriale-le-basi/">
+        <span class="post-nav__label">Articolo successivo →</span>
+        <span class="post-nav__title">PNP, NPN, digitale, analogico: il linguaggio con cui i sensori parlano al PLC</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/it/articles/">← Torna a tutti gli articoli</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tutti i contenuti sono opera dell'autore, verificati sul campo.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Guarda il codice su GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="Scrivimi una mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/it/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Feed RSS</a>
+        <a href="#main">Torna su</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

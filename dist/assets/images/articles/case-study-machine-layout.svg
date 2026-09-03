@@ -1,0 +1,64 @@
+<svg viewBox="0 0 950 560" xmlns="http://www.w3.org/2000/svg" font-family="'Comic Sans MS', 'Segoe Print', cursive">
+  <defs>
+    <filter id="sketchy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" result="noise" seed="83"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4.5"/>
+    </filter>
+  </defs>
+  <rect width="950" height="560" fill="#faf6ec"/>
+  <text x="475" y="38" text-anchor="middle" font-size="22" fill="#3a3a3a">Case study: a pick-and-place packaging cell</text>
+
+  <!-- infeed conveyor -->
+  <g filter="url(#sketchy)">
+    <rect x="40" y="220" width="260" height="50" rx="6" fill="#a8d5c8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="170" y="250" text-anchor="middle" font-size="13" fill="#3a3a3a">infeed conveyor (async motor + VFD)</text>
+  <g filter="url(#sketchy)">
+    <rect x="260" y="205" width="18" height="18" fill="#f0dca0" stroke="#3a3a3a" stroke-width="1.4"/>
+  </g>
+  <text x="269" y="195" text-anchor="middle" font-size="10" fill="#3a3a3a">photo sensor</text>
+
+  <!-- pick and place arm -->
+  <g filter="url(#sketchy)">
+    <rect x="380" y="90" width="12" height="140" fill="#3a3a3a"/>
+    <rect x="330" y="80" width="112" height="30" rx="6" fill="#d0b8e8" stroke="#3a3a3a" stroke-width="2"/>
+  </g>
+  <text x="386" y="70" text-anchor="middle" font-size="13" fill="#3a3a3a">servo pick-and-place</text>
+
+  <g filter="url(#sketchy)">
+    <rect x="360" y="225" width="60" height="24" rx="4" fill="#f2b8a8" stroke="#3a3a3a" stroke-width="1.8"/>
+  </g>
+  <text x="390" y="270" text-anchor="middle" font-size="11" fill="#3a3a3a">pneumatic gripper</text>
+
+  <!-- box on conveyor -->
+  <g filter="url(#sketchy)">
+    <rect x="480" y="215" width="260" height="60" rx="6" fill="#a8c5e8" stroke="#3a3a3a" stroke-width="2.2"/>
+  </g>
+  <text x="610" y="250" text-anchor="middle" font-size="13" fill="#3a3a3a">outfeed conveyor + box sensor</text>
+
+  <!-- Cabinet -->
+  <g filter="url(#sketchy)">
+    <rect x="800" y="90" width="120" height="380" rx="8" fill="#faf6ec" stroke="#3a3a3a" stroke-width="2.5"/>
+  </g>
+  <text x="860" y="115" text-anchor="middle" font-size="13" fill="#3a3a3a">panel</text>
+  <text x="860" y="150" text-anchor="middle" font-size="11" fill="#3a3a3a">PLC</text>
+  <text x="860" y="175" text-anchor="middle" font-size="11" fill="#3a3a3a">safety relay</text>
+  <text x="860" y="200" text-anchor="middle" font-size="11" fill="#3a3a3a">servo drive</text>
+  <text x="860" y="225" text-anchor="middle" font-size="11" fill="#3a3a3a">VFD</text>
+  <text x="860" y="250" text-anchor="middle" font-size="11" fill="#3a3a3a">FRL + valves</text>
+  <text x="860" y="275" text-anchor="middle" font-size="11" fill="#3a3a3a">remote I/O</text>
+
+  <!-- safety curtain -->
+  <g filter="url(#sketchy)" stroke="#e8a860" stroke-width="2.5" stroke-dasharray="6 5">
+    <line x1="470" y1="60" x2="470" y2="330"/>
+  </g>
+  <text x="470" y="345" text-anchor="middle" font-size="11" fill="#3a3a3a">safety light curtain</text>
+
+  <g filter="url(#sketchy)" stroke="#3a3a3a" stroke-width="1.4" fill="none">
+    <path d="M300 245 L480 245" stroke-dasharray="4 4"/>
+  </g>
+
+  <text x="475" y="420" text-anchor="middle" font-size="13" fill="#3a3a3a">Photo sensor triggers infeed stop → servo picks part with pneumatic gripper →</text>
+  <text x="475" y="442" text-anchor="middle" font-size="13" fill="#3a3a3a">places on outfeed conveyor → box sensor confirms placement → cycle repeats.</text>
+  <text x="475" y="475" text-anchor="middle" font-size="13" fill="#3a3a3a">Everything above is one line in the I/O list — and now you know what's behind each one.</text>
+</svg>

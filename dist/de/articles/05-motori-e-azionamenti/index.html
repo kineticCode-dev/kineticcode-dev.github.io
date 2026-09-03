@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asynchronmotoren, Servomotoren und Frequenzumrichter: was sich für die Softwareseite wirklich ändert — Kinetic Code</title>
+  <meta name="description" content="Ein praktischer Leitfaden zu den häufigsten Motoren in Industriemaschinen — Asynchron-, Servo-, Schrittmotoren — und was die SPS von jedem von ihnen tatsächlich sieht.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/articles/05-motori-e-azionamenti/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/05-motori-e-azionamenti/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/05-motori-e-azionamenti/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/05-motori-e-azionamenti/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Asynchronmotoren, Servomotoren und Frequenzumrichter: was sich für die Softwareseite wirklich ändert — Kinetic Code">
+  <meta property="og:description" content="Ein praktischer Leitfaden zu den häufigsten Motoren in Industriemaschinen — Asynchron-, Servo-, Schrittmotoren — und was die SPS von jedem von ihnen tatsächlich sieht.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/articles/05-motori-e-azionamenti/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Asynchronmotoren, Servomotoren und Frequenzumrichter: was sich für die Softwareseite wirklich ändert","description":"Ein praktischer Leitfaden zu den häufigsten Motoren in Industriemaschinen — Asynchron-, Servo-, Schrittmotoren — und was die SPS von jedem von ihnen tatsächlich sieht.","datePublished":"2026-09-01","inLanguage":"de","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/" aria-current="page">Artikel</a>
+        <a href="/de/learning-paths/">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/05-motori-e-azionamenti/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/05-motori-e-azionamenti/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/05-motori-e-azionamenti/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/05-motori-e-azionamenti/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/05-motori-e-azionamenti/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrielle Automatisierung</span>
+        <h1>Asynchronmotoren, Servomotoren und Frequenzumrichter: was sich für die Softwareseite wirklich ändert</h1>
+        <p class="article-hero__excerpt">Ein praktischer Leitfaden zu den häufigsten Motoren in Industriemaschinen — Asynchron-, Servo-, Schrittmotoren — und was die SPS von jedem von ihnen tatsächlich sieht.</p>
+        <div class="article-hero__meta">
+          <span>01 Sep 2026</span>
+          <span>·</span>
+          <span>5 Min. Lesezeit</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Wenn du in der I/O-Liste eine Zeile wie <code>Q1.2 Motor_Conveyor_Run</code> liest, ist die Versuchung, aus der Software kommend, den Motor als eine Art booleschen Aktor zu betrachten, nur etwas größer als eine LED: einschalten, er dreht; ausschalten, er stoppt. Das ist eine Abstraktion, die für ein einfaches Förderband funktioniert, aber kläglich versagt, sobald die Maschine etwas präzise positionieren, das aufgebrachte Drehmoment kontrollieren oder mehrere Achsen miteinander synchronisieren muss. In diesem Artikel bringen wir Ordnung in die drei Motortypen, denen du am häufigsten begegnest, und verstehen vor allem, was sich aus Sicht dessen ändert, was du tatsächlich programmierst.</p>
+<h2>Der dreiphasige Asynchronmotor: das einfache, robuste Arbeitspferd</h2>
+<p>Es ist der insgesamt am weitesten verbreitete Motor in der Industrie, und wahrscheinlich der erste, den du beim Öffnen eines Schaltschranks siehst: drei Wicklungen, gespeist von einer um 120 Grad phasenverschobenen Drehstromspannung, die im Stator ein rotierendes Magnetfeld erzeugen. Dieses Feld &quot;schleppt&quot; den Rotor mit, der sich etwas langsamer dreht als das Feld selbst (daher der Name &quot;asynchron&quot;: Die Geschwindigkeitsdifferenz, <em>Schlupf</em> genannt, ist das, was das Drehmoment erzeugt). Es ist ein robuster, günstiger, praktisch wartungsfreier Motor, hat aber in seiner einfachsten Form einen für einen Steuerungsingenieur relevanten Nachteil: <strong>Direkt ans Netz angeschlossen, dreht er mit fester Drehzahl</strong>, bestimmt durch die Netzfrequenz (50Hz in Europa) und die Polzahl des Motors. Er ist nicht dafür gedacht, präzise &quot;positioniert&quot; zu werden: Er ist dafür gedacht, zu drehen, Punkt.</p>
+<p>Hier kommt der <strong>Frequenzumrichter</strong> ins Spiel, auch <strong>FU</strong> oder englisch <strong>VFD</strong> (<em>Variable Frequency Drive</em>) genannt: ein leistungselektronisches Gerät, das, statt den Motor direkt mit den festen 50Hz ans Netz anzuschließen, zunächst den Wechselstrom gleichrichtet und ihn dann in eine neue Wechselspannung mit variabler Frequenz (und damit Drehzahl) rekonstruiert, elektronisch erzeugt über schnell schaltende Bauteile (IGBTs). Durch Variieren der Frequenz variiert der Umrichter direkt die Drehzahl des Motors, und in vielen Anwendungen erlaubt er auch eine feine Regelung des Drehmoments sowie kontrollierte Beschleunigungs- und Bremsrampen — ein alles andere als banales Detail, wenn du ein beladenes Förderband anhalten musst, ohne dass das Produkt darauf durch die Trägheit rutscht.</p>
+<p>Aus Sicht deiner Software kommuniziert ein von einem Umrichter angesteuerter Asynchronmotor fast immer über einen Feldbus mit der SPS (dazu widmen wir einen eigenen Artikel), mit wenigen Schlüsselparametern: einem Start/Stopp-Befehl, einem Drehzahlsollwert (oft als Prozentsatz der Maximaldrehzahl oder direkt in Hz ausgedrückt) und einem Rückmeldestatus, der dir sagt, ob der Motor tatsächlich dreht, ob ein Alarm vorliegt, und manchmal den aktuellen Stromverbrauch in Echtzeit — ein wertvoller Wert, denn ein anormaler Strom ist oft das erste Symptom eines mechanischen Problems (ein Lager, das zu fressen beginnt, ein zu straffer Riemen), noch bevor es zu einem offensichtlichen Defekt wird.</p>
+<p><img src="/assets/images/articles/motor-control-chain.svg" alt="Signal chain from a PLC output through a VFD or servo drive to the motor, with optional encoder feedback loop" loading="lazy"></p>
+<h2>Der Servomotor: wenn man genau wissen muss, wo man ist</h2>
+<p>Wenn dir der Asynchronmotor mit Umrichter Kontrolle über die Drehzahl gibt, gibt dir der <strong>Servomotor</strong> Kontrolle über die <strong>Position</strong>. Das ist ein wichtiger konzeptioneller Sprung. Ein Servomotor ist fast immer ein Synchronmotor mit Permanentmagneten, kombiniert mit einem direkt auf der Welle montierten <strong>Encoder</strong> (dem du im vorherigen Artikel schon begegnet bist) und einem dedizierten Antrieb (dem <em>Drive</em>), der einen <strong>Regelkreis</strong> in <strong>Rückkopplung</strong> (<em>closed loop</em>, geschlossener Regelkreis) schließt: Der Antrieb vergleicht kontinuierlich die von der SPS geforderte Position mit der vom Encoder gelesenen und korrigiert in Echtzeit den an den Motor gelieferten Strom, um den Fehler auf null zu bringen. Es ist dasselbe konzeptionelle Prinzip eines PID-Reglers, dem du wahrscheinlich schon in anderen Zusammenhängen begegnet bist — hier aber physisch auf eine Motorwelle angewandt, Dutzende bis Hunderte Male pro Sekunde.</p>
+<p>Diese präzise Kontrolle hat ihren Preis, sowohl wörtlich (Servomotoren und ihre Antriebe kosten deutlich mehr als ein Asynchronmotor mit Umrichter) als auch in der Komplexität: Während ein Asynchronmotor nur einen Start/Drehzahl-Befehl braucht, erfordert eine Servoachse typischerweise eine vollständige Konfiguration von Bewegungsparametern — maximale Beschleunigung, Verzögerung, Ruck (die Änderungsrate der Beschleunigung, die bei zu abrupter Änderung unerwünschte mechanische Vibrationen erzeugt) —, und wird oft nicht mit einfachen Bits, sondern mit einem echten Positionierprotokoll angesteuert (standardisierte Technologiefunktionen wie die des PLCopen-Motion-Control-Profils, die du in praktisch jeder modernen SPS implementiert findest, mit Funktionen wie <code>MC_MoveAbsolute</code> oder <code>MC_MoveVelocity</code>).</p>
+<p>Wo findest du Servomotoren im Feld? Überall dort, wo präzises, wiederholgenaues Positionieren nötig ist: Schneidachsen, kartesische Roboter, Etikettiersysteme, die ein Etikett immer an exakt derselben Stelle auf Tausenden aufeinanderfolgenden Teilen anbringen müssen, Hubstangen, die ohne Schwingen an einer präzisen Höhe stoppen müssen.</p>
+<h2>Der Schrittmotor: günstige Präzision, aber (fast) ohne Rückmeldung</h2>
+<p>Eine dritte Familie, verbreiteter bei kleinen Positionieraufgaben und im Prototyping (du wirst ihm auch beim 3D-Druck oft begegnen, falls du dich damit schon beschäftigt hast), aber auch in leichten industriellen Anwendungen vertreten, ist der <strong>Schrittmotor</strong> (<em>stepper motor</em>). Das Prinzip unterscheidet sich von beiden vorherigen: Der Rotor rückt in diskreten &quot;Sprüngen&quot; vor (eben den Schritten) als Reaktion auf sequenzielle elektrische Impulse an den Statorwicklungen. Durch Zählen der gesendeten Impulse weißt du theoretisch genau, wie viel sich der Motor gedreht hat, <strong>ohne einen Rückführungsencoder zu benötigen</strong> — es ist eine Steuerung ohne Regelkreis (<em>open loop</em>).</p>
+<p>Der strukturelle Nachteil, und der Grund, warum man ihn nicht auf kritischen Achsen schwerer Industriemaschinen findet, ist, dass der Motor, wenn er eine Last trifft, die höher ist als das ihm in diesem Moment verfügbare Drehmoment, &quot;Schritte verliert&quot;: Er erhält weiter Impulse, aber der Rotor folgt ihnen nicht mehr getreu, und das System verliert lautlos die Synchronisation zwischen &quot;wie viele Schritte ich gesendet habe&quot; und &quot;wo sich die Welle tatsächlich befindet&quot; — ein Fehler, den die Steuerung ohne einen Kontrollencoder auf keine Weise bemerken kann, bis nachgelagert sichtbar etwas schiefgeht.</p>
+<h2>Eine mentale Checkliste zur Orientierung im Feld</h2>
+<p>Wenn du einen Motor an einer Maschine siehst, helfen dir folgende Fragen, ihn schnell einzuordnen: Muss er sich präzise positionieren, oder nur mit einer bestimmten Geschwindigkeit drehen? Nur Geschwindigkeit — fast sicher Asynchronmotor mit Umrichter. Präzises, wiederholgenaues Positionieren mit variablen Lasten — fast sicher Servomotor. Einfaches Positionieren, leichte und vorhersehbare Lasten, begrenztes Budget — wahrscheinlich ein Schrittmotor. Und in allen drei Fällen bleibt der rote Faden derselbe wie immer: Die SPS &quot;sieht&quot; den Motor nie direkt, sie sieht immer einen elektronischen Vermittler — Umrichter oder Antrieb —, der deine digitalen Befehle in eine reale elektrische Wellenform an der Motorwicklung übersetzt.</p>
+<p>Im nächsten Artikel bleiben wir im mechanischen Bereich, wechseln aber das Thema: wie die von diesen Motoren erzeugte Bewegung physisch dorthin gelangt, wo sie gebraucht wird, über Riemen, Ketten, Kugelumlaufspindeln und Linearführungen.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/de/articles/04-sensori-di-prossimita-e-presenza/">
+        <span class="post-nav__label">← Vorheriger Artikel</span>
+        <span class="post-nav__title">Induktiv, kapazitiv, optoelektronisch, Encoder: vier verschiedene Arten, eine Maschine sehen zu lassen</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/de/articles/06-trasmissione-meccanica-del-moto/">
+        <span class="post-nav__label">Nächster Artikel →</span>
+        <span class="post-nav__title">Riemen, Ketten und Kugelumlaufspindeln: wie die Bewegung eines Motors wirklich dorthin gelangt, wo sie gebraucht wird</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/articles/">← Zurück zu allen Artikeln</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

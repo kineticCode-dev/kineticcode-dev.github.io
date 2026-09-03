@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pneumatique, troisième épisode : vérins et actionneurs, où l'air devient enfin mouvement — Kinetic Code</title>
+  <meta name="description" content="Comment fonctionnent les vérins pneumatiques à simple et double effet, les capteurs magnétiques de fin de course, le dimensionnement de base et la lecture d'une fiche technique réelle.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/fr/articles/09-pneumatica-cilindri-e-attuatori/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/09-pneumatica-cilindri-e-attuatori/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/09-pneumatica-cilindri-e-attuatori/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/09-pneumatica-cilindri-e-attuatori/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Pneumatique, troisième épisode : vérins et actionneurs, où l'air devient enfin mouvement — Kinetic Code">
+  <meta property="og:description" content="Comment fonctionnent les vérins pneumatiques à simple et double effet, les capteurs magnétiques de fin de course, le dimensionnement de base et la lecture d'une fiche technique réelle.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/fr/articles/09-pneumatica-cilindri-e-attuatori/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (fr)" href="/fr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pneumatique, troisième épisode : vérins et actionneurs, où l'air devient enfin mouvement","description":"Comment fonctionnent les vérins pneumatiques à simple et double effet, les capteurs magnétiques de fin de course, le dimensionnement de base et la lecture d'une fiche technique réelle.","datePublished":"2026-09-01","inLanguage":"fr","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/fr/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/fr/">Accueil</a>
+        <a href="/fr/articles/" aria-current="page">Articles</a>
+        <a href="/fr/learning-paths/">Parcours</a>
+        <a href="/fr/about/">À propos</a>
+        <a href="/fr/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Langue">
+            FR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/09-pneumatica-cilindri-e-attuatori/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/09-pneumatica-cilindri-e-attuatori/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/09-pneumatica-cilindri-e-attuatori/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/09-pneumatica-cilindri-e-attuatori/" aria-current="true"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/09-pneumatica-cilindri-e-attuatori/"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Automatisation Industrielle</span>
+        <h1>Pneumatique, troisième épisode : vérins et actionneurs, où l'air devient enfin mouvement</h1>
+        <p class="article-hero__excerpt">Comment fonctionnent les vérins pneumatiques à simple et double effet, les capteurs magnétiques de fin de course, le dimensionnement de base et la lecture d'une fiche technique réelle.</p>
+        <div class="article-hero__meta">
+          <span>01 sept. 2026</span>
+          <span>·</span>
+          <span>6 min de lecture</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Nous terminons le bloc consacré à la pneumatique avec le composant le plus visible de tous, celui que n&#39;importe qui, même sans aucune formation technique, reconnaîtrait d&#39;un coup d&#39;œil sur une machine : le <strong>vérin pneumatique</strong>. C&#39;est ici que tout ce que nous avons construit dans les deux articles précédents — l&#39;air traité et régulé, l&#39;électrovanne qui en dirige le flux — se transforme enfin en une véritable poussée mécanique.</p>
+<h2>Anatomie d&#39;un vérin : un piston dans un tube</h2>
+<p>Un vérin pneumatique, dans sa forme la plus courante, est conceptuellement simple : un tube cylindrique (le <em>corps</em>), fermé aux deux extrémités par des culasses, à l&#39;intérieur duquel coulisse un piston relié à une tige (<em>rod</em>) qui sort par l&#39;une des deux culasses et se relie mécaniquement à la charge à déplacer — une pince, un chariot, un poussoir. L&#39;air comprimé, introduit dans l&#39;une des deux chambres séparées par le piston, pousse ce dernier, générant force et mouvement.</p>
+<p><img src="/assets/images/articles/cylinder-cross-section.svg" alt="Cross-section of a double-acting pneumatic cylinder showing air ports A and B, and magnetic proximity sensors mounted on the tie rods" loading="lazy"></p>
+<p>Nous avions déjà distingué, en parlant des distributeurs, les vérins à <strong>simple effet</strong> (air d&#39;un seul côté, retour par ressort) et à <strong>double effet</strong> (air actif des deux côtés). Il vaut la peine d&#39;ajouter une considération pratique sur le moment où l&#39;on choisit l&#39;un ou l&#39;autre : le simple effet est plus économique et plus simple à commander, et c&#39;est le choix naturel quand il faut un retour automatique et fiable &quot;par construction&quot; même en l&#39;absence de signal — pense à un mors de sécurité qui doit revenir ouvert dès que l&#39;air ou le courant manque. Le double effet, beaucoup plus répandu en général, est le choix quand il faut un contrôle actif dans les deux directions, une force aussi dans le mouvement de retour, ou quand la course est longue (le ressort d&#39;un vérin à simple effet, au-delà d&#39;une certaine longueur, deviendrait encombrant et avec une force de rappel peu uniforme sur toute la course).</p>
+<h2>Les capteurs de fin de course : comment l&#39;automate sait que le vérin est arrivé</h2>
+<p>Un vérin pneumatique, seul, ne dit pas à l&#39;automate où il se trouve : c&#39;est un actionneur, pas un capteur. Pour savoir si un vérin est complètement sorti ou complètement rentré — une information presque toujours indispensable avant de faire avancer la séquence logique de la machine à l&#39;étape suivante —, il faut des capteurs dédiés, et la solution standard, élégante et presque universelle dans l&#39;industrie, sont les <strong>capteurs magnétiques de proximité</strong> (souvent simplement appelés <em>capteurs de fin de course magnétiques</em>, ou par le nom commercial historique <em>reed switch</em>, même si la technologie la plus répandue aujourd&#39;hui est à effet Hall).</p>
+<p>L&#39;astuce constructive est la suivante : le piston à l&#39;intérieur du vérin porte un anneau magnétique permanent, intégré dans sa structure. Le corps du vérin, quant à lui, n&#39;est pas en matériau ferromagnétique mais en un alliage (typiquement de l&#39;aluminium anodisé) qui laisse passer le champ magnétique sans l&#39;écranter. Les capteurs magnétiques, au lieu d&#39;être montés à l&#39;intérieur du vérin (ce qui nécessiterait un câblage interne complexe et peu fiable), sont fixés <strong>de l&#39;extérieur</strong> sur des rainures de guidage dédiées le long du corps, et détectent le passage du champ magnétique du piston quand celui-ci transite à leur position — sans aucun contact physique, aucun trou dans le corps du vérin, aucun câblage interne. C&#39;est exactement le même principe physique que le capteur inductif déjà rencontré, appliqué dans une configuration spécifique.</p>
+<p>L&#39;énorme avantage pratique de ce système est que les capteurs sont <strong>positionnables manuellement</strong>, en les faisant glisser le long de la rainure extérieure du corps et en les bloquant avec une petite vis quand ils sont à la position souhaitée — une opération que tu effectueras concrètement en mise en service, quand tu devras régler avec précision le point exact où l&#39;automate doit considérer comme &quot;atteinte&quot; la position sortie ou rentrée de chaque vérin de la machine.</p>
+<h2>Le dimensionnement : combien de force génère vraiment un vérin</h2>
+<p>Ce n&#39;est habituellement pas ton travail de dimensionner les vérins d&#39;une machine — c&#39;est un travail réalisé par le bureau d&#39;études du fabricant, en phase de conception mécanique, bien avant que tu ne reçoives la liste d&#39;E/S. Mais comprendre le raisonnement de base t&#39;aide énormément à &quot;sentir&quot; si quelque chose ne va pas quand, sur le terrain, un vérin semble trop lent ou incapable de terminer sa course contre une certaine charge.</p>
+<p>La force théorique générée par un vérin à double effet en phase de <strong>sortie</strong> se calcule avec une formule très simple, la même logique que la pression hydrostatique que tu as probablement déjà vue ailleurs :</p>
+<p><strong>F = P × A</strong></p>
+<p>où <strong>F</strong> est la force (en newtons), <strong>P</strong> est la pression de l&#39;air (en pascals, ou plus pratiquement convertie à partir des bars), et <strong>A</strong> est la surface du piston sur laquelle l&#39;air pousse (en mètres carrés). Conceptuellement, que dit cette formule ? Que la même pression appliquée sur une surface plus grande génère une force proportionnellement plus grande — c&#39;est pourquoi, à pression de réseau disponible égale (les fameux 6-7 bar vus dans le premier article de cette série), un vérin de diamètre plus grand génère une force plus grande, simplement parce qu&#39;il offre plus de surface à l&#39;air sur laquelle pousser.</p>
+<p>Un détail intéressant, et souvent source d&#39;erreurs d&#39;évaluation pour qui n&#39;a jamais fait ce calcul : en phase de <strong>rentrée</strong>, la force est légèrement inférieure à pression égale, parce que la tige qui traverse la culasse &quot;vole&quot; une partie de la surface utile du piston de ce côté — l&#39;air, dans cette chambre, pousse sur une surface en forme de couronne circulaire, pas sur un cercle plein. Pour la plupart des applications, la différence est négligeable, mais dans les catalogues des fabricants (Festo, SMC, Camozzi sont des noms que tu trouveras partout en Europe) tu trouves toujours deux valeurs de force distinctes, une pour la sortie et une pour la rentrée, précisément pour cette raison.</p>
+<h2>Un exemple concret de lecture de fiche technique</h2>
+<p>Imagine devoir vérifier si un vérin SMC série CDQ2, diamètre 32mm, alimenté à la pression de réseau standard de 6 bar, a assez de force pour pousser une charge opposant une résistance estimée à 350N. La fiche technique te donne la surface du piston (pour un diamètre de 32mm, environ 8 cm², soit 0,0008 m²). En appliquant la formule : F = 600 000 Pa × 0,0008 m² ≈ 480N de force théorique. Cela semble suffisant par rapport aux 350N requis — mais voici une dernière considération pratique que tout metteur en service apprend rapidement sur le terrain : la force théorique ainsi calculée est la valeur <strong>statique idéale</strong>, sans tenir compte des frottements internes du vérin, des pertes de charge dans la tuyauterie, et surtout sans aucune marge de sécurité. La règle empirique répandue sur le terrain est de ne pas dépasser, en conditions opérationnelles réelles, environ 70-80 % de la force théorique calculée — dans notre exemple, une marge opérationnelle réelle d&#39;environ 340-380N, déjà assez proche de la limite requise pour te conseiller, au moins en mise en service, un vérin de diamètre supérieur ou une pression de service plus élevée, avant que le problème ne se manifeste en production sous forme d&#39;un cycle trop lent ou d&#39;un vérin qui, avec l&#39;usure, cesse de terminer sa course.</p>
+<p>Ceci clôt le bloc sur la pneumatique. Dans le prochain article, nous voyons, par contraste et pour être complets, la grande sœur de la pneumatique quand il faut vraiment de grandes forces : l&#39;hydraulique.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/fr/articles/08-pneumatica-valvole/">
+        <span class="post-nav__label">← Article précédent</span>
+        <span class="post-nav__title">Pneumatique, deuxième épisode : les électrovannes, où un bit de l'automate devient de l'air en mouvement</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Ça vous a été utile ?</h3>
+          <p>Si ce contenu vous a aidé, vous pouvez soutenir le projet avec un petit don libre.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/fr/articles/10-idraulica-le-basi/">
+        <span class="post-nav__label">Article suivant →</span>
+        <span class="post-nav__title">L'hydraulique pour qui vient de la pneumatique : même logique, forces bien plus grandes</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/fr/articles/">← Retour à tous les articles</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Tout le contenu est l'œuvre de l'auteur, vérifié sur le terrain.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Voir le code sur GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="M'envoyer un e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/fr/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> Flux RSS</a>
+        <a href="#main">Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

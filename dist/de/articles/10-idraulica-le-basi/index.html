@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hydraulik für alle, die aus der Pneumatik kommen: gleiche Logik, viel größere Kräfte — Kinetic Code</title>
+  <meta name="description" content="Die Grundlagen der industriellen Hydraulik — Pumpen, Hydraulikmotoren, Ventile — und wann sie sich gegenüber der Pneumatik wirklich lohnt.">
+  <link rel="canonical" href="https://kineticcode-dev.github.io/de/articles/10-idraulica-le-basi/">
+  <link rel="alternate" hreflang="it" href="https://kineticcode-dev.github.io/it/articles/10-idraulica-le-basi/">
+    <link rel="alternate" hreflang="en" href="https://kineticcode-dev.github.io/en/articles/10-idraulica-le-basi/">
+    <link rel="alternate" hreflang="es" href="https://kineticcode-dev.github.io/es/articles/10-idraulica-le-basi/">
+    <link rel="alternate" hreflang="fr" href="https://kineticcode-dev.github.io/fr/articles/10-idraulica-le-basi/">
+    <link rel="alternate" hreflang="de" href="https://kineticcode-dev.github.io/de/articles/10-idraulica-le-basi/">
+  <link rel="alternate" hreflang="x-default" href="https://kineticcode-dev.github.io/en/articles/10-idraulica-le-basi/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kinetic Code">
+  <meta property="og:title" content="Hydraulik für alle, die aus der Pneumatik kommen: gleiche Logik, viel größere Kräfte — Kinetic Code">
+  <meta property="og:description" content="Die Grundlagen der industriellen Hydraulik — Pumpen, Hydraulikmotoren, Ventile — und wann sie sich gegenüber der Pneumatik wirklich lohnt.">
+  <meta property="og:image" content="https://kineticcode-dev.github.io/assets/images/logo.png">
+  <meta property="og:url" content="https://kineticcode-dev.github.io/de/articles/10-idraulica-le-basi/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <link rel="alternate" type="application/rss+xml" title="Kinetic Code — RSS (de)" href="/de/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>(function(){try{var t=localStorage.getItem('kc-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Hydraulik für alle, die aus der Pneumatik kommen: gleiche Logik, viel größere Kräfte","description":"Die Grundlagen der industriellen Hydraulik — Pumpen, Hydraulikmotoren, Ventile — und wann sie sich gegenüber der Pneumatik wirklich lohnt.","datePublished":"2026-09-01","inLanguage":"de","author":{"@type":"Person","name":"Kinetic Code"}}</script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA_7HqdUxj1PD-mgMUWE-HukK6RwWD495Nhv315IL4RL2mJqip1JdRUlDwyeoey2Tk1IbEkSq0HQQMWs4&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  
+</head>
+<body>
+  <a class="visually-hidden" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/de/">
+        <img src="/assets/images/logo.png" alt="Kinetic Code logo" width="32" height="32">
+        <span>Kinetic Code</span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="/de/">Start</a>
+        <a href="/de/articles/" aria-current="page">Artikel</a>
+        <a href="/de/learning-paths/">Kurse</a>
+        <a href="/de/about/">Über mich</a>
+        <a href="/de/dashboard/">Dashboard</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.7 6.7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <div class="lang-switch" data-lang-switch>
+          <button class="lang-switch__trigger" type="button" data-lang-trigger aria-label="Sprache">
+            DE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-switch__menu" role="menu">
+          <a href="/it/articles/10-idraulica-le-basi/"><span>Italiano</span><span class="lang-switch__tag">IT</span></a>
+          <a href="/en/articles/10-idraulica-le-basi/"><span>English</span><span class="lang-switch__tag">EN</span></a>
+          <a href="/es/articles/10-idraulica-le-basi/"><span>Español</span><span class="lang-switch__tag">ES</span></a>
+          <a href="/fr/articles/10-idraulica-le-basi/"><span>Français</span><span class="lang-switch__tag">FR</span></a>
+          <a href="/de/articles/10-idraulica-le-basi/" aria-current="true"><span>Deutsch</span><span class="lang-switch__tag">DE</span></a>
+          </div>
+        </div>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+
+  <article>
+    <div class="article-hero">
+      <div class="container">
+        <span class="eyebrow" style="--accent:var(--chart-2);color:var(--chart-2)">Industrielle Automatisierung</span>
+        <h1>Hydraulik für alle, die aus der Pneumatik kommen: gleiche Logik, viel größere Kräfte</h1>
+        <p class="article-hero__excerpt">Die Grundlagen der industriellen Hydraulik — Pumpen, Hydraulikmotoren, Ventile — und wann sie sich gegenüber der Pneumatik wirklich lohnt.</p>
+        <div class="article-hero__meta">
+          <span>01 Sep 2026</span>
+          <span>·</span>
+          <span>5 Min. Lesezeit</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="prose">
+        <p>Nach drei Artikeln zur Pneumatik könnte dir die Hydraulik auf den ersten Blick wie ein redundantes Kapitel erscheinen: Pumpen, Ventile, Zylinder — dieselben Namen, dieselben Konzepte, fast dasselbe Vokabular. Und das stimmt: Die konzeptionelle Architektur ist überraschend ähnlich. Aber die Wahl zwischen den beiden Welten ist nie zufällig, und zu verstehen, warum ein Konstrukteur die Hydraulik statt der Pneumatik wählt — oder umgekehrt —, gibt dir ein zusätzliches diagnostisches Werkzeug an die Hand, wenn du vor einer Maschine stehst, die du noch nie gesehen hast: Wenn du siehst, welche der beiden Technologien verwendet wurde, verstehst du sofort etwas über die Kraft- und Präzisionsanforderungen, die dieser Teil der Maschine erfüllen musste.</p>
+<h2>Der grundlegende Unterschied: ein Fluid, das sich komprimiert, eines, das es nicht tut</h2>
+<p>Der physikalische Ausgangsunterschied ist einfach zu formulieren, hat aber tiefgreifende Folgen für alles andere: Luft ist ein Gas, <strong>komprimierbar</strong>; Hydrauliköl ist eine Flüssigkeit, unter normalen Betriebsbedingungen praktisch <strong>inkompressibel</strong>. Diese einzige Eigenschaft erklärt fast alle praktischen Unterschiede zwischen den beiden Systemen.</p>
+<p>Ein Pneumatiksystem verhält sich, gerade weil sich die Luft komprimiert, leicht &quot;elastisch&quot;: Wenn du einer stillstehenden Pneumatikzylinderlast einen Widerstand aufbürdest, kann die Position der Kolbenstange um einen kleinen Betrag nachgeben, während sich die Luft in der Kammer weiter komprimiert, um die neue Last auszugleichen — ein Pneumatikzylinder ist unter variabler Last nie perfekt &quot;starr&quot;. Ein Hydrauliksystem dagegen, da das Öl inkompressibel ist, verhält sich fast vollkommen starr: Belaste einen stillstehenden Hydraulikzylinder (mit geschlossenen Ventilen), und die Position gibt praktisch überhaupt nicht nach, weil es kein Flüssigkeitsvolumen gibt, das sich komprimieren könnte, um die Änderung aufzunehmen. Deshalb ist überall dort, wo eine feste, starre Positionierung unter schweren, variablen Lasten gebraucht wird — denk an die Formen einer Spritzgusspresse —, die Hydraulik fast immer die zwingende Wahl.</p>
+<p><img src="/assets/images/articles/pneumatics-vs-hydraulics.svg" alt="Comparison chart between pneumatics and hydraulics: working pressure, fluid type, force scale and typical applications" loading="lazy"></p>
+<h2>Die im Spiel befindlichen Drücke: eine andere Größenordnung</h2>
+<p>Erinnerst du dich an den typischen Betriebsdruck der Pneumatik, rund 6-7 bar? Ein industrielles Hydrauliksystem arbeitet typischerweise zwischen <strong>100 und 350 bar</strong>, in manchen Anwendungen noch mehr. Wendet man dieselbe Formel F = P × A an, die wir bei den Pneumatikzylindern gesehen haben, versteht man sofort, warum: Bei gleicher Kolbenfläche (also gleichem Bauraum des Zylinders) erzeugt das Arbeiten bei einem 20- bis 50-fach höheren Druck eine 20- bis 50-fach höhere Kraft. Deshalb kann ein relativ kompakter Hydraulikzylinder Kräfte in der Größenordnung von Tonnen erzeugen, wo ein vergleichbar großer Pneumatikzylinder bei wenigen hundert Newton aufhören würde.</p>
+<h2>Die Hydraulikpumpe: das Herz des Systems, immer eingeschaltet</h2>
+<p>Während ein Pneumatiksystem aus einem zentralen, von der gesamten Anlage geteilten Druckluftnetz schöpft, ist ein Hydrauliksystem fast immer <strong>autonom und lokal für jede einzelne Maschine</strong>: ein dediziertes Hydraulikaggregat (<em>power pack</em>), bestehend aus einem Öltank, einer von einem Elektromotor angetriebenen Pumpe und einem Block von Steuerventilen, alles direkt an der Maschine oder daneben montiert. Die in der Industrie am weitesten verbreitete Pumpe ist die <strong>Zahnradpumpe</strong> (günstig, robust, für mittlere Drücke geeignet) oder, für Anwendungen mit höherer Präzision und höheren Drücken, die <strong>Axialkolbenpumpe</strong>, die durch Verstellen der Neigung einer internen Schwenkscheibe variable Fördermengen liefern kann — ein elegantes mechanisches Detail, das es erlaubt, den Ölfluss und damit die Bewegungsgeschwindigkeit zu modulieren, ohne den Fluss mit einem Ventil drosseln zu müssen (eine Lösung, die Energie in Form von Wärme verschwenden würde).</p>
+<p>Ein betriebliches Detail, das man bei der Abnahme nie unterschätzen sollte: Anders als in der Pneumatik, wo überschüssige Luft einfach in die Atmosphäre abgelassen wird (daher das charakteristische Zischen), ist ein Hydrauliksystem ein <strong>geschlossener Kreislauf</strong>: Das Öl muss, nachdem es den Aktor bewegt hat, über eine dedizierte Rücklaufleitung zum Tank zurückkehren. Das bedeutet, dass jedes Hydraulikventil, anders als ein Pneumatikventil, immer einen expliziten Rückweg zum Tank braucht, und ein Ölleck ist nicht nur eine Verschwendung (wie es ein kleines Luftleck wäre), sondern eine konkrete Umweltverschmutzung, die sorgfältig behandelt werden muss — einer der Gründe, warum die vorbeugende Wartung an Hydrauliksystemen (regelmäßige Kontrolle von Dichtungen, Filtern, Ölstand und Ölqualität) viel strenger ist als in der Pneumatik.</p>
+<h2>Der Hydraulikmotor: wenn kontinuierliche Drehung mit hoher Kraft gebraucht wird</h2>
+<p>Neben Linearzylindern — konzeptionell identisch mit den im vorherigen Artikel gesehenen Pneumatikzylindern, nur für viel höhere Drücke ausgelegt und mit robusteren Dichtungen — bietet die Hydraulik auch <strong>Hydraulikmotoren</strong>, das rotatorische Gegenstück zum Zylinder: Statt einen linearen Hub zu erzeugen, dreht das unter Druck stehende Öl kontinuierlich eine Welle und erzeugt dabei auch bei niedriger Drehzahl ein sehr hohes Drehmoment — eine wertvolle Eigenschaft bei Anwendungen wie Hubwinden oder Antrieben großer Zahnräder, bei denen ein äquivalenter Elektromotor eine viel sperrigere mechanische Untersetzung bräuchte, um dasselbe Drehmoment bei niedriger Geschwindigkeit zu erreichen.</p>
+<h2>Wie es von der SPS angesteuert wird: dieselbe Logik, andere Ventile</h2>
+<p>Die gute Nachricht für dich, der du die Steuerungssoftware programmieren musst, ist, dass die Ansteuerung eines Hydrauliksystems von der SPS aus logisch genau demselben konzeptionellen Schema folgt wie die Pneumatik: Magnetventile (hier öfter <strong>hydraulische Wegeventile</strong> genannt, aber mit derselben ISO-1219-Symbolik und derselben Wege-/Stellungs-Nomenklatur, die du schon gelernt hast), angesteuert von digitalen SPS-Ausgängen, die den Fluidstrom zur einen oder anderen Kammer des Aktors leiten. Der wesentliche Unterschied, dem du in der Praxis begegnen wirst, ist, dass hochwertige Hydraulikanwendungen oft <strong>Proportionalventile</strong> verwenden, die nicht von einem einfachen Ein/Aus-Signal, sondern von einem analogen Signal (typischerweise 0-10V oder 4-20mA, dieselben Standards wie bei analogen Sensoren) angesteuert werden, was es erlaubt, die Ventilöffnung und damit Geschwindigkeit und Kraft des Aktors kontinuierlich zu modulieren — ein Feinsteuerungsniveau, das man in der Pneumatik aufgrund der geringen Kosten ihrer Komponenten seltener findet.</p>
+<h2>Wann man das eine, wann das andere wählt</h2>
+<p>Eine praktische, vereinfachte, aber im Feld nützliche Regel: Wenn Geschwindigkeit, ein schneller Zyklus, begrenzte Kraft, Sauberkeit (kein mögliches Ölleck in Lebensmittel- oder Pharmaumgebung) gebraucht werden — Pneumatik. Wenn sehr hohe Kraft, Steifigkeit unter Last, feine und kontinuierliche Geschwindigkeitskontrolle auch unter schweren Lasten gebraucht werden — Hydraulik. Es ist nicht selten, ja sogar die Norm, beide Technologien auf derselben Maschine zu finden: Pneumatik für schnelle, leichte Hilfsfunktionen (Greifer, Auswerfer), Hydraulik für das Hauptorgan, das die eigentliche Arbeitskraft erzeugen muss — denk an eine Presse, bei der die Form von einem großen Hydraulikzylinder bewegt wird, während das Auswerfen des fertigen Werkstücks einem kleinen Pneumatikzylinder überlassen wird.</p>
+<p>Im nächsten Artikel verlassen wir Leistung und Kraft für ein ebenso kritisches, aber andersartiges Thema: die funktionale Sicherheit, und die spezifische Art — sehr anders, als du normalerweise über Software denkst —, in der die Industrie sie entwirft.</p>
+
+      </div>
+      <div class="post-nav" style="--post-nav-cols:1fr minmax(200px,300px) 1fr;--post-nav-next-col:3;"><a class="post-nav__link post-nav__link--prev" href="/de/articles/09-pneumatica-cilindri-e-attuatori/">
+        <span class="post-nav__label">← Vorheriger Artikel</span>
+        <span class="post-nav__title">Pneumatik, dritte Folge: Zylinder und Aktoren, wo Luft endlich zu Bewegung wird</span>
+      </a><div class="support-card">
+        <div class="support-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5.2A5 5 0 0 1 12 19.2H9A5 5 0 0 1 4 14.2V9Z"/><path d="M17 10.3h1.3a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.3c-.6 1 .5 1.5 0 2.5M12.3 2.3c-.6 1 .5 1.5 0 2.5"/></svg></div>
+        <div class="support-card__text">
+          <h3>Hat dir das geholfen?</h3>
+          <p>Wenn dir dieser Inhalt weitergeholfen hat, kannst du das Projekt mit einer kleinen freiwilligen Spende unterstützen.</p>
+        </div>
+        <div class="support-card__paypal">
+          <div id="paypal-container-F7N5SENY2D93L"></div>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "F7N5SENY2D93L",
+            }).render("#paypal-container-F7N5SENY2D93L");
+          </script>
+        </div>
+      </div><a class="post-nav__link post-nav__link--next" href="/de/articles/11-sicurezza-funzionale/">
+        <span class="post-nav__label">Nächster Artikel →</span>
+        <span class="post-nav__title">Funktionale Sicherheit: warum der Not-Aus-Taster nie über deine Software läuft</span>
+      </a></div>
+      <div class="article-footer">
+        <a class="btn btn-ghost" href="/de/articles/">← Zurück zu allen Artikeln</a>
+      </div>
+    </div>
+  </article>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>Kinetic Code — Alle Inhalte sind eigene Arbeit des Autors, im Feld verifiziert.</span>
+      <div class="footer-links">
+        <a href="https://github.com/kineticCode-dev" target="_blank" rel="noopener" aria-label="Code auf GitHub ansehen"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.6 3 8.5 7.1 9.9.5.1.7-.2.7-.5v-1.9c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2 1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.5.2 2.6.1 2.9.6.7 1 1.7 1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4.1-1.4 7.1-5.3 7.1-9.9 0-5.8-4.7-10.5-10.5-10.5Z"/></svg></a>
+        <a href="mailto:kineticcode.dev@gmail.com" aria-label="E-Mail schreiben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></a>
+        <a href="/de/rss.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a16 16 0 0 1 16 16M4 11a9 9 0 0 1 9 9"/><circle cx="5.5" cy="18.5" r="1.7" fill="currentColor" stroke="none"/></svg> RSS-Feed</a>
+        <a href="#main">Nach oben</a>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/view-toggle.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>
